@@ -15,7 +15,9 @@
         <!-- 各种 module 拓展 -->
         <module>yudao-module-system</module>
         <module>yudao-module-infra</module>
-<!--        <module>yudao-module-member</module>-->
+        <module>wenxun-spider</module>
+
+        <!--        <module>yudao-module-member</module>-->
 <!--        <module>yudao-module-bpm</module>-->
 <!--        <module>yudao-module-report</module>-->
 <!--        <module>yudao-module-mp</module>-->
@@ -28,7 +30,7 @@
     </modules>
 
     <name>${project.artifactId}</name>
-    <description>芋道项目基础脚手架</description>
+    <description>文巡项目基础脚手架</description>
     <url>https://github.com/YunaiV/ruoyi-vue-pro</url>
 
     <properties>
