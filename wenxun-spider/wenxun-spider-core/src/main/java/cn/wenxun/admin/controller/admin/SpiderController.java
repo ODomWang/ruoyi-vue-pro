@@ -1,6 +1,8 @@
 package cn.wenxun.admin.controller.admin;
 
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.wenxun.admin.controller.model.NewsInfo;
+import cn.wenxun.admin.controller.openai.SpiderAiUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,10 +12,10 @@ import org.htmlunit.WebClient;
 import org.htmlunit.html.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
@@ -22,6 +24,7 @@ import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 @RestController
 @RequestMapping("/spider")
 public class SpiderController {
+
 
     @PostMapping("/spidertest")
     @Operation(summary = "爬虫测试接口")
@@ -33,8 +36,10 @@ public class SpiderController {
         webClient.getOptions().setCssEnabled(false);
         webClient.getOptions().setJavaScriptEnabled(false);
 
+        String url1 = "https://www.bzpt.edu.cn/xwdr/xyyw.htm";
         // 加载页面
-        HtmlPage page = webClient.getPage("https://www.bzpt.edu.cn");
+        HtmlPage page = webClient.getPage(url1);
+        String resp = SpiderAiUtils.SpiderByOpenAi(page.asXml(), "获取网站的校园要闻列表", Collections.singleton(new NewsInfo()), "https://www.bzpt.edu.cn");
         JSONArray divJsonArray = new JSONArray();
 
         // 获取页面中所有最外层的 div 元素 (没有 div 父元素的 div)

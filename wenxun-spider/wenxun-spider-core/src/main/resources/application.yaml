@@ -163,8 +163,8 @@ spring:
     zhipuai: # 智谱 AI
       api-key: 32f84543e54eee31f8d56b2bd6020573.3vh9idLJZ2ZhxDEs
     openai: # OpenAI 官方
-      api-key: sk-yzKea6d8e8212c3bdd99f9f44ced1cae37c097e5aa3BTS7z
-      base-url: https://api.gptsapi.net
+      api-key: sk-Jw1aRQcB23kMHzx3UjorQF756YTz9J4aE3yMgz9jKsm9DCEC
+      base-url: https://api.302.ai
     azure: # OpenAI 微软
       openai:
         endpoint: https://eastusprejade.openai.azure.com
