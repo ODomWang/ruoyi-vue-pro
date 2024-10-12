@@ -1,22 +1,31 @@
 package cn.wenxun.admin.controller.admin;
 
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
-import cn.wenxun.admin.controller.model.NewsInfo;
-import cn.wenxun.admin.controller.openai.SpiderAiUtils;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.iocoder.yudao.framework.common.pojo.PageParam;
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
+import cn.iocoder.yudao.framework.security.core.LoginUser;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
+import cn.iocoder.yudao.module.system.controller.admin.dict.vo.type.DictTypeSaveReqVO;
+import cn.wenxun.admin.model.NewsInfo;
+import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
+import cn.wenxun.admin.openai.SpiderAiUtils;
+import cn.wenxun.admin.service.WenXunSpiderConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.htmlunit.WebClient;
-import org.htmlunit.html.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.htmlunit.html.HtmlPage;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.net.ssl.*;
+import javax.validation.Valid;
 import java.io.IOException;
+import java.security.cert.X509Certificate;
 import java.util.Collections;
-import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
@@ -25,76 +34,86 @@ import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 @RequestMapping("/spider")
 public class SpiderController {
 
+    @Resource
+    private WenXunSpiderConfigService wenXunSpiderConfigService;
 
     @PostMapping("/spidertest")
     @Operation(summary = "爬虫测试接口")
     @Parameter(name = "url", description = "url", required = true)
-    public CommonResult<JSONArray> getOrder(String url) throws IOException {
-
-        WebClient webClient = new WebClient();
+    public CommonResult<String> getOrder(String url) throws IOException {
+        //获取用户信息
+         WebClient webClient = new WebClient();
         // 关闭不需要的日志和选项
         webClient.getOptions().setCssEnabled(false);
         webClient.getOptions().setJavaScriptEnabled(false);
 
-        String url1 = "https://www.bzpt.edu.cn/xwdr/xyyw.htm";
+        String url1 = "https://jou.91job.org.cn/sub-station/notificationList?xxdm=11641&lmid=4342";
         // 加载页面
+        // 创建一个信任所有主机名的 HostnameVerifier
+        HostnameVerifier hv = new HostnameVerifier() {
+            @Override
+            public boolean verify(String urlHostName, SSLSession session) {
+                System.out.println("Warning: URL Host: " + urlHostName + " vs. " + session.getPeerHost());
+                return true;
+            }
+        };
+
+        // 创建一个信任所有证书的 TrustManager
+        TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() { return null; }
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) { }
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) { }
+                }
+        };
+
+        // 安装信任管理器
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 设置新的 HostnameVerifier
+        HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
+
         HtmlPage page = webClient.getPage(url1);
-        String resp = SpiderAiUtils.SpiderByOpenAi(page.asXml(), "获取网站的校园要闻列表", Collections.singleton(new NewsInfo()), "https://www.bzpt.edu.cn");
-        JSONArray divJsonArray = new JSONArray();
-
-        // 获取页面中所有最外层的 div 元素 (没有 div 父元素的 div)
-        List<HtmlDivision> outerDivs = page.getByXPath("//div[not(ancestor::div)]");
-
-        // 遍历所有最外层的 div，并递归处理
-        for (HtmlDivision div : outerDivs) {
-            // 获取每个 div 的 JSON 对象，层级从 0 开始
-            JSONObject divJsonObject = traverseAndBuildJson(div, 0);
-            divJsonArray.add(divJsonObject);
-        }
-        return success(divJsonArray);
-
-//            return (JSON.toJSONString(divJsonArray));
-
+        String resp = SpiderAiUtils.SpiderByOpenAi(page.asXml(), "获取网站的就业新闻列表", Collections.singleton(new NewsInfo()), "https://jou.91job.org.cn");
+        return success(resp);
 
     }
 
-    // 递归方法：逐级遍历元素并构建 JSON 对象
-    private static JSONObject traverseAndBuildJson(DomElement element, int level) {
-        // 获取所有 <script> 元素
-        List<HtmlScript> scripts = element.getByXPath(".//script");
-        // 删除所有 <script> 标签
-        for (HtmlScript script : scripts) {
-            script.remove();
-        }
-        // 获取所有 <style> 元素并删除
-        List<HtmlStyle> styles = element.getByXPath(".//style");
-        for (HtmlElement style : styles) {
-            style.remove();
-        }
-        // 构建当前元素的 JSON 对象
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("tag", element.getTagName());  // 标签名称
-        jsonObject.put("text", element.getTextContent().trim().replace(" ", "").replace("\n", ""));  // 文本内容
-        jsonObject.put("level", level);  // 当前元素的层级
 
-        // 如果是 <a> 标签，添加 href 属性
-        if ("a".equalsIgnoreCase(element.getTagName())) {
-            jsonObject.put("href", element.getAttribute("href"));
-        }
 
-        // 递归处理子元素
-        JSONArray childrenArray = new JSONArray();
-        for (DomElement childElement : element.getChildElements()) {
-            // 递归调用子元素并将其添加到子元素数组
-            JSONObject childJson = traverseAndBuildJson(childElement, level + 1);
-            childrenArray.add(childJson);
-        }
+    /*获取爬虫配置表信息
+     */
+    @GetMapping("/getSpiderConfigPage")
+    @Operation(summary = "获取爬虫配置表信息")
+    public CommonResult<PageResult<WenxunSpiderSourceConfigDO>> getSpiderConfig(@Validated PageParam pageReqVO) {
+        PageResult<WenxunSpiderSourceConfigDO> list = wenXunSpiderConfigService.getDataSourceConfigList(pageReqVO);
+         return  success(BeanUtils.toBean(list, WenxunSpiderSourceConfigDO.class));
+     }
 
-        // 如果有子元素，将其添加到 JSON 对象中
-        if (childrenArray.size() > 0) {
-            jsonObject.put("children", childrenArray);
-        }
-
-        return jsonObject;
+    /*获取爬虫配置表信息
+     */
+    @GetMapping("/get")
+    @Operation(summary = "获取爬虫配置表信息")
+    public CommonResult<WenxunSpiderSourceConfigDO> getSpiderInfo( @RequestParam("id") Long id) {
+        WenxunSpiderSourceConfigDO sourceConfigDO = wenXunSpiderConfigService.getDataSourceConfig(id);
+        return  success(BeanUtils.toBean(sourceConfigDO, WenxunSpiderSourceConfigDO.class));
     }
+    /*获取爬虫配置表信息
+     */
+    @PutMapping("/update")
+    @Operation(summary = "修改爬虫配置表信息")
+     public CommonResult<Boolean> updateSpiderConfig(@Validated WenxunSpiderSourceConfigDO sourceConfigDO) {
+         wenXunSpiderConfigService.updateDataSourceConfig(sourceConfigDO);
+        return  success(true);
+    }
+
+
+
 }

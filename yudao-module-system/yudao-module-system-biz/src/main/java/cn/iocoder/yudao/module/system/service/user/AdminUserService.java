@@ -201,4 +201,6 @@ public interface AdminUserService {
      */
     boolean isPasswordMatch(String rawPassword, String encodedPassword);
 
-}
+      Set<Long> getDeptCondition(Long deptId) ;
+
+    }

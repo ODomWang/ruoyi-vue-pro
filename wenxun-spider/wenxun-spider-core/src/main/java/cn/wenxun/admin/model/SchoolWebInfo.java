@@ -1,4 +1,4 @@
-package cn.wenxun.admin.controller.model;
+package cn.wenxun.admin.model;
 
 import lombok.Data;
 

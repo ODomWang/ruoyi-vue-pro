@@ -317,7 +317,8 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @param deptId 部门编号
      * @return 部门编号集合
      */
-    private Set<Long> getDeptCondition(Long deptId) {
+    @Override
+    public Set<Long> getDeptCondition(Long deptId) {
         if (deptId == null) {
             return Collections.emptySet();
         }

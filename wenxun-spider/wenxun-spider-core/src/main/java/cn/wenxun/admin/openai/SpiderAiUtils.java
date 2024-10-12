@@ -1,4 +1,4 @@
-package cn.wenxun.admin.controller.openai;
+package cn.wenxun.admin.openai;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.PascalNameFilter;

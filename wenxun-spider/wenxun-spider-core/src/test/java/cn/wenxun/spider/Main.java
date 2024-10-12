@@ -1,78 +1,50 @@
 package cn.wenxun.spider;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import org.htmlunit.WebClient;
-import org.htmlunit.html.*;
+import lombok.SneakyThrows;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 
-import java.util.List;
+import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
-        try (final WebClient webClient = new WebClient()) {
-            // 关闭不需要的日志和选项
-            webClient.getOptions().setCssEnabled(false);
-            webClient.getOptions().setJavaScriptEnabled(false);
+    @SneakyThrows
+    public static void main(String[] args) throws IOException {
+        //获取用户信息
+//        WebClient webClient = new WebClient(BrowserVersion.EDGE);
+//        // 关闭不需要的日志和选项
+//        webClient.getOptions().setCssEnabled(false);
+//        webClient.getOptions().setJavaScriptEnabled(false);
+//
+        String url1 = "https://jou.91job.org.cn/sub-station/notificationList?xxdm=11641&lmid=4342";
+//        // 加载页面
+//        webClient.getOptions().setUseInsecureSSL(true);
+//        webClient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
+//        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
+//        webClient.getOptions().setCssEnabled(false);//是否启用CSS, 因为不需要展现页面, 所以不需要启用
+//        webClient.getOptions().setJavaScriptEnabled(true); //很重要，启用JS
+//        webClient.setAjaxController(new NicelyResynchronizingAjaxController());//很重要，设置支持AJAX
+//        webClient.waitForBackgroundJavaScript(30000);
+//        HtmlPage page = webClient.getPage(url1);
+//        String resp = SpiderAiUtils.SpiderByOpenAi(page.asXml(), "获取网站的就业新闻列表", Collections.singleton(new NewsInfo()), "https://jou.91job.org.cn");
+//        System.out.println(resp);
+        // 设置 ChromeDriver 的路径
+        System.setProperty("webdriver.http.factory", "jdk-http-client");
 
-            // 加载页面
-            HtmlPage page = webClient.getPage("https://www.bzpt.edu.cn");
-            JSONArray divJsonArray = new JSONArray();
+//        WebDriverManager.chromiumdriver().setup();
+        // 设置 ChromeOptions，忽略 SSL 错误
+        // 创建ChromeDriver实例对象
+        ChromeDriver driver = new ChromeDriver();
+        // 去模拟浏览器输入url后敲回车
+        driver.get(url1);
 
-            // 获取页面中所有最外层的 div 元素 (没有 div 父元素的 div)
-            List<HtmlDivision> outerDivs = page.getByXPath("//div[not(ancestor::div)]");
+        Thread.sleep(1000);
 
-            // 遍历所有最外层的 div，并递归处理
-            for (HtmlDivision div : outerDivs) {
-                // 获取每个 div 的 JSON 对象，层级从 0 开始
-                JSONObject divJsonObject = traverseAndBuildJson(div, 0);
-                divJsonArray.add(divJsonObject);
-            }
-            System.out.println(JSON.toJSONString(divJsonArray));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // 获取body下的标签内容
+         System.out.println(driver.getPageSource());
     }
 
-    // 递归方法：逐级遍历元素并构建 JSON 对象
-    private static JSONObject traverseAndBuildJson(DomElement element, int level) {
-        // 获取所有 <script> 元素
-        List<HtmlScript> scripts = element.getByXPath(".//script");
-        // 删除所有 <script> 标签
-        for (HtmlScript script : scripts) {
-            script.remove();
-        }
-        // 获取所有 <style> 元素并删除
-        List<HtmlStyle> styles = element.getByXPath(".//style");
-        for (HtmlElement style : styles) {
-            style.remove();
-        }
-        // 构建当前元素的 JSON 对象
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("tag", element.getTagName());  // 标签名称
-        jsonObject.put("text", element.getTextContent().trim().replace(" ","").replace("\n",""));  // 文本内容
-        jsonObject.put("level", level);  // 当前元素的层级
 
-        // 如果是 <a> 标签，添加 href 属性
-        if ("a".equalsIgnoreCase(element.getTagName())) {
-            jsonObject.put("href", element.getAttribute("href"));
-        }
-
-        // 递归处理子元素
-        JSONArray childrenArray = new JSONArray();
-        for (DomElement childElement : element.getChildElements()) {
-            // 递归调用子元素并将其添加到子元素数组
-            JSONObject childJson = traverseAndBuildJson(childElement, level + 1);
-            childrenArray.add(childJson);
-        }
-
-        // 如果有子元素，将其添加到 JSON 对象中
-        if (childrenArray.size() > 0) {
-            jsonObject.put("children", childrenArray);
-        }
-
-        return jsonObject;
-    }
 }

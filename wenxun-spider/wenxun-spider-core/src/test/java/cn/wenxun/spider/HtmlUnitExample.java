@@ -1,7 +1,7 @@
 package cn.wenxun.spider;
 
 
-import cn.wenxun.admin.controller.model.SchoolWebInfo;
+import cn.wenxun.admin.model.SchoolWebInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.*;
