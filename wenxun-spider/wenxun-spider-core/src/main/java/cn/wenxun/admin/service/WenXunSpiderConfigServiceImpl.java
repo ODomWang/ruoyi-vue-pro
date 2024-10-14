@@ -30,7 +30,8 @@ public class WenXunSpiderConfigServiceImpl implements WenXunSpiderConfigService 
 
     @Override
     public void updateDataSourceConfig(WenxunSpiderSourceConfigDO updateReqVO) {
-
+        TenantContextHolder.setIgnore(true);
+        wenXunSpiderConfigMapper.updateById(updateReqVO);
     }
 
     @Override

@@ -99,41 +99,52 @@
             <version>2.2.0-jdk8-snapshot</version>
             <scope>compile</scope>
         </dependency>
-
-
-
-        <dependency>
-            <groupId>us.codecraft</groupId>
-            <artifactId>webmagic-extension</artifactId>
-            <version>0.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>us.codecraft</groupId>
-            <artifactId>webmagic-core</artifactId>
-            <version>0.5.3</version>
-        </dependency>
-        <!--工具包（StringUtils）-->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <!--非常重要-->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-devtools-v86</artifactId>
-            <version>4.0.0-beta-2</version>
-        </dependency>
-
-        <!--版本和devtools一致-->
+        <!-- Selenium Java -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.0.0-beta-2</version>
+            <version>4.25.0</version> <!-- 使用最新稳定版本 -->
         </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-http-jdk-client</artifactId>
+            <version>4.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-grid</artifactId>
+            <version>4.25.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.11.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.titusfortner</groupId>
+            <artifactId>selenium-logger</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <!-- Selenium Chrome Driver -->
+<!--        <dependency>-->
+<!--            <groupId>org.seleniumhq.selenium</groupId>-->
+<!--            <artifactId>selenium-chrome-driver</artifactId>-->
+<!--            <version>4.25.0</version> &lt;!&ndash; 与 Selenium 版本保持一致 &ndash;&gt;-->
+<!--        </dependency>-->
 
-
+<!--        &lt;!&ndash; WebDriver Manager (用于自动管理浏览器驱动程序) &ndash;&gt;-->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.9.2</version> <!-- 使用最新稳定版本 -->
+        </dependency>
+        <!-- Apache HttpClient 5 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.3.1</version> <!-- 请使用最新的稳定版本 -->
+        </dependency>
     </dependencies>
 
 

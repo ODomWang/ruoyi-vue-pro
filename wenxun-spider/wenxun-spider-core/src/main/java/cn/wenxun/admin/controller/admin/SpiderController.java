@@ -109,7 +109,7 @@ public class SpiderController {
      */
     @PutMapping("/update")
     @Operation(summary = "修改爬虫配置表信息")
-     public CommonResult<Boolean> updateSpiderConfig(@Validated WenxunSpiderSourceConfigDO sourceConfigDO) {
+     public CommonResult<Boolean> updateSpiderConfig(@Valid @RequestBody WenxunSpiderSourceConfigDO sourceConfigDO) {
          wenXunSpiderConfigService.updateDataSourceConfig(sourceConfigDO);
         return  success(true);
     }
