@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Service
@@ -25,12 +26,23 @@ public class WenXunSpiderConfigServiceImpl implements WenXunSpiderConfigService 
 
     @Override
     public Long createDataSourceConfig(WenxunSpiderSourceConfigDO createReqVO) {
+        TenantContextHolder.setIgnore(true);
+
+        if (createReqVO != null) {
+            createReqVO.setUpdater(SecurityFrameworkUtils.getLoginUserNickname());
+            createReqVO.setCreator(SecurityFrameworkUtils.getLoginUserNickname());
+            createReqVO.setDeptId(SecurityFrameworkUtils.getLoginUserDeptId());
+            return (long) wenXunSpiderConfigMapper.insert(createReqVO);
+        }
+
         return null;
     }
 
     @Override
     public void updateDataSourceConfig(WenxunSpiderSourceConfigDO updateReqVO) {
         TenantContextHolder.setIgnore(true);
+        updateReqVO.setUpdater(SecurityFrameworkUtils.getLoginUserNickname());
+        updateReqVO.setUpdateTime(LocalDateTime.now());
         wenXunSpiderConfigMapper.updateById(updateReqVO);
     }
 
@@ -62,4 +74,5 @@ public class WenXunSpiderConfigServiceImpl implements WenXunSpiderConfigService 
 
         return result;
     }
+
 }

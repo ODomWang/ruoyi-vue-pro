@@ -4,9 +4,6 @@ import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
-import cn.iocoder.yudao.framework.security.core.LoginUser;
-import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
-import cn.iocoder.yudao.module.system.controller.admin.dict.vo.type.DictTypeSaveReqVO;
 import cn.wenxun.admin.model.NewsInfo;
 import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
 import cn.wenxun.admin.openai.SpiderAiUtils;
@@ -115,5 +112,11 @@ public class SpiderController {
     }
 
 
+    @PostMapping("/create")
+    @Operation(summary = "创建参数配置")
+//    @PreAuthorize("@ss.hasPermission('infra:config:create')")
+    public CommonResult<Long> createConfig(@Valid @RequestBody WenxunSpiderSourceConfigDO createReqVO) {
+        return success(wenXunSpiderConfigService.createDataSourceConfig(createReqVO));
+    }
 
 }
