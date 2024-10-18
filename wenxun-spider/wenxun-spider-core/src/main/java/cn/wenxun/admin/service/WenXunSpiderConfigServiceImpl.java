@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -61,5 +62,11 @@ public class WenXunSpiderConfigServiceImpl implements WenXunSpiderConfigService 
         PageResult<WenxunSpiderSourceConfigDO> result = wenXunSpiderConfigMapper.selectByDebtCode(deptIds, pageReqVO);
 
         return result;
+    }
+
+    @Override
+    public List<WenxunSpiderSourceConfigDO> getAllUrlConfigInfo() {
+        TenantContextHolder.setIgnore(true);
+        return wenXunSpiderConfigMapper.selectByDataStatus();
     }
 }

@@ -24,7 +24,7 @@ public class SpiderAiUtils {
                 .init();
 
         Message system = Message.ofSystem(
-                "你是一个网络爬虫，我会给你提供网页信息，你需要提取相关内容，并且按照请求标准JSON格式返回，网站地址为 "+url+",不返回其他内容和格式信息，" +
+                "你是一个网页分析师，我会给你提供网页信息，你需要分析相关内容，并且按照请求标准JSON格式返回，网站地址为 "+url+",不返回其他内容和格式信息，" +
                 "标准JSON数据格式为:" + JSON.toJSONString(object, new PascalNameFilter(), SerializerFeature.WriteMapNullValue));
         Message userMessage = Message.of(message);
 

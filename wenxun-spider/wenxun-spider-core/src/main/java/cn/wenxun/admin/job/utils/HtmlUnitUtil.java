@@ -1,9 +1,8 @@
-package cn.wenxun.spider;
+package cn.wenxun.admin.job.utils;
 
 
-import cn.wenxun.admin.job.utils.PageExtracUtils;
 import cn.wenxun.admin.model.NewsInfo;
-import com.alibaba.fastjson.JSON;
+import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
 import org.apache.commons.lang3.StringUtils;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlElement;
@@ -13,9 +12,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HtmlUnitExample {
-    public static void main(String[] args) {
+public class HtmlUnitUtil {
+
+    public static List<NewsInfo> crawlUrl(WenxunSpiderSourceConfigDO configDO) {
         // 创建 WebClient
+        List<NewsInfo> respNewsInfo = new ArrayList<>();
+
         try (final WebClient webClient = new WebClient()) {
             // 禁用 JavaScript 和 CSS 支持（根据页面需求，如果需要可以启用）
             webClient.getOptions().setCssEnabled(false);
@@ -28,44 +30,46 @@ public class HtmlUnitExample {
             webClient.getOptions().setDoNotTrackEnabled(false);
 
             // 设置等待时间
-            webClient.getOptions().setTimeout(5000);
+            webClient.getOptions().setTimeout(2000);
 
             // 加载网页
-            HtmlPage page = webClient.getPage("https://www.bzpt.edu.cn/xwdr/xyyw/232.htm");  // 滨州职业学院
-//            HtmlPage page = webClient.getPage("https://www.suda.edu.cn/suda_news/sdyw/index.html");  // 苏州大学
-//            HtmlPage page = webClient.getPage("http://www.wxcu.edu.cn/static/newList.html?cid=19");  // 无锡城市学院
-            webClient.waitForBackgroundJavaScript(10000); // 等待 JavaScript 执行完成，最多等待 10 秒
+            String Url = configDO.getSpiderUrl();
+            for (long i = 0; i < configDO.getSpiderPageNum(); i++) {
 
-            if (page.asXml().contains("window.onload();")) {
-                page.executeJavaScript("if (window.onload) window.onload();");
-            }
-            String nextPageUrl = PageExtracUtils.getNextPageUrl(page,"");
-            List<HtmlElement> lists = page.getByXPath("//*[@id=\"app\"]/div[4]/div/ul");
+                HtmlPage page = webClient.getPage(Url);  // 目标网址
+                webClient.waitForBackgroundJavaScript(5000); // 等待 JavaScript 执行完成，最多等待 5 秒
 
-            List<NewsInfo> lists1 = new ArrayList<>();
-            for (HtmlElement list : lists) {
-                // 判断是 <ul> 还是 <table>
-                if ("ul".equals(list.getTagName())) {
-                    List<HtmlElement> items = list.getByXPath(".//li");
-                    for (HtmlElement item : items) {
-                        NewsInfo newsInfo = extracULtElementDetails(item, webClient);
-                        newsInfo.setNextPageUrl(nextPageUrl);
-                        lists1.add(newsInfo);
-                    }
-                } else if ("tbody".equals(list.getTagName())) {
-                    List<HtmlElement> rows = list.getByXPath(".//tr");
-                    for (HtmlElement row : rows) {
-                        NewsInfo newsInfo = extracTRtElementDetails(row, webClient);
-                        lists1.add(newsInfo);
-                    }
+                if (page.asXml().contains("window.onload();")) {
+                    page.executeJavaScript("if (window.onload) window.onload();");
                 }
+                // 下一页地址
+                Url = PageExtracUtils.getNextPageUrl(page, configDO.getNextPageXpath());
 
+                List<HtmlElement> lists = page.getByXPath(configDO.getBodyXpath());
+
+                for (HtmlElement list : lists) {
+                    // 判断是 <ul> 还是 <table>
+                    if ("ul".equals(list.getTagName())) {
+                        List<HtmlElement> items = list.getByXPath(".//li");
+                        for (HtmlElement item : items) {
+                            NewsInfo newsInfo = extracULtElementDetails(item, webClient);
+                             respNewsInfo.add(newsInfo);
+                        }
+                    } else if ("tbody".equals(list.getTagName())) {
+                        List<HtmlElement> rows = list.getByXPath(".//tr");
+                        for (HtmlElement row : rows) {
+                            NewsInfo newsInfo = extracTRtElementDetails(row, webClient);
+                            respNewsInfo.add(newsInfo);
+                        }
+                    }
+
+                }
             }
-
-            System.out.println(JSON.toJSONString(lists1));
+            return respNewsInfo;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     // 公共逻辑提取方法

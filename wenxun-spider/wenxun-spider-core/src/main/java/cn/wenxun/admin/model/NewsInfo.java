@@ -10,4 +10,7 @@ public class NewsInfo {
     private String date;
     private String author;
     private String desc;
+    private String nextPageUrl;
+    private String imgUrl;
+
 }

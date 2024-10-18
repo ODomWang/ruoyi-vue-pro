@@ -55,7 +55,7 @@
             </layout>
         </encoder>
     </appender>
-
+    <logger name="org.apache.http" level="ERROR"/>
     <!-- 本地环境 -->
     <springProfile name="local">
         <root level="INFO">

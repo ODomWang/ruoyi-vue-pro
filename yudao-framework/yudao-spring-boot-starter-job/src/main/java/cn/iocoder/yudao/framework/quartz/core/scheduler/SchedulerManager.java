@@ -3,6 +3,8 @@ package cn.iocoder.yudao.framework.quartz.core.scheduler;
 import cn.iocoder.yudao.framework.quartz.core.enums.JobDataKeyEnum;
 import cn.iocoder.yudao.framework.quartz.core.handler.JobHandlerInvoker;
 import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import static cn.iocoder.yudao.framework.common.exception.enums.GlobalErrorCodeConstants.NOT_IMPLEMENTED;
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception0;
@@ -18,9 +20,10 @@ import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionU
  *
  * @author 芋道源码
  */
+
 public class SchedulerManager {
 
-    private final Scheduler scheduler;
+    private  final Scheduler scheduler;
 
     public SchedulerManager(Scheduler scheduler) {
         this.scheduler = scheduler;

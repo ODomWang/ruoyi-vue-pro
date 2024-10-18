@@ -13,7 +13,7 @@ import lombok.*;
 public class WenxunSpiderSourceConfigDO {
 
     @TableId
-    private String id;
+    private long id;
     private String spiderUrl;
     private String spiderName;
     private String spiderModel;
@@ -26,6 +26,7 @@ public class WenxunSpiderSourceConfigDO {
     private String updater;
     private String remark;
     private long spiderPageNum;
-
+    private String bodyXpath;
+    private String nextPageXpath;
 
 }
