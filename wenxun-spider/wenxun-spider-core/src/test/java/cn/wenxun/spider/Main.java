@@ -1,10 +1,13 @@
 package cn.wenxun.spider;
 
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.SneakyThrows;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.IOException;
 
@@ -18,7 +21,7 @@ public class Main {
 //        webClient.getOptions().setCssEnabled(false);
 //        webClient.getOptions().setJavaScriptEnabled(false);
 //
-        String url1 = "https://jou.91job.org.cn/sub-station/notificationList?xxdm=11641&lmid=4342";
+        String url1 = "http://www.wxcu.edu.cn/static/newList.html?cid=19";
 //        // 加载页面
 //        webClient.getOptions().setUseInsecureSSL(true);
 //        webClient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
@@ -33,12 +36,15 @@ public class Main {
         // 设置 ChromeDriver 的路径
         System.setProperty("webdriver.http.factory", "jdk-http-client");
 
-//        WebDriverManager.chromiumdriver().setup();
-        // 设置 ChromeOptions，忽略 SSL 错误
-        // 创建ChromeDriver实例对象
-        ChromeDriver driver = new ChromeDriver();
-        // 去模拟浏览器输入url后敲回车
+        WebDriverManager.chromedriver().setup();
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        options.addArguments("--disable-gpu");
+
+        WebDriver driver = new ChromeDriver(options);
         driver.get(url1);
+        ((ChromeDriver) driver).executeScript("if (window.onload) window.onload();");
 
         Thread.sleep(1000);
 
