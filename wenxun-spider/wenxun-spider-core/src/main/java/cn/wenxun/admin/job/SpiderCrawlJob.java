@@ -54,8 +54,7 @@ public class SpiderCrawlJob implements JobHandler {
             CompletableFuture.supplyAsync(() -> HtmlUnitUtil.crawlUrl(url), threadPoolTaskExecutor)
                     .thenAccept(data -> {
                         if (data != null) {
-                            System.out.println(data);
-                            wenXunSpiderCrawlService.createDetail(null);
+                             wenXunSpiderCrawlService.insertDoBySpider(data);
                         }
                     });
             ;

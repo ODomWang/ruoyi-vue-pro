@@ -1,4 +1,4 @@
-package cn.wenxun.admin.service;
+package cn.wenxun.admin.service.impl;
 
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
@@ -7,6 +7,7 @@ import cn.iocoder.yudao.framework.tenant.core.context.TenantContextHolder;
 import cn.iocoder.yudao.module.system.service.user.AdminUserService;
 import cn.wenxun.admin.mapper.WenXunSpiderConfigMapper;
 import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
+import cn.wenxun.admin.service.WenXunSpiderConfigService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 

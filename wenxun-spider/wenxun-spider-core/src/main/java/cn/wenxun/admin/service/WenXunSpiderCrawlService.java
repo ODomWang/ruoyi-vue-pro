@@ -2,6 +2,7 @@ package cn.wenxun.admin.service;
 
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.wenxun.admin.model.NewsInfo;
 import cn.wenxun.admin.model.spider.WenxunSpiderCrawlDetail;
 import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
 
@@ -16,7 +17,7 @@ public interface WenXunSpiderCrawlService {
      * @param createReqVO 创建信息
      * @return 编号
      */
-    Long createDetail(@Valid  List<WenxunSpiderCrawlDetail> createReqVO);
+    Long createDetail(@Valid List<WenxunSpiderCrawlDetail> createReqVO);
 
     /**
      * 更新数据源配置
@@ -48,6 +49,14 @@ public interface WenXunSpiderCrawlService {
     PageResult<WenxunSpiderSourceConfigDO> getDetailList(PageParam pageReqVO);
 
     List<WenxunSpiderSourceConfigDO> getDetailInfo();
+
+
+    /**
+     * 插入数据库通过newinfo
+     * newsinfo 转为数据库对象
+     */
+
+    void insertDoBySpider(List<NewsInfo> list);
 
 
 }

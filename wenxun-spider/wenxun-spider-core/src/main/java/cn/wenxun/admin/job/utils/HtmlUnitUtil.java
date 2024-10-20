@@ -53,12 +53,15 @@ public class HtmlUnitUtil {
                         List<HtmlElement> items = list.getByXPath(".//li");
                         for (HtmlElement item : items) {
                             NewsInfo newsInfo = extracULtElementDetails(item, webClient);
-                             respNewsInfo.add(newsInfo);
+                            newsInfo.setConfigId(configDO.getId());
+                            respNewsInfo.add(newsInfo);
                         }
                     } else if ("tbody".equals(list.getTagName())) {
                         List<HtmlElement> rows = list.getByXPath(".//tr");
                         for (HtmlElement row : rows) {
                             NewsInfo newsInfo = extracTRtElementDetails(row, webClient);
+                            newsInfo.setConfigId(configDO.getId());
+
                             respNewsInfo.add(newsInfo);
                         }
                     }
