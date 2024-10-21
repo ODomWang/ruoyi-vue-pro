@@ -4,25 +4,20 @@ import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
+import cn.wenxun.admin.job.utils.HtmlUnitUtil;
 import cn.wenxun.admin.model.NewsInfo;
 import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
-import cn.wenxun.admin.openai.SpiderAiUtils;
 import cn.wenxun.admin.service.WenXunSpiderConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.htmlunit.WebClient;
-import org.htmlunit.html.HtmlPage;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.net.ssl.*;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
+import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
@@ -36,50 +31,9 @@ public class SpiderController {
 
     @PostMapping("/spidertest")
     @Operation(summary = "爬虫测试接口")
-    @Parameter(name = "url", description = "url", required = true)
-    public CommonResult<String> getOrder(String url) throws IOException {
-        //获取用户信息
-         WebClient webClient = new WebClient();
-        // 关闭不需要的日志和选项
-        webClient.getOptions().setCssEnabled(false);
-        webClient.getOptions().setJavaScriptEnabled(false);
-
-        String url1 = "https://jou.91job.org.cn/sub-station/notificationList?xxdm=11641&lmid=4342";
-        // 加载页面
-        // 创建一个信任所有主机名的 HostnameVerifier
-        HostnameVerifier hv = new HostnameVerifier() {
-            @Override
-            public boolean verify(String urlHostName, SSLSession session) {
-                System.out.println("Warning: URL Host: " + urlHostName + " vs. " + session.getPeerHost());
-                return true;
-            }
-        };
-
-        // 创建一个信任所有证书的 TrustManager
-        TrustManager[] trustAllCerts = new TrustManager[] {
-                new X509TrustManager() {
-                    public X509Certificate[] getAcceptedIssuers() { return null; }
-                    public void checkClientTrusted(X509Certificate[] certs, String authType) { }
-                    public void checkServerTrusted(X509Certificate[] certs, String authType) { }
-                }
-        };
-
-        // 安装信任管理器
-        try {
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // 设置新的 HostnameVerifier
-        HttpsURLConnection.setDefaultHostnameVerifier(hv);
-
-
-        HtmlPage page = webClient.getPage(url1);
-        String resp = SpiderAiUtils.SpiderByOpenAi(page.asXml(), "获取网站的就业新闻列表", Collections.singleton(new NewsInfo()), "https://jou.91job.org.cn");
-        return success(resp);
+     public CommonResult< List<NewsInfo>> getOrder(@Valid @RequestBody WenxunSpiderSourceConfigDO createReqVO)   {
+        List<NewsInfo> newsInfos= HtmlUnitUtil.crawlUrl(createReqVO);
+            return success(newsInfos);
 
     }
 
