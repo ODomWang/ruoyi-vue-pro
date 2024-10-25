@@ -170,7 +170,7 @@ public class PageExtracUtils {
     }
 
     // 判断并拼接完整 URL 的方法
-    private static String ensureAbsoluteUrl(String baseUrl, String href) {
+    public static String ensureAbsoluteUrl(String baseUrl, String href) {
         try {
             // 如果 href 是完整 URL，直接返回
             URL url = new URL(href);

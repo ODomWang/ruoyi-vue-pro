@@ -1,5 +1,6 @@
 package cn.iocoder.yudao.module.infra.controller.admin.codegen;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
@@ -144,6 +145,7 @@ public class CodegenController {
         ByteArrayInputStream[] ins = codes.values().stream().map(IoUtil::toUtf8Stream).toArray(ByteArrayInputStream[]::new);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ZipUtil.zip(outputStream, paths, ins);
+        FileUtil.writeBytes(outputStream.toByteArray(),"C:\\Users\\wangjp\\Desktop\\idea\\codegen.zip");
         // 输出
         writeAttachment(response, "codegen.zip", outputStream.toByteArray());
     }

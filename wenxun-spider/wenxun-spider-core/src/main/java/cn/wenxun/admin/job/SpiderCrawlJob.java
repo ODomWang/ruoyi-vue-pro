@@ -11,8 +11,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -51,13 +49,16 @@ public class SpiderCrawlJob implements JobHandler {
 
     public void crawlUrlsAsync(List<WenxunSpiderSourceConfigDO> urls) {
         for (WenxunSpiderSourceConfigDO url : urls) {
-            CompletableFuture.supplyAsync(() -> HtmlUnitUtil.crawlUrl(url), threadPoolTaskExecutor)
+            // 数据采集
+            CompletableFuture.supplyAsync(() -> HtmlUnitUtil.crawlUrl(url, false), threadPoolTaskExecutor)
                     .thenAccept(data -> {
+                        // 结果保存
                         if (data != null) {
-                             wenXunSpiderCrawlService.insertDoBySpider(data);
+                            wenXunSpiderCrawlService.insertDoBySpider(data);
+                            //敏感词对比
+
                         }
                     });
-            ;
         }
     }
 

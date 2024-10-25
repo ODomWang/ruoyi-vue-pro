@@ -2,6 +2,8 @@ package cn.wenxun.admin.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class NewsInfo {
     private String title;
@@ -12,6 +14,7 @@ public class NewsInfo {
     private String desc;
     private String nextPageUrl;
     private String imgUrl;
+    private List<String> ContentImgUrlList;
 
     private long configId;
 

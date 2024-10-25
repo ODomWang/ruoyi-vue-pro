@@ -467,14 +467,14 @@ public class CodegenEngine {
     }
 
     private static String javaModuleFilePath(String path, String module, String src) {
-        return "yudao-module-${table.moduleName}/" + // 顶级模块
-                "yudao-module-${table.moduleName}-" + module + "/" + // 子模块
+        return "wenxun-module-${table.moduleName}/" + // 顶级模块
+                "wenxun-module-${table.moduleName}-" + module + "/" + // 子模块
                 "src/" + src + "/java/${basePackage}/module/${table.moduleName}/" + path + ".java";
     }
 
     private static String mapperXmlFilePath() {
-        return "yudao-module-${table.moduleName}/" + // 顶级模块
-                "yudao-module-${table.moduleName}-biz/" + // 子模块
+        return "wenxun-module-${table.moduleName}/" + // 顶级模块
+                "wenxun-module-${table.moduleName}-biz/" + // 子模块
                 "src/main/resources/mapper/${table.businessName}/${table.className}Mapper.xml";
     }
 
@@ -483,7 +483,7 @@ public class CodegenEngine {
     }
 
     private static String vueFilePath(String path) {
-        return "yudao-ui-${sceneEnum.basePackage}-vue2/" + // 顶级目录
+        return "wenxun-ui-${sceneEnum.basePackage}-vue2/" + // 顶级目录
                 "src/" + path;
     }
 
@@ -492,7 +492,7 @@ public class CodegenEngine {
     }
 
     private static String vue3FilePath(String path) {
-        return "yudao-ui-${sceneEnum.basePackage}-vue3/" + // 顶级目录
+        return "wenxun-ui-${sceneEnum.basePackage}-vue3/" + // 顶级目录
                 "src/" + path;
     }
 

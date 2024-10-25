@@ -8,11 +8,11 @@ spring:
 spring:
   # 数据源配置项
   datasource:
-    name: ruoyi-vue-pro
-    url: jdbc:h2:mem:testdb;MODE=MYSQL;DATABASE_TO_UPPER=false;NON_KEYWORDS=value; # MODE 使用 MySQL 模式；DATABASE_TO_UPPER 配置表和字段使用小写
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    name: wenxun
+    url: jdbc:mysql://123.56.27.46:3306/wenxun?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+    driver-class-name: com.mysql.jdbc.Driver
+    username: wenxun
+    password: wenxun123
     druid:
       async-init: true # 单元测试，异步初始化 Druid 连接池，提升启动速度
       initial-size: 1 # 单元测试，配置为 1，提升启动速度

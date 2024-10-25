@@ -9,14 +9,12 @@ import cn.wenxun.admin.model.NewsInfo;
 import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
 import cn.wenxun.admin.service.WenXunSpiderConfigService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
@@ -31,12 +29,12 @@ public class SpiderController {
 
     @PostMapping("/spidertest")
     @Operation(summary = "爬虫测试接口")
-     public CommonResult< List<NewsInfo>> getOrder(@Valid @RequestBody WenxunSpiderSourceConfigDO createReqVO)   {
-        List<NewsInfo> newsInfos= HtmlUnitUtil.crawlUrl(createReqVO);
-            return success(newsInfos);
+    public CommonResult<List<NewsInfo>> getOrder(@Valid @RequestBody WenxunSpiderSourceConfigDO createReqVO) {
+
+        List<NewsInfo> newsInfos = HtmlUnitUtil.crawlUrl(createReqVO, true);
+        return success(newsInfos);
 
     }
-
 
 
     /*获取爬虫配置表信息
@@ -45,24 +43,25 @@ public class SpiderController {
     @Operation(summary = "获取爬虫配置表信息")
     public CommonResult<PageResult<WenxunSpiderSourceConfigDO>> getSpiderConfig(@Validated PageParam pageReqVO) {
         PageResult<WenxunSpiderSourceConfigDO> list = wenXunSpiderConfigService.getDataSourceConfigList(pageReqVO);
-         return  success(BeanUtils.toBean(list, WenxunSpiderSourceConfigDO.class));
-     }
+        return success(BeanUtils.toBean(list, WenxunSpiderSourceConfigDO.class));
+    }
 
     /*获取爬虫配置表信息
      */
     @GetMapping("/get")
     @Operation(summary = "获取爬虫配置表信息")
-    public CommonResult<WenxunSpiderSourceConfigDO> getSpiderInfo( @RequestParam("id") Long id) {
+    public CommonResult<WenxunSpiderSourceConfigDO> getSpiderInfo(@RequestParam("id") Long id) {
         WenxunSpiderSourceConfigDO sourceConfigDO = wenXunSpiderConfigService.getDataSourceConfig(id);
-        return  success(BeanUtils.toBean(sourceConfigDO, WenxunSpiderSourceConfigDO.class));
+        return success(BeanUtils.toBean(sourceConfigDO, WenxunSpiderSourceConfigDO.class));
     }
+
     /*获取爬虫配置表信息
      */
     @PutMapping("/update")
     @Operation(summary = "修改爬虫配置表信息")
-     public CommonResult<Boolean> updateSpiderConfig(@Valid @RequestBody WenxunSpiderSourceConfigDO sourceConfigDO) {
-         wenXunSpiderConfigService.updateDataSourceConfig(sourceConfigDO);
-        return  success(true);
+    public CommonResult<Boolean> updateSpiderConfig(@Valid @RequestBody WenxunSpiderSourceConfigDO sourceConfigDO) {
+        wenXunSpiderConfigService.updateDataSourceConfig(sourceConfigDO);
+        return success(true);
     }
 
 

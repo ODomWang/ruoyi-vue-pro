@@ -16,6 +16,8 @@
         <module>yudao-module-system</module>
         <module>yudao-module-infra</module>
         <module>wenxun-spider</module>
+        <module>yudao-module-wenxun</module>
+
 
         <!--        <module>yudao-module-member</module>-->
 <!--        <module>yudao-module-bpm</module>-->
