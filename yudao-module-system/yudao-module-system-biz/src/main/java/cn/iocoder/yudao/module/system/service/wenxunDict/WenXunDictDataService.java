@@ -1,13 +1,14 @@
 package cn.iocoder.yudao.module.system.service.wenxunDict;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
- import cn.iocoder.yudao.module.system.controller.admin.wenxunDict.vo.data.WenXunDictDataPageReqVO;
+import cn.iocoder.yudao.module.system.controller.admin.wenxunDict.vo.data.WenXunDictDataPageReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.wenxunDict.vo.data.WenXunDictDataSaveReqVO;
 import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
 import org.springframework.lang.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 字典数据 Service 接口
@@ -107,4 +108,6 @@ public interface WenXunDictDataService {
      */
     List<WenXunDictDataDO> getDictDataListByDictType(String dictType);
 
+    List<WenXunDictDataDO> getDictDataListByDatas(Set<String> datas)
+            ;
 }

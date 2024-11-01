@@ -1,8 +1,10 @@
 package cn.wenxun.spider;
 
 
+import cn.wenxun.admin.job.utils.HtmlUnitUtil;
 import cn.wenxun.admin.job.utils.PageExtracUtils;
 import cn.wenxun.admin.model.NewsInfo;
+import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.htmlunit.WebClient;
@@ -18,11 +20,12 @@ import java.util.List;
 
 public class HtmlUnitExample {
     public static void main(String[] args) {
-        // 创建 WebClient
+
+//          创建 WebClient
         try (final WebClient webClient = new WebClient()) {
             // 禁用 JavaScript 和 CSS 支持（根据页面需求，如果需要可以启用）
             webClient.getOptions().setCssEnabled(false);
-            webClient.getOptions().setThrowExceptionOnScriptError(true);
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
             webClient.getOptions().setUseInsecureSSL(true);
             webClient.getOptions().setJavaScriptEnabled(true);
             webClient.getOptions().setCssEnabled(false);
@@ -34,7 +37,7 @@ public class HtmlUnitExample {
             webClient.getOptions().setTimeout(5000);
 
             // 加载网页
-            HtmlPage page = webClient.getPage("https://www.bzpt.edu.cn/xwdr/xyyw/232.htm");  // 滨州职业学院
+            HtmlPage page = webClient.getPage("https://www.bzpt.edu.cn/xwdr/xyyw.htm");  // 滨州职业学院
 //            HtmlPage page = webClient.getPage("https://www.suda.edu.cn/suda_news/sdyw/index.html");  // 苏州大学
 //            HtmlPage page = webClient.getPage("http://www.wxcu.edu.cn/static/newList.html?cid=19");  // 无锡城市学院
             webClient.waitForBackgroundJavaScript(10000); // 等待 JavaScript 执行完成，最多等待 10 秒
@@ -42,7 +45,7 @@ public class HtmlUnitExample {
             if (page.asXml().contains("window.onload();")) {
                 page.executeJavaScript("if (window.onload) window.onload();");
             }
-//            String nextPageUrl = PageExtracUtils.getNextPageUrl(page,"");
+            String nextPageUrl = PageExtracUtils.getNextPageUrl(page, "//*[@id=\"app\"]/div[4]/div/div[2]/span/span[10]/a");
             List<HtmlElement> lists = page.getByXPath("//*[@id=\"app\"]/div[4]/div/ul");
 
             List<NewsInfo> lists1 = new ArrayList<>();
@@ -53,7 +56,7 @@ public class HtmlUnitExample {
                     for (HtmlElement item : items) {
                         NewsInfo newsInfo = extracULtElementDetails(item, webClient);
                         String content = extractContentFromPage(newsInfo.getUrl(), newsInfo.getTitle(), webClient);
-//                        newsInfo.setNextPageUrl(nextPageUrl);
+                        newsInfo.setNextPageUrl(nextPageUrl);
                         newsInfo.setContent(content);
                         lists1.add(newsInfo);
                     }
@@ -166,9 +169,12 @@ public class HtmlUnitExample {
     // 从页面中提取标题、正文、时间、作者和图片的方法
     private static String extractAndPrintContent(HtmlElement rootElement, String title) {
         // 只在 body 元素下遍历，识别并提取标题、正文、时间、作者和图片
+        if (title.endsWith("...")) {
+            title = title.substring(0, title.length() - 3);
+        }
         HtmlElement htmlElement = findElementContainingText(rootElement, title);
         HtmlForm nform = findParentForm(htmlElement);
-        String mkd=htmlToMarkdown(nform.asXml());
+        String mkd = htmlToMarkdown(nform.asXml());
 //        String filteredContent = filterScriptTags(nform);
         return mkd;
     }
@@ -205,6 +211,7 @@ public class HtmlUnitExample {
         // 简单判断是否为作者，可以根据需要调整逻辑
         return text.toLowerCase().contains("author") || text.toLowerCase().contains("by");
     }
+
     public static String htmlToMarkdown(String html) {
         Document document = Jsoup.parse(html);
         StringBuilder markdown = new StringBuilder();
@@ -236,7 +243,7 @@ public class HtmlUnitExample {
         for (Element image : images) {
             String src = image.attr("src");
             String alt = image.attr("alt");
-            src=  PageExtracUtils.ensureAbsoluteUrl("https://www.bzpt.edu.cn", src);
+            src = PageExtracUtils.ensureAbsoluteUrl("https://www.bzpt.edu.cn", src);
             markdown.append("![](" + src + ")").append("\n\n");
         }
 

@@ -15,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
@@ -30,7 +27,7 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
  */
 @Service
 @Slf4j
-public class  WenXunDictDataServiceImpl implements  WenXunDictDataService {
+public class WenXunDictDataServiceImpl implements WenXunDictDataService {
 
     /**
      * 排序 dictType > sort
@@ -174,6 +171,18 @@ public class  WenXunDictDataServiceImpl implements  WenXunDictDataService {
         List<WenXunDictDataDO> list = wenXunDictDataMapper.selectList(WenXunDictDataDO::getDictType, dictType);
         list.sort(Comparator.comparing(WenXunDictDataDO::getSort));
         return list;
+    }
+
+    /**
+     * @param datas
+     * @return
+     */
+    @Override
+    public List<WenXunDictDataDO> getDictDataListByDatas(Set<String> datas) {
+        if (!org.springframework.util.CollectionUtils.isEmpty(datas)) {
+            wenXunDictDataMapper.selectListDatas(datas);
+        }
+        return null;
     }
 
 }

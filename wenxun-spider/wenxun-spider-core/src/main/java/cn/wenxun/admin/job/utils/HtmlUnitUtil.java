@@ -27,14 +27,25 @@ public class HtmlUnitUtil {
 
         try (final WebClient webClient = new WebClient()) {
             // 禁用 JavaScript 和 CSS 支持（根据页面需求，如果需要可以启用）
-            configureWebClient(webClient);
+            webClient.getOptions().setCssEnabled(false);
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
+            webClient.getOptions().setUseInsecureSSL(true);
+            webClient.getOptions().setJavaScriptEnabled(true);
+            webClient.getOptions().setCssEnabled(false);
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            webClient.getOptions().setDoNotTrackEnabled(false);
+
+            // 设置等待时间
+            webClient.getOptions().setTimeout(5000);
+
             // 加载网页
             String Url = configDO.getSpiderUrl();
 
             for (long i = 0; i < configDO.getSpiderPageNum(); i++) {
 
                 HtmlPage page = webClient.getPage(Url);  // 目标网址
-                webClient.waitForBackgroundJavaScript(5000); // 等待 JavaScript 执行完成，最多等待 5 秒
+                webClient.waitForBackgroundJavaScript(10000); // 等待 JavaScript 执行完成，最多等待 5 秒
 
                 if (page.asXml().contains("window.onload();")) {
                     page.executeJavaScript("if (window.onload) window.onload();");
@@ -75,8 +86,9 @@ public class HtmlUnitUtil {
             }
             return respNewsInfo;
         } catch (IOException e) {
-            throw new RuntimeException();
+           e.printStackTrace();
         }
+        return respNewsInfo;
     }
 
     // 公共逻辑提取方法
@@ -88,23 +100,6 @@ public class HtmlUnitUtil {
         newsInfo.setDate(PageExtracUtils.getPageTime(htmlElement));
         newsInfo.setUrl(PageExtracUtils.getPageUrl(htmlElement, webClient));
         return newsInfo;
-    }
-
-
-    // 配置 WebClient 的方法
-    private static void configureWebClient(WebClient webClient) {
-        webClient.getOptions().setCssEnabled(false);
-        webClient.getOptions().setThrowExceptionOnScriptError(true);
-        webClient.getOptions().setUseInsecureSSL(true);
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.getOptions().setCssEnabled(false);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        webClient.getOptions().setDoNotTrackEnabled(false);
-
-        // 设置等待时间
-        webClient.getOptions().setTimeout(2000);
-
     }
 
     private static NewsInfo extracTRtElementDetails(HtmlElement htmlElement, WebClient webClient) {
@@ -162,7 +157,7 @@ public class HtmlUnitUtil {
 
         if (page != null) {
             HtmlElement bodyElement = page.getBody();
-            String commonParent = extractAndPrintContent(bodyElement, titleText);
+            String commonParent = extractAndPrintContent(bodyElement, titleText,url);
             return commonParent;
         }
         return null;
@@ -187,11 +182,14 @@ public class HtmlUnitUtil {
     }
 
     // 从页面中提取标题、正文、时间、作者和图片的方法
-    private static String extractAndPrintContent(HtmlElement rootElement, String title) {
+    private static String extractAndPrintContent(HtmlElement rootElement, String title,String url) {
         // 只在 body 元素下遍历，识别并提取标题、正文、时间、作者和图片
+        if (title.endsWith("...")) {
+            title = title.substring(0, title.length() - 3);
+        }
         HtmlElement htmlElement = findElementContainingText(rootElement, title);
         HtmlForm nform = findParentForm(htmlElement);
-        String mkd = htmlToMarkdown(nform.asXml(),rootElement.getBaseURI());
+        String mkd = htmlToMarkdown(nform.asXml(),url);
 //        String filteredContent = filterScriptTags(nform);
         return mkd;
     }

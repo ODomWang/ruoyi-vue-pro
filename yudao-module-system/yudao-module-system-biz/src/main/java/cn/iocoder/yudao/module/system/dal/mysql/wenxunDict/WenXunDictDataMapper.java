@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface WenXunDictDataMapper extends BaseMapperX<WenXunDictDataDO> {
@@ -44,6 +45,13 @@ public interface WenXunDictDataMapper extends BaseMapperX<WenXunDictDataDO> {
         return selectList(new LambdaQueryWrapperX<WenXunDictDataDO>()
                 .eqIfPresent(WenXunDictDataDO::getStatus, status)
                 .eqIfPresent(WenXunDictDataDO::getDictType, dictType));
+    }
+
+    // 落马官员
+    default List<WenXunDictDataDO> selectListDatas(Set<String> datas) {
+        return selectList(new LambdaQueryWrapperX<WenXunDictDataDO>()
+                .in(WenXunDictDataDO::getValue, datas)
+                        .eqIfPresent(WenXunDictDataDO::getStatus, 0));
     }
 
 }

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication(scanBasePackages = {"${yudao.info.base-package}.server",
         "${yudao.info.base-package}.module","cn.wenxun.admin"})
 @MapperScan("cn.wenxun.admin.mapper")
+@ComponentScan(basePackages = {"cn.wenxun.admin.job.utils.trie"})
  public class YudaoServerApplication {
 
     public static void main(String[] args) {
