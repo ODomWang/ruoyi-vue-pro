@@ -1,16 +1,20 @@
 package cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo;
 
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
+import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-import java.util.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.Data;
+
 import java.time.LocalDateTime;
-import com.alibaba.excel.annotation.*;
+import java.util.List;
 
 @Schema(description = "管理后台 - 详情检测信息 Response VO")
 @Data
 @ExcelIgnoreUnannotated
-public class DetailCheckInfoRespVO {
+public class DetailCheckInfoWithDictDataRespVO {
 
     @Schema(description = "主键", requiredMode = Schema.RequiredMode.REQUIRED, example = "21961")
     @ExcelProperty("主键")
@@ -39,6 +43,10 @@ public class DetailCheckInfoRespVO {
     @Schema(description = "源地址", requiredMode = Schema.RequiredMode.REQUIRED)
     @ExcelProperty("源地址")
     private String sourceUrl;
+
+    @Schema(description = "敏感词字典", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("敏感词字典")
+    private PageResult<WenXunDictDataDO> dictDataDOS;
 
 
 

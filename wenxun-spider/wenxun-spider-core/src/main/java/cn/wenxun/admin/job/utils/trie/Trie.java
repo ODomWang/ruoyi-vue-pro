@@ -6,25 +6,31 @@ import cn.iocoder.yudao.module.system.controller.admin.wenxunDict.vo.data.WenXun
 import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
 import cn.iocoder.yudao.module.system.service.wenxunDict.WenXunDictDataService;
 import org.apache.commons.lang3.StringUtils;
-import org.mybatis.logging.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Logger;
 
 @Component
-public class Trie {
+public class Trie implements ApplicationListener<ContextRefreshedEvent> {
 
     @Resource
-    private   WenXunDictDataService wenXunDictDataService;
+    private WenXunDictDataService wenXunDictDataService;
 
 
-    public Trie() {
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        initializeSensitiveWords();
+    }
+
+    /**
+     * 初始化敏感词
+     */
+    private void initializeSensitiveWords() {
         try {
-
             long start = System.currentTimeMillis();
             WenXunDictDataPageReqVO vo = new WenXunDictDataPageReqVO();
             vo.setStatus(0);
@@ -63,7 +69,12 @@ public class Trie {
         }
     }
 
-    private volatile TrieNode root = new TrieNode(); // 存储无意义字符
+
+    public Trie() {
+
+    }
+
+    public static final TrieNode root = new TrieNode(); // 存储无意义字符
     private final transient ReentrantLock writeLock = new ReentrantLock();
 
     // 往 Trie 树中插入一个字符串
@@ -101,16 +112,24 @@ public class Trie {
             int j = i;
             String attr = "";
             while (j < text.length()) {
-                char c = text.charAt(j);
-                attr = attr + p.data.toString();
-                p = p.children.get(c);
-                if (p == null) {
-                    break;
+                try {
+
+
+                    char c = text.charAt(j);
+                    if (p.data != null) {
+                        attr = attr + p.data.toString();
+                    }
+                    p = p.children.get(c);
+                    if (p == null) {
+                        break;
+                    }
+                    if (p.isEndingChar) {
+                        matchedWords.add(attr + p.data.toString());
+                    }
+                    j++;
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                if (p.isEndingChar) {
-                    matchedWords.add(attr + p.data.toString());
-                }
-                j++;
             }
         }
         return matchedWords;

@@ -17,11 +17,7 @@
     </description>
 
     <dependencies>
-        <dependency>
-            <groupId>cn.iocoder.boot</groupId>
-            <artifactId>yudao-module-wenxun-api</artifactId>
-            <version>${revision}</version>
-        </dependency>
+
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-module-infra-api</artifactId>
@@ -112,6 +108,18 @@
         <dependency>
             <groupId>com.xingyuv</groupId>
             <artifactId>spring-boot-starter-captcha-plus</artifactId> <!-- 验证码，一般用于登录使用 -->
+        </dependency>
+        <dependency>
+            <groupId>cn.iocoder.boot</groupId>
+            <artifactId>yudao-module-system-biz</artifactId>
+            <version>2.2.0-jdk8-snapshot</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.iocoder.boot</groupId>
+            <artifactId>yudao-module-wenxun-api</artifactId>
+            <version>2.2.0-jdk8-snapshot</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

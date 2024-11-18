@@ -1,11 +1,9 @@
 package cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo;
 
-import lombok.*;
-import java.util.*;
-import java.time.LocalDateTime;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.*;
-import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 /**
  * 详情检测信息 DO
@@ -15,13 +13,27 @@ import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
 @TableName("wenxun_detail_check_info")
 @KeySequence("wenxun_detail_check_info_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
 @Data
-@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetailCheckInfoDO extends BaseDO {
+public class DetailCheckInfoDO {
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+    /**
+     * 最后更新时间
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
+    /**
+     * 是否删除
+     */
+    @TableLogic
+    private Boolean deleted;
     /**
      * 主键
      */
@@ -49,5 +61,10 @@ public class DetailCheckInfoDO extends BaseDO {
      * 源地址
      */
     private String sourceUrl;
+
+    /**
+     * 源地址
+     */
+    private String spiderConfigId;
 
 }

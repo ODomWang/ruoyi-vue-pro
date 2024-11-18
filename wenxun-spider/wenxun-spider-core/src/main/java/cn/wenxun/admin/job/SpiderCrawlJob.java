@@ -64,7 +64,7 @@ public class SpiderCrawlJob implements JobHandler {
 
     public void crawlUrlsAsync(List<WenxunSpiderSourceConfigDO> urls) {
         for (WenxunSpiderSourceConfigDO url : urls) {
-            // 数据采集
+             // 数据采集
             CompletableFuture.supplyAsync(() -> HtmlUnitUtil.crawlUrl(url, false), threadPoolTaskExecutor)
                     .thenAccept(data -> {
                         log.info("采集任务执行完毕，数据开始入库...");
@@ -74,7 +74,7 @@ public class SpiderCrawlJob implements JobHandler {
                             log.info("数据入库完毕。");
                             log.info("开始进行敏感词检测...");
                             checkSensitiveWords(data);
-                            log.info("开始进行敏感词完毕。");
+                            log.info("敏感词检测完毕。");
 
                             //敏感词对比
 
@@ -127,12 +127,11 @@ public class SpiderCrawlJob implements JobHandler {
                 }
                 if (!CollectionUtils.isEmpty(ids)) {
                     DetailCheckInfoSaveReqVO reqVO = new DetailCheckInfoSaveReqVO();
-                    reqVO.setCheckDetail(JSON.toJSONString(ids));
-                    reqVO.setTargetDetail(mk);
+                    reqVO.setCheckDetail(String.join(",", ids.stream().map(String::valueOf).toArray(String[]::new)));                    reqVO.setTargetDetail(mk);
                     reqVO.setStatus(0);
                     reqVO.setCheckSource(-1);
                     reqVO.setSourceUrl(info.getUrl());
-
+                    reqVO.setSpiderConfigId(info.getConfigId());
                     detailCheckInfoService.createDetailCheckInfo(reqVO);
                 }
 

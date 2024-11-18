@@ -102,7 +102,7 @@ public class WenXunDictDataServiceImpl implements WenXunDictDataService {
 
     @VisibleForTesting
     public void validateDictDataValueUnique(Long id, String dictType, String value) {
-        WenXunDictDataDO dictData = wenXunDictDataMapper.selectByDictTypeAndValue(dictType, value);
+        WenXunDictDataDO dictData = wenXunDictDataMapper.selectByDictTypeAndLabel(dictType, value);
         if (dictData == null) {
             return;
         }

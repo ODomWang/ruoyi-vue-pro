@@ -3,6 +3,7 @@ package cn.iocoder.yudao.module.wenxun.service.detailcheckinfo;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.DetailCheckInfoPageReqVO;
 import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.DetailCheckInfoSaveReqVO;
+import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.DetailCheckInfoWithDictDataRespVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
 
 import javax.validation.Valid;
@@ -42,7 +43,7 @@ public interface DetailCheckInfoService {
      * @param id 编号
      * @return 详情检测信息
      */
-    DetailCheckInfoDO getDetailCheckInfo(Long id);
+    DetailCheckInfoWithDictDataRespVO getDetailCheckInfo(Long id);
 
     /**
      * 获得详情检测信息分页
@@ -50,6 +51,6 @@ public interface DetailCheckInfoService {
      * @param pageReqVO 分页查询
      * @return 详情检测信息分页
      */
-    PageResult<DetailCheckInfoDO> getDetailCheckInfoPage(DetailCheckInfoPageReqVO pageReqVO);
+    PageResult<DetailCheckInfoWithDictDataRespVO> getDetailCheckInfoPage(DetailCheckInfoPageReqVO pageReqVO);
 
 }

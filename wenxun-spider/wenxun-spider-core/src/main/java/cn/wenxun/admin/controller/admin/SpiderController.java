@@ -46,6 +46,15 @@ public class SpiderController {
         return success(BeanUtils.toBean(list, WenxunSpiderSourceConfigDO.class));
     }
 
+    /*获取所有配置信息
+     */
+    @GetMapping("/getAllConfig")
+    @Operation(summary = "获取爬虫配置表信息")
+    public CommonResult<List<WenxunSpiderSourceConfigDO>> getAllSpiderConfig() {
+        List<WenxunSpiderSourceConfigDO> list = wenXunSpiderConfigService.getAllUrlConfigInfo();
+        return success(list);
+    }
+
     /*获取爬虫配置表信息
      */
     @GetMapping("/get")

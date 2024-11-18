@@ -23,6 +23,7 @@ public interface DetailCheckInfoMapper extends BaseMapperX<DetailCheckInfoDO> {
                 .eqIfPresent(DetailCheckInfoDO::getCheckDetail, reqVO.getCheckDetail())
                 .eqIfPresent(DetailCheckInfoDO::getTargetDetail, reqVO.getTargetDetail())
                 .eqIfPresent(DetailCheckInfoDO::getStatus, reqVO.getStatus())
+                .eqIfPresent(DetailCheckInfoDO::getSpiderConfigId, reqVO.getSpiderConfigId())
                 .betweenIfPresent(DetailCheckInfoDO::getCreateTime, reqVO.getCreateTime())
                 .orderByDesc(DetailCheckInfoDO::getId));
     }

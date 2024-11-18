@@ -34,4 +34,8 @@ public class DetailCheckInfoSaveReqVO {
     @NotNull(message = "数据来源不能为空")
     private String sourceUrl;
 
+    @Schema(description = "数据来源", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @NotNull(message = "数据来源不能为空")
+    private long spiderConfigId;
+
 }

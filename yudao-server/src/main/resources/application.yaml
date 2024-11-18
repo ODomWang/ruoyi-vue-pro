@@ -300,6 +300,7 @@ yudao:
       - rep_demo_jianpiao
       - tmp_report_data_1
       - tmp_report_data_income
+      - wenxun_detail_check_info
     ignore-caches:
       - permission_menu_ids
       - oauth_client
