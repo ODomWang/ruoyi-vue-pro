@@ -25,6 +25,7 @@ public class WenxunSpiderCrawlDetail {
     private java.sql.Timestamp createTime;
     private java.sql.Timestamp updateTime;
     private long status;
+    private String icon;
 
 
 

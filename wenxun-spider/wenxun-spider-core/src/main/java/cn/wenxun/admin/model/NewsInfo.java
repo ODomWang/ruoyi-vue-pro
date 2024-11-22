@@ -15,6 +15,7 @@ public class NewsInfo {
     private String nextPageUrl;
     private String imgUrl;
     private List<String> ContentImgUrlList;
+    private String webIcon;
 
     private long configId;
 

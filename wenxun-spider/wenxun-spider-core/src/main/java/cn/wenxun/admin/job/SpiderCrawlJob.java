@@ -132,6 +132,7 @@ public class SpiderCrawlJob implements JobHandler {
                     reqVO.setCheckSource(-1);
                     reqVO.setSourceUrl(info.getUrl());
                     reqVO.setSpiderConfigId(info.getConfigId());
+                    reqVO.setWebIcon(info.getWebIcon());
                     detailCheckInfoService.createDetailCheckInfo(reqVO);
                 }
 

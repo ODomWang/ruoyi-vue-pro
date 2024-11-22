@@ -44,6 +44,10 @@ public class DetailCheckInfoWithDictDataRespVO {
     @ExcelProperty("源地址")
     private String sourceUrl;
 
+    @Schema(description = "源地址", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("源地址")
+    private String webIcon;
+
     @Schema(description = "敏感词字典", requiredMode = Schema.RequiredMode.REQUIRED)
     @ExcelProperty("敏感词字典")
     private PageResult<WenXunDictDataDO> dictDataDOS;

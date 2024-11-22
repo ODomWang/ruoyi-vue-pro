@@ -95,6 +95,7 @@ public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
             crawlDetail.setTitleDesc(newsInfo.getDesc());
             crawlDetail.setSpiderConfigId(newsInfo.getConfigId());
             crawlDetail.setDate("1");
+            crawlDetail.setIcon(newsInfo.getWebIcon());
             wenxunSpiderCrawlDetailList.add(crawlDetail);
         }
         wenXunSpiderCrawlMapper.insertOrUpdateBatch(wenxunSpiderCrawlDetailList);

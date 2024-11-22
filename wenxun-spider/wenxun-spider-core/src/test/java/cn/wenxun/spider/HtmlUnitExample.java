@@ -45,6 +45,8 @@ public class HtmlUnitExample {
             if (page.asXml().contains("window.onload();")) {
                 page.executeJavaScript("if (window.onload) window.onload();");
             }
+            // 提取网页图标
+            String iconUrl = PageExtracUtils.getPageIcon(page);
             String nextPageUrl = PageExtracUtils.getNextPageUrl(page, "//*[@id=\"app\"]/div[4]/div/div[2]/span/span[10]/a");
             List<HtmlElement> lists = page.getByXPath("//*[@id=\"app\"]/div[4]/div/ul");
 

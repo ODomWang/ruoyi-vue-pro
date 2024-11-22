@@ -66,5 +66,9 @@ public class DetailCheckInfoDO {
      * 源地址
      */
     private String spiderConfigId;
+    /**
+     * 源地址
+     */
+    private String webIcon;
 
 }

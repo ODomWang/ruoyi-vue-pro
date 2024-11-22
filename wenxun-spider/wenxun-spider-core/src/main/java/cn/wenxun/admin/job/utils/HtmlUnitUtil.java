@@ -50,7 +50,9 @@ public class HtmlUnitUtil {
                 if (page.asXml().contains("window.onload();")) {
                     page.executeJavaScript("if (window.onload) window.onload();");
                 }
-                // 下一页地址
+                // 提取网页图标
+                String iconUrl = PageExtracUtils.getPageIcon(page);
+//                 下一页地址
                 Url = PageExtracUtils.getNextPageUrl(page, configDO.getNextPageXpath());
 
                 List<HtmlElement> lists = page.getByXPath(configDO.getBodyXpath());
@@ -64,6 +66,7 @@ public class HtmlUnitUtil {
                             newsInfo.setConfigId(configDO.getId());
                             String content = extractContentFromPage(newsInfo.getUrl(), newsInfo.getTitle(), webClient);
                             newsInfo.setContent(content);
+                            newsInfo.setWebIcon(iconUrl);
                             respNewsInfo.add(newsInfo);
                             if (test) {
                                 return respNewsInfo;
@@ -74,7 +77,7 @@ public class HtmlUnitUtil {
                         for (HtmlElement row : rows) {
                             NewsInfo newsInfo = extracTRtElementDetails(row, webClient);
                             newsInfo.setConfigId(configDO.getId());
-
+                            newsInfo.setWebIcon(iconUrl);
                             respNewsInfo.add(newsInfo);
                             if (test) {
                                 return respNewsInfo;

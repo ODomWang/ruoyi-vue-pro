@@ -187,5 +187,21 @@ public class PageExtracUtils {
             }
         }
     }
+    //提取网页图标
+    public static String getPageIcon(HtmlPage htmlElement) {
+        String iconUrl = null;
+        if (htmlElement != null) {
+            List<HtmlElement> elements = htmlElement.getByXPath(".//link[contains(@rel, 'icon')]");
+            // 遍历并输出结果
+            for (HtmlElement element : elements) {
+                iconUrl = element.getAttribute("href");
+                if (iconUrl.isEmpty()) {
+                    iconUrl = element.getAttribute("data-icon");
+                }
+            }
+        }
+        iconUrl = ensureAbsoluteUrl(htmlElement.getBaseURI(), iconUrl);
+        return iconUrl;
+    }
 
 }
