@@ -90,23 +90,15 @@ public class DetailCheckInfoServiceImpl implements DetailCheckInfoService {
     }
 
     @Override
-    public PageResult<DetailCheckInfoWithDictDataRespVO> getDetailCheckInfoPage(DetailCheckInfoPageReqVO pageReqVO) {
-        PageResult<DetailCheckInfoWithDictDataRespVO> pageResult = new PageResult<>();
-        PageResult<DetailCheckInfoDO> doPageResult = detailCheckInfoMapper.selectPage(pageReqVO);
-        List<DetailCheckInfoWithDictDataRespVO> list = new ArrayList<>();
-        for (DetailCheckInfoDO infoDO : doPageResult.getList()) {
-            String[] ids = infoDO.getTargetDetail().split(",");
-            List<WenXunDictDataDO> checkInfoDOS = wenXunDictdataMapper.selectBatchIds(Arrays.asList(ids));
-            PageResult<WenXunDictDataDO> pageResult1 = new PageResult<>();
-            pageResult1.setList(checkInfoDOS);
-            pageResult1.setTotal((long) checkInfoDOS.size());
-            DetailCheckInfoWithDictDataRespVO vo = BeanUtils.toBean(infoDO, DetailCheckInfoWithDictDataRespVO.class);
-            vo.setDictDataDOS(pageResult1);
-            list.add(vo);
-        }
-        pageResult.setList(list);
-        pageResult.setTotal(doPageResult.getTotal());
-        return pageResult;
+    public PageResult<DetailCheckInfoDO> getDetailCheckInfoPage(DetailCheckInfoPageReqVO pageReqVO) {
+         PageResult<DetailCheckInfoDO> doPageResult = detailCheckInfoMapper.selectPage(pageReqVO);
+        return doPageResult;
     }
+
+    @Override
+    public List<DetailCheckInfoDO> selectJoinList() {
+        return detailCheckInfoMapper.selectJoinList();
+    }
+
 
 }

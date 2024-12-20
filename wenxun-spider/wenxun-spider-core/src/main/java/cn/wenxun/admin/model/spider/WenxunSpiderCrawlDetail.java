@@ -13,7 +13,7 @@ import lombok.*;
 public class WenxunSpiderCrawlDetail {
 
     @TableId
-    private long id;
+    private Long id;
     private String spiderUrl;
     private String title;
     private String content;
@@ -21,10 +21,10 @@ public class WenxunSpiderCrawlDetail {
     private String author;
     private String remark;
     private String titleDesc;
-    private long spiderConfigId;
+    private Long spiderConfigId;
     private java.sql.Timestamp createTime;
     private java.sql.Timestamp updateTime;
-    private long status;
+    private Long status;
     private String icon;
 
 

@@ -50,7 +50,7 @@ public interface WenXunDictDataMapper extends BaseMapperX<WenXunDictDataDO> {
     // 落马官员
     default List<WenXunDictDataDO> selectListDatas(Set<String> datas) {
         return selectList(new LambdaQueryWrapperX<WenXunDictDataDO>()
-                .in(WenXunDictDataDO::getValue, datas)
+                .in(WenXunDictDataDO::getLabel, datas)
                         .eqIfPresent(WenXunDictDataDO::getStatus, 0));
     }
 

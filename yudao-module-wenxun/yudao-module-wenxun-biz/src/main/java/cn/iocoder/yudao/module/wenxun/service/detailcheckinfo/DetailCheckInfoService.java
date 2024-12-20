@@ -7,6 +7,7 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.Detail
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 详情检测信息 Service 接口
@@ -51,6 +52,14 @@ public interface DetailCheckInfoService {
      * @param pageReqVO 分页查询
      * @return 详情检测信息分页
      */
-    PageResult<DetailCheckInfoWithDictDataRespVO> getDetailCheckInfoPage(DetailCheckInfoPageReqVO pageReqVO);
+    PageResult<DetailCheckInfoDO> getDetailCheckInfoPage(DetailCheckInfoPageReqVO pageReqVO);
+
+
+    /**
+     * 获得详情检测信息列表
+     *
+     * @return
+     */
+    List<DetailCheckInfoDO> selectJoinList();
 
 }

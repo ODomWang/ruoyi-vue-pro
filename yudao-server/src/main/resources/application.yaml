@@ -67,6 +67,7 @@ flowable:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true # 虽然默认为 true ，但是还是显示去指定下。
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       id-type: NONE # “智能”模式，基于 IdTypeEnvironmentPostProcessor + 数据源的类型，自动适配成 AUTO、INPUT 模式。
@@ -82,7 +83,7 @@ mybatis-plus:
 
 mybatis-plus-join:
   banner: false # 是否打印 mybatis plus join banner，默认true
-  sub-table-logic: true # 全局启用副表逻辑删除，默认true。关闭后关联查询不会加副表逻辑删除
+  sub-table-logic: false # 全局启用副表逻辑删除，默认true。关闭后关联查询不会加副表逻辑删除
   ms-cache: true # 拦截器MappedStatement缓存，默认 true
   table-alias: t # 表别名(默认 t)
   logic-del-type: on # 副表逻辑删除条件的位置，支持 WHERE、ON，默认 ON
@@ -301,6 +302,9 @@ yudao:
       - tmp_report_data_1
       - tmp_report_data_income
       - wenxun_detail_check_info
+      - wenxun_audit_log
+      - wenxun_customer_audit_log
+      - wenxun_detail_check_audit_info
     ignore-caches:
       - permission_menu_ids
       - oauth_client
@@ -328,4 +332,4 @@ yudao:
         key: pLXUGAwK5305
         customer: E77DF18BE109F454A5CD319E44BF5177
 
-debug: false
+debug: true
