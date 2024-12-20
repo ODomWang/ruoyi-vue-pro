@@ -15,9 +15,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class HtmlUnitUtil {
 
@@ -89,7 +87,7 @@ public class HtmlUnitUtil {
             }
             return respNewsInfo;
         } catch (IOException e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
         return respNewsInfo;
     }
@@ -160,7 +158,7 @@ public class HtmlUnitUtil {
 
         if (page != null) {
             HtmlElement bodyElement = page.getBody();
-            String commonParent = extractAndPrintContent(bodyElement, titleText,url);
+            String commonParent = extractAndPrintContent(bodyElement, titleText, url);
             return commonParent;
         }
         return null;
@@ -185,80 +183,101 @@ public class HtmlUnitUtil {
     }
 
     // 从页面中提取标题、正文、时间、作者和图片的方法
-    private static String extractAndPrintContent(HtmlElement rootElement, String title,String url) {
+    private static String extractAndPrintContent(HtmlElement rootElement, String title, String url) {
         // 只在 body 元素下遍历，识别并提取标题、正文、时间、作者和图片
         if (title.endsWith("...")) {
             title = title.substring(0, title.length() - 3);
         }
         HtmlElement htmlElement = findElementContainingText(rootElement, title);
         HtmlForm nform = findParentForm(htmlElement);
-        String mkd = htmlToMarkdown(nform.asXml(),url);
+//        String mkd = htmlToMarkdown(nform.asXml(),url);
+        String mkd = htmlToRichText(nform.asXml(), url);
+
 //        String filteredContent = filterScriptTags(nform);
         return mkd;
     }
 
-    public static String htmlToMarkdown(String html,String baseUrl) {
+    public static String htmlToRichText(String html, String baseUrl) {
         Document document = Jsoup.parse(html);
-        StringBuilder markdown = new StringBuilder();
 
-        // Convert headings
-        for (int i = 1; i <= 6; i++) {
-            Elements headings = document.select("h" + i);
-            for (Element heading : headings) {
-                markdown.append("#".repeat(i)).append(" ").append(heading.text()).append("\n\n");
-            }
-        }
-
-        // Convert paragraphs
-        Elements paragraphs = document.select("p");
-        for (Element paragraph : paragraphs) {
-            markdown.append(paragraph.text()).append("\n\n");
-        }
-
-        // Convert links
+        // 对 HTML 内容进行处理，确保所有链接和图片地址为绝对路径
         Elements links = document.select("a");
         for (Element link : links) {
-            String url = link.attr("href");
-            String text = link.text();
-            markdown.append("[" + text + "](" + url + ")").append("\n\n");
+            String href = link.attr("href");
+            link.attr("href", PageExtracUtils.ensureAbsoluteUrl(baseUrl, href));
         }
 
-        // Convert images
         Elements images = document.select("img");
         for (Element image : images) {
             String src = image.attr("src");
-            String alt = image.attr("alt");
-            src = PageExtracUtils.ensureAbsoluteUrl(baseUrl, src);
-            markdown.append("![](" + src + ")").append("\n\n");
+            image.attr("src", PageExtracUtils.ensureAbsoluteUrl(baseUrl, src));
         }
 
-        // Convert tables
-        Elements tables = document.select("table");
-        for (Element table : tables) {
-            Elements rows = table.select("tr");
-            for (Element row : rows) {
-                Elements headers = row.select("th");
-                Elements cells = row.select("td");
-
-                if (!headers.isEmpty()) {
-                    for (Element header : headers) {
-                        markdown.append("| ").append(header.text()).append(" ");
-                    }
-                    markdown.append("|\n");
-                    markdown.append("|".repeat(headers.size())).append(" --- |\n");
-                }
-
-                if (!cells.isEmpty()) {
-                    for (Element cell : cells) {
-                        markdown.append("| ").append(cell.text()).append(" ");
-                    }
-                    markdown.append("|\n");
-                }
-            }
-            markdown.append("\n");
-        }
-
-        return markdown.toString();
+        // 将 Jsoup 解析的 DOM 转换为格式化后的 HTML
+        return document.body().html();
     }
+//    public static String htmlToMarkdown(String html,String baseUrl) {
+//        Document document = Jsoup.parse(html);
+//        StringBuilder markdown = new StringBuilder();
+//
+//        // Convert headings
+//        for (int i = 1; i <= 6; i++) {
+//            Elements headings = document.select("h" + i);
+//            for (Element heading : headings) {
+//                markdown.append("#".repeat(i)).append(" ").append(heading.text()).append("\n\n");
+//            }
+//        }
+//
+//        // Convert paragraphs
+//        Elements paragraphs = document.select("p");
+//        for (Element paragraph : paragraphs) {
+//            markdown.append(paragraph.text()).append("\n\n");
+//        }
+//
+//        // Convert links
+//        Elements links = document.select("a");
+//        for (Element link : links) {
+//            String url = link.attr("href");
+//            String text = link.text();
+//            markdown.append("[" + text + "](" + url + ")").append("\n\n");
+//        }
+//
+//        // Convert images
+//        Elements images = document.select("img");
+//        for (Element image : images) {
+//            String src = image.attr("src");
+//            String alt = image.attr("alt");
+//            src = PageExtracUtils.ensureAbsoluteUrl(baseUrl, src);
+//            markdown.append("![](" + src + ")").append("\n\n");
+//        }
+//
+//        // Convert tables
+//        Elements tables = document.select("table");
+//        for (Element table : tables) {
+//            Elements rows = table.select("tr");
+//            for (Element row : rows) {
+//                Elements headers = row.select("th");
+//                Elements cells = row.select("td");
+//
+//                if (!headers.isEmpty()) {
+//                    for (Element header : headers) {
+//                        markdown.append("| ").append(header.text()).append(" ");
+//                    }
+//                    markdown.append("|\n");
+//                    markdown.append("|".repeat(headers.size())).append(" --- |\n");
+//                }
+//
+//                if (!cells.isEmpty()) {
+//                    for (Element cell : cells) {
+//                        markdown.append("| ").append(cell.text()).append(" ");
+//                    }
+//                    markdown.append("|\n");
+//                }
+//            }
+//            markdown.append("\n");
+//        }
+//
+//        return markdown.toString();
+//    }
 
 }

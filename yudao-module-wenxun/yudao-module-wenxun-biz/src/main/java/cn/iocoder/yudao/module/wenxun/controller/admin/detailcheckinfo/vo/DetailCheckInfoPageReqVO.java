@@ -24,7 +24,7 @@ public class DetailCheckInfoPageReqVO extends PageParam {
     @Schema(description = "修正词汇")
     private String targetDetail;
 
-    @Schema(description = "数据状态", example = "1")
+    @Schema(description = "数据状态", example = "0")
     private Integer status;
 
     @Schema(description = "数据源配置id", example = "1")

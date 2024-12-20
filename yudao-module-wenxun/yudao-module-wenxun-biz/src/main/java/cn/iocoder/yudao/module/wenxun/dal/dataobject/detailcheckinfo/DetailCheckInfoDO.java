@@ -70,5 +70,11 @@ public class DetailCheckInfoDO {
      * 源地址
      */
     private String webIcon;
+    /**
+     * 源地址
+     */
+    private String titleDesc;
+
+
 
 }

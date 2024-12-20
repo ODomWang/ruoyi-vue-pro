@@ -26,5 +26,10 @@ public interface WenXunSpiderCrawlMapper extends BaseMapperX<WenxunSpiderCrawlDe
         return selectOne(new QueryWrapperX<WenxunSpiderCrawlDetail>().eq("spider_Url", Url));
     }
 
+    default WenxunSpiderCrawlDetail selectByCreateTime(Integer spiderConfigId){
+        return selectOne(new QueryWrapperX<WenxunSpiderCrawlDetail>()
+                .eq("spider_config_id", spiderConfigId).orderByDesc("create_time").limitN(1));
+    }
+
 }
 

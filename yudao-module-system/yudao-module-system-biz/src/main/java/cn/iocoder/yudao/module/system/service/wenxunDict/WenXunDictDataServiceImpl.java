@@ -180,7 +180,7 @@ public class WenXunDictDataServiceImpl implements WenXunDictDataService {
     @Override
     public List<WenXunDictDataDO> getDictDataListByDatas(Set<String> datas) {
         if (!org.springframework.util.CollectionUtils.isEmpty(datas)) {
-            wenXunDictDataMapper.selectListDatas(datas);
+            return   wenXunDictDataMapper.selectListDatas(datas);
         }
         return null;
     }

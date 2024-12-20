@@ -5,6 +5,7 @@ import cn.iocoder.yudao.framework.mybatis.core.type.EncryptTypeHandler;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Builder;
 import lombok.Data;
 
 /**

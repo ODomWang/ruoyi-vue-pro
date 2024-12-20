@@ -4,7 +4,11 @@ import cn.iocoder.yudao.framework.quartz.core.handler.JobHandler;
 import cn.iocoder.yudao.framework.tenant.core.aop.TenantIgnore;
 import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
 import cn.iocoder.yudao.module.system.service.wenxunDict.WenXunDictDataService;
+import cn.iocoder.yudao.module.wenxun.controller.admin.auditlog.vo.AuditLogSaveReqVO;
 import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.DetailCheckInfoSaveReqVO;
+import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
+import cn.iocoder.yudao.module.wenxun.enums.commondao.WrongWordInfo;
+import cn.iocoder.yudao.module.wenxun.service.auditlog.AuditLogService;
 import cn.iocoder.yudao.module.wenxun.service.detailcheckinfo.DetailCheckInfoService;
 import cn.wenxun.admin.job.utils.HtmlUnitUtil;
 import cn.wenxun.admin.job.utils.SensitiveFilter;
@@ -16,7 +20,6 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -43,6 +46,9 @@ public class SpiderCrawlJob implements JobHandler {
 
     @Resource
     private DetailCheckInfoService detailCheckInfoService;
+    @Resource
+    private AuditLogService auditLogService;
+
 
     /**
      * 执行采集定时任务
@@ -64,7 +70,7 @@ public class SpiderCrawlJob implements JobHandler {
 
     public void crawlUrlsAsync(List<WenxunSpiderSourceConfigDO> urls) {
         for (WenxunSpiderSourceConfigDO url : urls) {
-             // 数据采集
+            // 数据采集
             CompletableFuture.supplyAsync(() -> HtmlUnitUtil.crawlUrl(url, false), threadPoolTaskExecutor)
                     .thenAccept(data -> {
                         log.info("采集任务执行完毕，数据开始入库...");
@@ -75,9 +81,9 @@ public class SpiderCrawlJob implements JobHandler {
                             log.info("开始进行敏感词检测...");
                             checkSensitiveWords(data);
                             log.info("敏感词检测完毕。");
-
-                            //敏感词对比
-
+                            //进入人工研判表
+                            log.info("同步数据到审核表。");
+                            syncCheckToAudit();
                         }
                     });
         }
@@ -88,14 +94,14 @@ public class SpiderCrawlJob implements JobHandler {
      */
     public void checkSensitiveWords(List<NewsInfo> data) {
         for (NewsInfo info : data) {
-            Set<String> s2 = SensitiveFilter.getMatchingWords(info.getContent(),wenXunDictDataService);
+            Set<String> s2 = SensitiveFilter.getMatchingWords(info.getContent(), wenXunDictDataService);
 
             //查询所有词库信息
             List<WenXunDictDataDO> list = wenXunDictDataService.getDictDataListByDatas(s2);
             // 对词库信息进行有效判断
             if (list != null && !list.isEmpty()) {
                 String mk = info.getContent();
-                Set<Long> ids = new java.util.HashSet<>();
+                List<WrongWordInfo> ids = new java.util.ArrayList<>();
                 // 敏感词入库
                 for (WenXunDictDataDO wenXunDictDataDO : list) {
                     //敏感词
@@ -111,7 +117,12 @@ public class SpiderCrawlJob implements JobHandler {
                             }
                         }
                         if (!b) {
-                            ids.add(wenXunDictDataDO.getId());
+                            ids.add(WrongWordInfo.builder()
+                                    .wrongWord(wenXunDictDataDO.getLabel()).
+                                    rightWord(wenXunDictDataDO.getValue()).remark(wenXunDictDataDO.getRemark())
+                                    .colorType(wenXunDictDataDO.getColorType())
+                                    .wrongWordType(wenXunDictDataDO.getDictType())
+                                    .build());
                             mk = highlightText(mk, wenXunDictDataDO.getLabel());
                         }
                         //落马官员
@@ -119,7 +130,12 @@ public class SpiderCrawlJob implements JobHandler {
 
                         if (s2.contains(wenXunDictDataDO.getValue()) && s2.contains(wenXunDictDataDO.getRemark())) {
                             mk = highlightText(mk, wenXunDictDataDO.getLabel(), wenXunDictDataDO.getRemark(), wenXunDictDataDO.getValue());
-                            ids.add(wenXunDictDataDO.getId());
+                            ids.add(WrongWordInfo.builder()
+                                    .wrongWord(wenXunDictDataDO.getLabel()).
+                                    rightWord(wenXunDictDataDO.getValue()).remark(wenXunDictDataDO.getRemark())
+                                    .colorType(wenXunDictDataDO.getColorType())
+                                    .wrongWordType(wenXunDictDataDO.getDictType())
+                                    .build());
 
                         }
                     }
@@ -127,12 +143,14 @@ public class SpiderCrawlJob implements JobHandler {
                 }
                 if (!CollectionUtils.isEmpty(ids)) {
                     DetailCheckInfoSaveReqVO reqVO = new DetailCheckInfoSaveReqVO();
-                    reqVO.setCheckDetail(String.join(",", ids.stream().map(String::valueOf).toArray(String[]::new)));                    reqVO.setTargetDetail(mk);
-                    reqVO.setStatus(0);
-                    reqVO.setCheckSource(-1);
+                    reqVO.setCheckDetail(mk);
+                    reqVO.setTargetDetail(JSON.toJSONString(ids));
+                     reqVO.setStatus(0);
+                    reqVO.setCheckSource((int) info.getConfigId());
                     reqVO.setSourceUrl(info.getUrl());
                     reqVO.setSpiderConfigId(info.getConfigId());
                     reqVO.setWebIcon(info.getWebIcon());
+                    reqVO.setTitleDesc(info.getDesc());
                     detailCheckInfoService.createDetailCheckInfo(reqVO);
                 }
 
@@ -140,12 +158,43 @@ public class SpiderCrawlJob implements JobHandler {
         }
     }
 
+    //    public static String highlightText(String text, String... targetPhrases) {
+//        for (String targetPhrase : targetPhrases) {
+//            // 将目标词组加粗并标红，使用 HTML 的方式来实现
+//            String replacement = "**<span style=\"color:red\">" + targetPhrase + "</span>**";
+//            text = text.replaceAll(targetPhrase, replacement);
+//        }
+//        return text;
+//    }
     public static String highlightText(String text, String... targetPhrases) {
         for (String targetPhrase : targetPhrases) {
             // 将目标词组加粗并标红，使用 HTML 的方式来实现
-            String replacement = "**<span style=\"color:red\">" + targetPhrase + "</span>**";
-            text = text.replaceAll(targetPhrase, replacement);
+            String replacement = "<span style=\"color: red; font-weight: bold; background-color: #ffe4e1; padding: 2px;\">"
+                    + targetPhrase + "</span>";
+            // 使用正则表达式进行全局替换
+            text = text.replaceAll("(?i)" + targetPhrase, replacement);
         }
         return text;
+    }
+
+
+    /**
+     * 同步数据到审核表
+     */
+
+    public void syncCheckToAudit() {
+        // 使用 JOIN 查询校验表和审核表，筛选出审核表中不存在的记录
+        List<DetailCheckInfoDO> unsyncedCheckInfoList = detailCheckInfoService.selectJoinList();
+
+        // 遍历未同步的校验表数据并插入审核表
+        for (DetailCheckInfoDO checkInfo : unsyncedCheckInfoList) {
+            AuditLogSaveReqVO newAuditLog = new AuditLogSaveReqVO();
+            newAuditLog.setSpiderId(checkInfo.getId().toString());
+            newAuditLog.setApprovedRecord(null); // 占位，必要时填充
+            newAuditLog.setRejectedRecord(null); // 占位，必要时填充
+            newAuditLog.setStatus(0); // 默认状态
+            newAuditLog.setUpdater("system"); // 默认操作员
+            auditLogService.createAuditLog(newAuditLog);
+        }
     }
 }

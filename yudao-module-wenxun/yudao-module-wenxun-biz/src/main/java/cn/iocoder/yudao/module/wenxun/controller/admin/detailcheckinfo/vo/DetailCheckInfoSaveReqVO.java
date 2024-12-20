@@ -41,4 +41,7 @@ public class DetailCheckInfoSaveReqVO {
     @Schema(description = "数据来源", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     @NotNull(message = "数据来源不能为空")
     private String webIcon;
+
+    @Schema(description = "文章描述", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+     private String titleDesc;
 }

@@ -114,7 +114,6 @@ public class Trie implements ApplicationListener<ContextRefreshedEvent> {
             while (j < text.length()) {
                 try {
 
-
                     char c = text.charAt(j);
                     if (p.data != null) {
                         attr = attr + p.data.toString();

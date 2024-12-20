@@ -75,9 +75,9 @@ public class DetailCheckInfoController {
     @GetMapping("/page")
     @Operation(summary = "获得详情检测信息分页")
     @PreAuthorize("@ss.hasPermission('wenxun:detail-check-info:query')")
-    public CommonResult<PageResult<DetailCheckInfoWithDictDataRespVO>> getDetailCheckInfoPage(@Valid DetailCheckInfoPageReqVO pageReqVO) {
-        PageResult<DetailCheckInfoWithDictDataRespVO> pageResult = detailCheckInfoService.getDetailCheckInfoPage(pageReqVO);
-        return success(BeanUtils.toBean(pageResult, DetailCheckInfoWithDictDataRespVO.class));
+    public CommonResult<PageResult<DetailCheckInfoDO>> getDetailCheckInfoPage(@Valid DetailCheckInfoPageReqVO pageReqVO) {
+        PageResult<DetailCheckInfoDO> pageResult = detailCheckInfoService.getDetailCheckInfoPage(pageReqVO);
+        return success(BeanUtils.toBean(pageResult, DetailCheckInfoDO.class));
     }
 
     @GetMapping("/export-excel")
@@ -87,7 +87,7 @@ public class DetailCheckInfoController {
     public void exportDetailCheckInfoExcel(@Valid DetailCheckInfoPageReqVO pageReqVO,
               HttpServletResponse response) throws IOException {
         pageReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
-        List<DetailCheckInfoWithDictDataRespVO> list = detailCheckInfoService.getDetailCheckInfoPage(pageReqVO).getList();
+        List<DetailCheckInfoDO> list = detailCheckInfoService.getDetailCheckInfoPage(pageReqVO).getList();
         // 导出 Excel
         ExcelUtils.write(response, "详情检测信息.xls", "数据", DetailCheckInfoWithDictDataRespVO.class,
                         BeanUtils.toBean(list, DetailCheckInfoWithDictDataRespVO.class));

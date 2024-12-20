@@ -1,64 +1,59 @@
-import request from '@/utils/request'
+
+import { defHttp } from '@/utils/http/axios'
+
 #set ($baseURL = "/${table.moduleName}/${simpleClassName_strikeCase}")
 
 // 创建${table.classComment}
 export function create${simpleClassName}(data) {
-  return request({
+  return defHttp.post({
     url: '${baseURL}/create',
-    method: 'post',
-    data: data
+    data
   })
 }
 
 // 更新${table.classComment}
 export function update${simpleClassName}(data) {
-  return request({
-    url: '${baseURL}/update',
-    method: 'put',
-    data: data
-  })
+    return defHttp.put({
+        url: '${baseURL}/update',
+        data,
+    })
 }
 
 // 删除${table.classComment}
 export function delete${simpleClassName}(id) {
-  return request({
-    url: '${baseURL}/delete?id=' + id,
-    method: 'delete'
+  return defHttp.delete({
+    url: `${baseURL}/delete?id=${id}`,
   })
 }
 
 // 获得${table.classComment}
 export function get${simpleClassName}(id) {
-  return request({
-    url: '${baseURL}/get?id=' + id,
-    method: 'get'
+  return defHttp.get({
+    url: `${baseURL}/get?id=${id}`,
   })
 }
 
 #if ( $table.templateType != 2 )
 // 获得${table.classComment}分页
 export function get${simpleClassName}Page(params) {
-  return request({
+  return defHttp.get({
     url: '${baseURL}/page',
-    method: 'get',
     params
   })
 }
 #else
 // 获得${table.classComment}列表
 export function get${simpleClassName}List(params) {
-  return request({
+  return defHttp.get({
     url: '${baseURL}/list',
-    method: 'get',
     params
   })
 }
 #end
 // 导出${table.classComment} Excel
 export function export${simpleClassName}Excel(params) {
-  return request({
+  return defHttp.get({
     url: '${baseURL}/export-excel',
-    method: 'get',
     params,
     responseType: 'blob'
   })

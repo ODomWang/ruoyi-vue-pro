@@ -182,7 +182,8 @@ public class CodegenEngine {
         config.setResourceMode(TemplateConfig.ResourceMode.CLASSPATH);
         this.templateEngine = new VelocityEngine(config);
         // 设置 javaxEnable，按照是否使用 JDK17 来判断
-        this.jakartaEnable = SystemUtil.getJavaInfo().isJavaVersionAtLeast(1700); // 17.00 * 100
+        this.jakartaEnable = false;
+                //SystemUtil.getJavaInfo().isJavaVersionAtLeast(1700); // 17.00 * 100
     }
 
     @PostConstruct

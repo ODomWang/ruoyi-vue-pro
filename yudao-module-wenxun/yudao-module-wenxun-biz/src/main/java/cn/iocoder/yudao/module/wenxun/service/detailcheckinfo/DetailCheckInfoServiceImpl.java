@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,16 +36,21 @@ public class DetailCheckInfoServiceImpl implements DetailCheckInfoService {
 
     @Override
     public Long createDetailCheckInfo(DetailCheckInfoSaveReqVO createReqVO) {
-        // 插入
-        DetailCheckInfoDO detailCheckInfo = BeanUtils.toBean(createReqVO, DetailCheckInfoDO.class);
-        DetailCheckInfoDO detailCheckInfo2 = detailCheckInfoMapper.selectOne("sourceUrl", detailCheckInfo.getSourceUrl());
-        if (detailCheckInfo2 != null) {
-            detailCheckInfo.setId(detailCheckInfo2.getId());
-            detailCheckInfo.setCreateTime(detailCheckInfo2.getCreateTime());
+        try {
+            // 插入
+            DetailCheckInfoDO detailCheckInfo = BeanUtils.toBean(createReqVO, DetailCheckInfoDO.class);
+            DetailCheckInfoDO detailCheckInfo2 = detailCheckInfoMapper.selectOne(DetailCheckInfoDO::getSourceUrl, detailCheckInfo.getSourceUrl());
+            if (detailCheckInfo2 != null) {
+                detailCheckInfo.setId(detailCheckInfo2.getId());
+                detailCheckInfo.setCreateTime(detailCheckInfo2.getCreateTime());
+            }
+            detailCheckInfoMapper.insertOrUpdate(detailCheckInfo);
+            // 返回
+            return detailCheckInfo.getId();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        detailCheckInfoMapper.insert(detailCheckInfo);
-        // 返回
-        return detailCheckInfo.getId();
+        return -1L;
     }
 
     @Override
@@ -90,23 +94,15 @@ public class DetailCheckInfoServiceImpl implements DetailCheckInfoService {
     }
 
     @Override
-    public PageResult<DetailCheckInfoWithDictDataRespVO> getDetailCheckInfoPage(DetailCheckInfoPageReqVO pageReqVO) {
-        PageResult<DetailCheckInfoWithDictDataRespVO> pageResult = new PageResult<>();
+    public PageResult<DetailCheckInfoDO> getDetailCheckInfoPage(DetailCheckInfoPageReqVO pageReqVO) {
         PageResult<DetailCheckInfoDO> doPageResult = detailCheckInfoMapper.selectPage(pageReqVO);
-        List<DetailCheckInfoWithDictDataRespVO> list = new ArrayList<>();
-        for (DetailCheckInfoDO infoDO : doPageResult.getList()) {
-            String[] ids = infoDO.getTargetDetail().split(",");
-            List<WenXunDictDataDO> checkInfoDOS = wenXunDictdataMapper.selectBatchIds(Arrays.asList(ids));
-            PageResult<WenXunDictDataDO> pageResult1 = new PageResult<>();
-            pageResult1.setList(checkInfoDOS);
-            pageResult1.setTotal((long) checkInfoDOS.size());
-            DetailCheckInfoWithDictDataRespVO vo = BeanUtils.toBean(infoDO, DetailCheckInfoWithDictDataRespVO.class);
-            vo.setDictDataDOS(pageResult1);
-            list.add(vo);
-        }
-        pageResult.setList(list);
-        pageResult.setTotal(doPageResult.getTotal());
-        return pageResult;
+        return doPageResult;
     }
+
+    @Override
+    public List<DetailCheckInfoDO> selectJoinList() {
+        return detailCheckInfoMapper.selectJoinList();
+    }
+
 
 }
