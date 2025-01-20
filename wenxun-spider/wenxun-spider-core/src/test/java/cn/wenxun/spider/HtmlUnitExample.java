@@ -1,12 +1,11 @@
 package cn.wenxun.spider;
 
 
-import cn.wenxun.admin.job.utils.HtmlUnitUtil;
 import cn.wenxun.admin.job.utils.PageExtracUtils;
 import cn.wenxun.admin.model.NewsInfo;
-import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
+import org.htmlunit.StringWebResponse;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.*;
 import org.jsoup.Jsoup;
@@ -17,6 +16,8 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HtmlUnitExample {
     public static void main(String[] args) {
@@ -29,26 +30,35 @@ public class HtmlUnitExample {
             webClient.getOptions().setUseInsecureSSL(true);
             webClient.getOptions().setJavaScriptEnabled(true);
             webClient.getOptions().setCssEnabled(false);
-            webClient.getOptions().setThrowExceptionOnScriptError(false);
-            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
             webClient.getOptions().setDoNotTrackEnabled(false);
 
             // 设置等待时间
             webClient.getOptions().setTimeout(5000);
 
             // 加载网页
-            HtmlPage page = webClient.getPage("https://www.bzpt.edu.cn/xwdr/xyyw.htm");  // 滨州职业学院
+            HtmlPage page = webClient.getPage("http://dangjian.people.com.cn/GB/394443/index.html");  // 滨州职业学院
 //            HtmlPage page = webClient.getPage("https://www.suda.edu.cn/suda_news/sdyw/index.html");  // 苏州大学
 //            HtmlPage page = webClient.getPage("http://www.wxcu.edu.cn/static/newList.html?cid=19");  // 无锡城市学院
             webClient.waitForBackgroundJavaScript(10000); // 等待 JavaScript 执行完成，最多等待 10 秒
 
+            // 获取原始 HTML
+            String originalHtml = page.asXml();
+            String commentAndCdataRegex = "(<!--.*?-->)|(//<!\\[CDATA\\[.*?//]]>)";
+            Pattern pattern = Pattern.compile(commentAndCdataRegex, Pattern.DOTALL);
+            Matcher matcher = pattern.matcher(originalHtml);
+            String filteredHtml = matcher.replaceAll("");
+
+            // 重新解析页面
+            StringWebResponse response = new StringWebResponse(filteredHtml, page.getUrl());
+            page = webClient.getPage(response.getWebRequest());
             if (page.asXml().contains("window.onload();")) {
                 page.executeJavaScript("if (window.onload) window.onload();");
             }
             // 提取网页图标
             String iconUrl = PageExtracUtils.getPageIcon(page);
-            String nextPageUrl = PageExtracUtils.getNextPageUrl(page, "//*[@id=\"app\"]/div[4]/div/div[2]/span/span[10]/a");
-            List<HtmlElement> lists = page.getByXPath("//*[@id=\"app\"]/div[4]/div/ul");
+            String nextPageUrl = PageExtracUtils.getNextPageUrl(page, "/html/body/div[6]/div[1]/div/a[8]");
+            List<HtmlElement> lists = page.getByXPath("/html/body/div[6]");
 
             List<NewsInfo> lists1 = new ArrayList<>();
             for (HtmlElement list : lists) {

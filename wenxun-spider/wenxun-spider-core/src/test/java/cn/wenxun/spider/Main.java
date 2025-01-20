@@ -1,6 +1,9 @@
 package cn.wenxun.spider;
 
 
+import cn.hutool.http.HttpUtil;
+import cn.iocoder.yudao.framework.common.util.http.HttpUtils;
+import com.alibaba.fastjson.JSONObject;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.SneakyThrows;
 import org.openqa.selenium.By;
@@ -8,49 +11,54 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class Main {
 
-    @SneakyThrows
-    public static void main(String[] args) throws IOException {
-        //获取用户信息
-//        WebClient webClient = new WebClient(BrowserVersion.EDGE);
-//        // 关闭不需要的日志和选项
-//        webClient.getOptions().setCssEnabled(false);
-//        webClient.getOptions().setJavaScriptEnabled(false);
-//
-        String url1 = "http://www.wxcu.edu.cn/static/newList.html?cid=19";
-//        // 加载页面
-//        webClient.getOptions().setUseInsecureSSL(true);
-//        webClient.getOptions().setThrowExceptionOnScriptError(false);//当JS执行出错的时候是否抛出异常, 这里选择不需要
-//        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);//当HTTP的状态非200时是否抛出异常, 这里选择不需要
-//        webClient.getOptions().setCssEnabled(false);//是否启用CSS, 因为不需要展现页面, 所以不需要启用
-//        webClient.getOptions().setJavaScriptEnabled(true); //很重要，启用JS
-//        webClient.setAjaxController(new NicelyResynchronizingAjaxController());//很重要，设置支持AJAX
-//        webClient.waitForBackgroundJavaScript(30000);
-//        HtmlPage page = webClient.getPage(url1);
-//        String resp = SpiderAiUtils.SpiderByOpenAi(page.asXml(), "获取网站的就业新闻列表", Collections.singleton(new NewsInfo()), "https://jou.91job.org.cn");
-//        System.out.println(resp);
-        // 设置 ChromeDriver 的路径
-        System.setProperty("webdriver.http.factory", "jdk-http-client");
+    public static void main(String[] args) {
+        System.out.println(test("http://dangjian.people.com.cn/GB/394443/index1.html"));
 
-        WebDriverManager.chromedriver().setup();
-
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        options.addArguments("--disable-gpu");
-
-        WebDriver driver = new ChromeDriver(options);
-        driver.get(url1);
-        ((ChromeDriver) driver).executeScript("if (window.onload) window.onload();");
-
-        Thread.sleep(1000);
-
-        // 获取body下的标签内容
-         System.out.println(driver.getPageSource());
+        System.out.println(test("http://dangjian.people.com.cn/GB/394443/index2.html"));
     }
 
+     public static String test(String url)  {
+         try {
+             // 检查目标 URL 是否有效
+             URI targetUri = new URI(url);
+
+             // 使用 RestTemplate 获取目标内容
+             RestTemplate restTemplate = new RestTemplate();
+             ResponseEntity<byte[]> response = restTemplate.getForEntity(targetUri, byte[].class);
+
+             // 动态获取编码
+             String contentType = response.getHeaders().getContentType().toString();
+             Charset charset = StandardCharsets.UTF_8;
+             if (contentType.contains("charset=")) {
+                 String detectedCharset = contentType.substring(contentType.indexOf("charset=") + 8);
+                 charset = Charset.forName(detectedCharset);
+
+             }
+
+
+             // 解码内容
+             String responseBody = new String(response.getBody(), charset);
+             // 返回修改后的响应
+             return responseBody;
+
+         } catch (URISyntaxException e) {
+             return null
+                     ;
+         } catch (Exception e) {
+             return null;
+         }
+    }
 
 }

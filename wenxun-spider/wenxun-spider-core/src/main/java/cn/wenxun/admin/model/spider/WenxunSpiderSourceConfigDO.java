@@ -28,5 +28,10 @@ public class WenxunSpiderSourceConfigDO {
     private Long spiderPageNum;
     private String bodyXpath;
     private String nextPageXpath;
+    private String listXpath;
+    private String titleXpath;
+    private String dateXpath;
+    private String descXpath;
+    private String itemXpath;
 
 }

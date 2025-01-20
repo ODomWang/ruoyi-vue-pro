@@ -19,10 +19,10 @@
         <module>yudao-module-wenxun</module>
 
 
-        <!--        <module>yudao-module-member</module>-->
+                <module>yudao-module-member</module>
 <!--        <module>yudao-module-bpm</module>-->
 <!--        <module>yudao-module-report</module>-->
-<!--        <module>yudao-module-mp</module>-->
+        <module>yudao-module-mp</module>
 <!--        <module>yudao-module-pay</module>-->
 <!--        <module>yudao-module-mall</module>-->
 <!--        <module>yudao-module-crm</module>-->

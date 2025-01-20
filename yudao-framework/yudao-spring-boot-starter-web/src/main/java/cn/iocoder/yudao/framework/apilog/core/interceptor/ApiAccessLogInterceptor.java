@@ -45,14 +45,14 @@ public class ApiAccessLogInterceptor implements HandlerInterceptor {
         if (!SpringUtils.isProd()
                 //&& !request.getRequestURI().startsWith("/error")
         ) {
-//            Map<String, String> queryString = ServletUtils.getParamMap(request);
-//            String requestBody = ServletUtils.isJsonRequest(request) ? ServletUtils.getBody(request) : null;
-//            if (CollUtil.isEmpty(queryString) && StrUtil.isEmpty(requestBody)) {
+            Map<String, String> queryString = ServletUtils.getParamMap(request);
+            String requestBody = ServletUtils.isJsonRequest(request) ? ServletUtils.getBody(request) : null;
+            if (CollUtil.isEmpty(queryString) && StrUtil.isEmpty(requestBody)) {
                 log.info("[preHandle][开始请求 URL({}) 无参数]", request.getRequestURI());
-//            } else {
-//                log.info("[preHandle][开始请求 URL({}) 参数({})]", request.getRequestURI(),
-//                        StrUtil.blankToDefault(requestBody, queryString.toString()));
-//            }
+            } else {
+                log.info("[preHandle][开始请求 URL({}) 参数({})]", request.getRequestURI(),
+                        StrUtil.blankToDefault(requestBody, queryString.toString()));
+            }
             // 计时
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();

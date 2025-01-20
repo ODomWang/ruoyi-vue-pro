@@ -1,5 +1,6 @@
 package cn.wenxun.admin.job;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.iocoder.yudao.framework.quartz.core.handler.JobHandler;
 import cn.iocoder.yudao.framework.tenant.core.aop.TenantIgnore;
 import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
@@ -10,9 +11,11 @@ import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheck
 import cn.iocoder.yudao.module.wenxun.enums.commondao.WrongWordInfo;
 import cn.iocoder.yudao.module.wenxun.service.auditlog.AuditLogService;
 import cn.iocoder.yudao.module.wenxun.service.detailcheckinfo.DetailCheckInfoService;
-import cn.wenxun.admin.job.utils.HtmlUnitUtil;
+import cn.wenxun.admin.job.utils.PlayWrightUtils;
 import cn.wenxun.admin.job.utils.SensitiveFilter;
+import cn.wenxun.admin.job.utils.trie.TextCorrection;
 import cn.wenxun.admin.model.NewsInfo;
+import cn.wenxun.admin.model.spider.SpiderXpathConfigDO;
 import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
 import cn.wenxun.admin.service.WenXunSpiderConfigService;
 import cn.wenxun.admin.service.WenXunSpiderCrawlService;
@@ -27,6 +30,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static cn.wenxun.admin.job.config.JobConfiguration.NOTIFY_THREAD_POOL_TASK_EXECUTOR;
 
@@ -70,13 +74,16 @@ public class SpiderCrawlJob implements JobHandler {
 
     public void crawlUrlsAsync(List<WenxunSpiderSourceConfigDO> urls) {
         for (WenxunSpiderSourceConfigDO url : urls) {
-            // 数据采集
-            CompletableFuture.supplyAsync(() -> HtmlUnitUtil.crawlUrl(url, false), threadPoolTaskExecutor)
+            SpiderXpathConfigDO createReqVO = BeanUtil.copyProperties(url, SpiderXpathConfigDO.class);
+            log.info("----开始进行：【" + createReqVO.getSpiderName() + "】 采集任务----");
+
+            /* 数据采集        List<NewsInfo> newsInfos = PlayWrightUtils.crawlUrl(createReqVO); */
+            CompletableFuture.supplyAsync(() -> PlayWrightUtils.crawlUrl(createReqVO,wenXunSpiderCrawlService), threadPoolTaskExecutor)
                     .thenAccept(data -> {
                         log.info("采集任务执行完毕，数据开始入库...");
                         // 结果保存
                         if (data != null) {
-                            wenXunSpiderCrawlService.insertDoBySpider(data);
+//                            wenXunSpiderCrawlService.insertDoBySpider(data);
                             log.info("数据入库完毕。");
                             log.info("开始进行敏感词检测...");
                             checkSensitiveWords(data);
@@ -84,7 +91,13 @@ public class SpiderCrawlJob implements JobHandler {
                             //进入人工研判表
                             log.info("同步数据到审核表。");
                             syncCheckToAudit();
+                            log.info("---- 【" + createReqVO.getSpiderName() + "】 采集任务处理【结束】----");
+
                         }
+                    }).exceptionally(ex -> {
+                        ex.printStackTrace();
+                        log.error("采集任务执行异常：{}", ex.getMessage());
+                        return null;
                     });
         }
     }
@@ -100,16 +113,21 @@ public class SpiderCrawlJob implements JobHandler {
             List<WenXunDictDataDO> list = wenXunDictDataService.getDictDataListByDatas(s2);
             // 对词库信息进行有效判断
             if (list != null && !list.isEmpty()) {
+                Set<String> correctWords = list.stream().filter(wenXunDictDataDO -> wenXunDictDataDO.getDictType().equals("wrong_word_configuration"))
+                        .map(WenXunDictDataDO::getValue).collect(Collectors.toSet());
                 String mk = info.getContent();
+                // 对错误做初步过滤
+                s2 = TextCorrection.filterWrongWords(mk, s2, correctWords);
+
                 List<WrongWordInfo> ids = new java.util.ArrayList<>();
                 // 敏感词入库
                 for (WenXunDictDataDO wenXunDictDataDO : list) {
                     //敏感词
-                    if (wenXunDictDataDO.getDictType().equals("wrong_word_configuration")) {
+                    if (wenXunDictDataDO.getDictType().equals("wrong_word_configuration") && s2.contains(wenXunDictDataDO.getLabel())) {
                         boolean b = false;
                         //不包含冲突词
                         if (StringUtils.isNotEmpty(wenXunDictDataDO.getRemark())) {
-                            String[] split = wenXunDictDataDO.getRemark().split("|");
+                            String[] split = wenXunDictDataDO.getRemark().split("\\|");
                             for (String s : split) {
                                 if (info.getContent().contains(s)) {
                                     b = true;
@@ -145,7 +163,7 @@ public class SpiderCrawlJob implements JobHandler {
                     DetailCheckInfoSaveReqVO reqVO = new DetailCheckInfoSaveReqVO();
                     reqVO.setCheckDetail(mk);
                     reqVO.setTargetDetail(JSON.toJSONString(ids));
-                     reqVO.setStatus(0);
+                    reqVO.setStatus(0);
                     reqVO.setCheckSource((int) info.getConfigId());
                     reqVO.setSourceUrl(info.getUrl());
                     reqVO.setSpiderConfigId(info.getConfigId());

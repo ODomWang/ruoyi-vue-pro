@@ -1,7 +1,9 @@
 package cn.wenxun.spider;
 
+ import org.junit.jupiter.api.Test;
 import redis.clients.jedis.Jedis;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 public class AhoCorasickRedisUtil {
@@ -226,4 +228,5 @@ public class AhoCorasickRedisUtil {
             System.out.println("文本中不包含完整的敏感词组。");
         }
     }
+
 }

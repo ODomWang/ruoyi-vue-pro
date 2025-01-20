@@ -2,11 +2,14 @@ package cn.wenxun.admin.service.impl;
 
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.wenxun.admin.core.service.MeiliSearchService;
+import cn.wenxun.admin.job.utils.PlayWrightUtils;
 import cn.wenxun.admin.mapper.WenXunSpiderCrawlMapper;
 import cn.wenxun.admin.model.NewsInfo;
 import cn.wenxun.admin.model.spider.WenxunSpiderCrawlDetail;
 import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
 import cn.wenxun.admin.service.WenXunSpiderCrawlService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +20,7 @@ import java.util.List;
 
 @Service
 @Validated
+@Slf4j
 public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
     @Resource
     private WenXunSpiderCrawlMapper wenXunSpiderCrawlMapper;
@@ -73,6 +77,9 @@ public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
         return null;
     }
 
+    @Resource
+    public MeiliSearchService meiliSearchService;
+
     /**
      *
      */
@@ -81,6 +88,7 @@ public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
+
         List<WenxunSpiderCrawlDetail> wenxunSpiderCrawlDetailList = new ArrayList<>();
         for (NewsInfo newsInfo : list) {
             WenxunSpiderCrawlDetail crawlDetail = wenXunSpiderCrawlMapper.selectByUrl(newsInfo.getUrl());
@@ -99,6 +107,10 @@ public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
             wenxunSpiderCrawlDetailList.add(crawlDetail);
         }
         wenXunSpiderCrawlMapper.insertOrUpdateBatch(wenxunSpiderCrawlDetailList);
+//        log.info("数据库插入成功【" + wenxunSpiderCrawlDetailList.size() + "】条");
+        wenxunSpiderCrawlDetailList.forEach(x -> x.setContent(PlayWrightUtils.convert(x.getContent())));
+        meiliSearchService.add(wenxunSpiderCrawlDetailList);
+//        log.info("搜索引擎插入结束,插入结果【" + meiliSearchService.add(wenxunSpiderCrawlDetailList) + "】");
 
 
     }

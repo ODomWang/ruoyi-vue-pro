@@ -2,6 +2,7 @@ package cn.wenxun.admin.service;
 
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.wenxun.admin.model.spider.SpiderXpathConfigDO;
 import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
 
 import javax.validation.Valid;
@@ -15,7 +16,7 @@ public interface WenXunSpiderConfigService {
      * @param createReqVO 创建信息
      * @return 编号
      */
-    Long createDataSourceConfig(@Valid WenxunSpiderSourceConfigDO createReqVO);
+    Long createDataSourceConfig(@Valid SpiderXpathConfigDO createReqVO);
 
     /**
      * 更新数据源配置

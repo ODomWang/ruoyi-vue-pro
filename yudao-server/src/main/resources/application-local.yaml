@@ -253,4 +253,7 @@ justauth:
     type: REDIS
     prefix: 'social_auth_state:' # 缓存前缀，目前只对 Redis 缓存生效，默认 JUSTAUTH::STATE::
     timeout: 24h # 超时时长，目前只对 Redis 缓存生效，默认 3 分钟
-
+meilisearch:
+  hostUrl: http://110.40.228.6:7701
+  apiKey: wangjingpeng2659
+  uid: wenxun_spider_crawl_detail
