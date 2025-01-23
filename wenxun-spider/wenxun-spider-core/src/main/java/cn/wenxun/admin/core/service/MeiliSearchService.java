@@ -1,11 +1,9 @@
 package cn.wenxun.admin.core.service;
 
-import cn.wenxun.admin.model.MeiliSearchInfo;
-import cn.wenxun.admin.model.spider.WenxunSpiderCrawlDetail;
+import cn.iocoder.yudao.module.wenxun.model.MeiliSearchInfo;
+import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderCrawlDetail;
 import com.alibaba.fastjson.JSON;
-import com.meilisearch.sdk.Client;
-import com.meilisearch.sdk.Index;
-import com.meilisearch.sdk.SearchRequest;
+import com.meilisearch.sdk.*;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
 import com.meilisearch.sdk.model.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -124,34 +122,40 @@ public class MeiliSearchService implements InitializingBean, MeiliSearchOperatio
 
     /**
      * 仅在标题下查询
-     *
-     * @param title 标题
      */
     @Override
-    public SearchResult search(String title) {
-        SearchRequest searchRequest = SearchRequest.builder().q(title).attributesToSearchOn(new String[]{"content", "title"}).build();
-        return search(searchRequest);
+    public Results<MultiSearchResult> search(MeiliSearchInfo meiliSearchInfo) {
+        MultiSearchRequest multiSearchRequest = new MultiSearchRequest();
+        multiSearchRequest.addQuery(new IndexSearchRequest("wenxun_spider_crawl_detail").setQuery(meiliSearchInfo.getKeyWord()).setAttributesToSearchOn(new String[]{"content", "title", "spiderUrl"}));
+        multiSearchRequest.addQuery(new IndexSearchRequest("wenxun_spider_crawl_detail").setQuery(meiliSearchInfo.getKeyWord()).setAttributesToSearchOn(new String[]{"spiderUrl"}));
+
+        return client.multiSearch(multiSearchRequest);
+
     }
 
     @Override
     public SearchResultPaginated searchPage(MeiliSearchInfo meiliSearchInfo) {
 
         List<String> reqList = new ArrayList<>();
-        SearchRequest searchRequest = new SearchRequest("").setPage(meiliSearchInfo.getPageNo()).setHitsPerPage(meiliSearchInfo.getPageSize())
+        SearchRequest searchRequest = new SearchRequest("")
+                .setPage(meiliSearchInfo.getPageNo())
+                .setHitsPerPage(meiliSearchInfo.getPageSize())
                 .setHighlightPreTag("<span class=\"highlight\">")
                 .setHighlightPostTag("</span>")
                 .setAttributesToHighlight(new String[]{"content"});
         if (StringUtils.isNotEmpty(meiliSearchInfo.getKeyWord())) {
             searchRequest.setQ(meiliSearchInfo.getKeyWord());
             searchRequest.setAttributesToSearchOn(new String[]{"content", "title", "spiderUrl"});
-        }else{
+        } else {
             searchRequest.setQ("*");
         }
         if (StringUtils.isNotEmpty(meiliSearchInfo.getStatus())) {
             reqList.add("status=" + meiliSearchInfo.getStatus());
         }
         if (StringUtils.isNotEmpty(meiliSearchInfo.getSpiderId())) {
-            searchRequest.setQ(meiliSearchInfo.getSpiderId() + "." + searchRequest.getQ());
+            searchRequest.setQ(meiliSearchInfo.getSpiderId() + "." + meiliSearchInfo.getKeyWord());
+            searchRequest.setAttributesToSearchOn(new String[]{"content", "title", "spiderUrl"});
+
 //            reqList.add("spiderConfigId=" + meiliSearchInfo.getSpiderId());
         }
         if (meiliSearchInfo.getCreateTime() != null) {

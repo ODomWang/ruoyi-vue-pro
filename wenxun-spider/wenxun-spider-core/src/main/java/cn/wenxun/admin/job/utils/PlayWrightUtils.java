@@ -1,8 +1,8 @@
 package cn.wenxun.admin.job.utils;
 
-import cn.wenxun.admin.model.NewsInfo;
-import cn.wenxun.admin.model.spider.SpiderXpathConfigDO;
-import cn.wenxun.admin.service.WenXunSpiderCrawlService;
+import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
+import cn.iocoder.yudao.module.wenxun.model.spider.SpiderXpathConfigDO;
+import cn.wenxun.admin.core.service.WenXunSpiderCrawlService;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.LoadState;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +12,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -148,6 +146,8 @@ public class PlayWrightUtils {
                         String content = extractContentFromPage(newsInfo.getUrl(), page.context(), xpathConfigDO.getBodyXpath());
                         newsInfo.setNextPageUrl(nextPageUrl);
                         newsInfo.setContent(content);
+                        newsInfo.setSpiderName(xpathConfigDO.getSpiderName());
+                        newsInfo.setConfigId(xpathConfigDO.getId());
                         newsList.add(newsInfo);
                         wenXunSpiderCrawlService.insertDoBySpider(List.of(newsInfo));
                     }
@@ -160,17 +160,14 @@ public class PlayWrightUtils {
 
             }
             // 根据 name 字段去重
-            List<NewsInfo> distinctPersons = newsList.stream()
+
+            return new ArrayList<>(newsList.stream()
                     .collect(Collectors.toMap(
                             NewsInfo::getUrl,  // 使用 name 字段作为唯一标识
                             info -> info,  // 保留整个 Person 对象
                             (existing, replacement) -> existing // 如果 name 相同，保留第一个对象
                     ))
-                    .values()
-                    .stream()
-                    .collect(Collectors.toList());
-
-            return distinctPersons;
+                    .values());
         }
     }
 
@@ -188,19 +185,7 @@ public class PlayWrightUtils {
         return content;
     }
 
-    private static class CustomRejectedExecutionHandler implements RejectedExecutionHandler {
-        private CustomRejectedExecutionHandler() {
-        }
 
-        public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-            try {
-                executor.getQueue().put(r);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
 
     public static String convert(String content) {
         try {

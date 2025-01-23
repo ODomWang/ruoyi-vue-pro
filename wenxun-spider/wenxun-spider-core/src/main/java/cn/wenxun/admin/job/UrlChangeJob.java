@@ -6,10 +6,10 @@ import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlchangeinfo.UrlChangeInfo
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlchangelog.UrlChangeLogDO;
 import cn.iocoder.yudao.module.wenxun.dal.mysql.urlchangeinfo.UrlChangeInfoMapper;
 import cn.iocoder.yudao.module.wenxun.dal.mysql.urlchangelog.UrlChangeLogMapper;
-import cn.wenxun.admin.mapper.WenXunSpiderCrawlMapper;
-import cn.wenxun.admin.model.spider.WenxunSpiderCrawlDetail;
-import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
-import cn.wenxun.admin.service.WenXunSpiderConfigService;
+import cn.iocoder.yudao.module.wenxun.mapper.WenXunSpiderCrawlMapper;
+import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderCrawlDetail;
+import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
+import cn.iocoder.yudao.module.wenxun.service.WenXunSpiderConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;

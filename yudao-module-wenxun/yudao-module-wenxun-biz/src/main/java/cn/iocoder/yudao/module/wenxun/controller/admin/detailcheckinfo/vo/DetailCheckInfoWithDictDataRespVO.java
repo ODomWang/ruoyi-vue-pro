@@ -53,5 +53,12 @@ public class DetailCheckInfoWithDictDataRespVO {
     private PageResult<WenXunDictDataDO> dictDataDOS;
 
 
+    @Schema(description = "采集任务名称", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("采集任务名称")
+    private String spiderName;
+
+
+
+
 
 }

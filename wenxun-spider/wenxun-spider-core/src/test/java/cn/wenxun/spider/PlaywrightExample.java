@@ -1,8 +1,8 @@
 package cn.wenxun.spider;
 
 import cn.wenxun.admin.job.utils.PlayWrightUtils;
-import cn.wenxun.admin.model.NewsInfo;
-import cn.wenxun.admin.model.spider.SpiderXpathConfigDO;
+import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
+import cn.iocoder.yudao.module.wenxun.model.spider.SpiderXpathConfigDO;
 import com.alibaba.fastjson.JSON;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.LoadState;

@@ -24,7 +24,7 @@ public class SensitiveFilter {
         return trie.filter(text);
     }
 
-    public static Set<String> getMatchingWords(String text, WenXunDictDataService wenXunDictDataService1) {
+    public static Set<String> getMatchingWords(String text) {
         try {
             return trie.getMatchingWords(text);
 

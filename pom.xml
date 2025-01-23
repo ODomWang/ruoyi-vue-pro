@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.iocoder.boot</groupId>
-    <artifactId>yudao</artifactId>
+    <artifactId>wenxun</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
     <modules>
@@ -32,8 +32,6 @@
     </modules>
 
     <name>${project.artifactId}</name>
-    <description>文巡项目基础脚手架</description>
-    <url>https://github.com/YunaiV/ruoyi-vue-pro</url>
 
     <properties>
         <revision>2.2.0-jdk8-snapshot</revision>
@@ -103,6 +101,7 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>
                 </plugin>
+
             </plugins>
         </pluginManagement>
 

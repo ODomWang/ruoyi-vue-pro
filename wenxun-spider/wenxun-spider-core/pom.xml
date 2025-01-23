@@ -17,6 +17,16 @@
                     <target>15</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+
+            </plugin>
+
         </plugins>
     </build>
     <modelVersion>4.0.0</modelVersion>
@@ -194,6 +204,30 @@
             <groupId>com.googlecode.juniversalchardet</groupId>
             <artifactId>juniversalchardet</artifactId>
             <version>1.0.3</version>
+        </dependency>
+        <!--用于word转换成pdf-->
+        <dependency>
+            <groupId>com.aspose.words</groupId>
+            <artifactId>aspose-words</artifactId>
+            <version>15.8.0-jdk16</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/aspose-words-15.8.0-jdk16.jar</systemPath>
+        </dependency>
+        <!--用于excel转换成pdf-->
+        <dependency>
+            <groupId>com.aspose.cells</groupId>
+            <artifactId>aspose-cells</artifactId>
+            <version>16.10.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/aspose-cells-16.10.0.jar</systemPath>
+        </dependency>
+        <!--将pdf转换为image-->
+        <dependency>
+            <groupId>com.aspose.cells</groupId>
+            <artifactId>aspose-pdf</artifactId>
+            <version>22.4</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/aspose-pdf-22.4.jar</systemPath>
         </dependency>
     </dependencies>
 

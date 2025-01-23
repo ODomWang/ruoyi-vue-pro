@@ -9,17 +9,18 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.auditlog.vo.AuditLogSaveR
 import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.DetailCheckInfoSaveReqVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
 import cn.iocoder.yudao.module.wenxun.enums.commondao.WrongWordInfo;
+import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
+import cn.iocoder.yudao.module.wenxun.model.spider.SpiderXpathConfigDO;
+import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
+import cn.iocoder.yudao.module.wenxun.service.WenXunSpiderConfigService;
 import cn.iocoder.yudao.module.wenxun.service.auditlog.AuditLogService;
 import cn.iocoder.yudao.module.wenxun.service.detailcheckinfo.DetailCheckInfoService;
+import cn.wenxun.admin.core.service.WenXunSpiderCrawlService;
 import cn.wenxun.admin.job.utils.PlayWrightUtils;
 import cn.wenxun.admin.job.utils.SensitiveFilter;
 import cn.wenxun.admin.job.utils.trie.TextCorrection;
-import cn.wenxun.admin.model.NewsInfo;
-import cn.wenxun.admin.model.spider.SpiderXpathConfigDO;
-import cn.wenxun.admin.model.spider.WenxunSpiderSourceConfigDO;
-import cn.wenxun.admin.service.WenXunSpiderConfigService;
-import cn.wenxun.admin.service.WenXunSpiderCrawlService;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -78,7 +80,7 @@ public class SpiderCrawlJob implements JobHandler {
             log.info("----开始进行：【" + createReqVO.getSpiderName() + "】 采集任务----");
 
             /* 数据采集        List<NewsInfo> newsInfos = PlayWrightUtils.crawlUrl(createReqVO); */
-            CompletableFuture.supplyAsync(() -> PlayWrightUtils.crawlUrl(createReqVO,wenXunSpiderCrawlService), threadPoolTaskExecutor)
+            CompletableFuture.supplyAsync(() -> PlayWrightUtils.crawlUrl(createReqVO, wenXunSpiderCrawlService), threadPoolTaskExecutor)
                     .thenAccept(data -> {
                         log.info("采集任务执行完毕，数据开始入库...");
                         // 结果保存
@@ -107,7 +109,7 @@ public class SpiderCrawlJob implements JobHandler {
      */
     public void checkSensitiveWords(List<NewsInfo> data) {
         for (NewsInfo info : data) {
-            Set<String> s2 = SensitiveFilter.getMatchingWords(info.getContent(), wenXunDictDataService);
+            Set<String> s2 = SensitiveFilter.getMatchingWords(info.getContent());
 
             //查询所有词库信息
             List<WenXunDictDataDO> list = wenXunDictDataService.getDictDataListByDatas(s2);
@@ -176,14 +178,75 @@ public class SpiderCrawlJob implements JobHandler {
         }
     }
 
-    //    public static String highlightText(String text, String... targetPhrases) {
-//        for (String targetPhrase : targetPhrases) {
-//            // 将目标词组加粗并标红，使用 HTML 的方式来实现
-//            String replacement = "**<span style=\"color:red\">" + targetPhrase + "</span>**";
-//            text = text.replaceAll(targetPhrase, replacement);
-//        }
-//        return text;
-//    }
+    public static JSONObject checkSensitiveWords(String content, WenXunDictDataService wenXunDictDataService) {
+
+        Set<String> s2 = SensitiveFilter.getMatchingWords(content);
+
+        //查询所有词库信息
+        List<WenXunDictDataDO> list = wenXunDictDataService.getDictDataListByDatas(s2);
+        // 对词库信息进行有效判断
+        if (list != null && !list.isEmpty()) {
+            Set<String> correctWords = list.stream().filter(wenXunDictDataDO -> wenXunDictDataDO.getDictType().equals("wrong_word_configuration"))
+                    .map(WenXunDictDataDO::getValue).collect(Collectors.toSet());
+            String mk = content;
+            // 对错误做初步过滤
+            s2 = TextCorrection.filterWrongWords(mk, s2, correctWords);
+
+            List<WrongWordInfo> ids = new java.util.ArrayList<>();
+            // 敏感词入库
+            for (WenXunDictDataDO wenXunDictDataDO : list) {
+                //敏感词
+                if (wenXunDictDataDO.getDictType().equals("wrong_word_configuration") && s2.contains(wenXunDictDataDO.getLabel())) {
+                    boolean b = false;
+                    //不包含冲突词
+                    if (StringUtils.isNotEmpty(wenXunDictDataDO.getRemark())) {
+                        String[] split = wenXunDictDataDO.getRemark().split("\\|");
+                        for (String s : split) {
+                            if (content.contains(s)) {
+                                b = true;
+                            }
+                        }
+                    }
+                    if (!b) {
+                        ids.add(WrongWordInfo.builder()
+                                .wrongWord(wenXunDictDataDO.getLabel()).
+                                rightWord(wenXunDictDataDO.getValue()).remark(wenXunDictDataDO.getRemark())
+                                .colorType(wenXunDictDataDO.getColorType())
+                                .wrongWordType(wenXunDictDataDO.getDictType())
+                                .build());
+                        mk = highlightText(mk, wenXunDictDataDO.getLabel());
+                    }
+                    //落马官员
+                } else if (wenXunDictDataDO.getDictType().equals("allen_official")) {
+
+                    if (s2.contains(wenXunDictDataDO.getValue()) && s2.contains(wenXunDictDataDO.getRemark())) {
+                        mk = highlightText(mk, wenXunDictDataDO.getLabel(), wenXunDictDataDO.getRemark(), wenXunDictDataDO.getValue());
+                        ids.add(WrongWordInfo.builder()
+                                .wrongWord(wenXunDictDataDO.getLabel()).
+                                rightWord(wenXunDictDataDO.getValue()).remark(wenXunDictDataDO.getRemark())
+                                .colorType(wenXunDictDataDO.getColorType())
+                                .wrongWordType(wenXunDictDataDO.getDictType())
+                                .build());
+
+                    }
+                }
+
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("content", mk);
+            jsonObject.put("wrongWordInfoList", JSON.toJSONString(ids));
+
+            return jsonObject;
+
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("content", content);
+        jsonObject.put("wrongWordInfoList", JSON.toJSONString(new ArrayList<>()));
+
+        return jsonObject;
+    }
+
+
     public static String highlightText(String text, String... targetPhrases) {
         for (String targetPhrase : targetPhrases) {
             // 将目标词组加粗并标红，使用 HTML 的方式来实现

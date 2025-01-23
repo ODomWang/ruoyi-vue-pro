@@ -1,6 +1,6 @@
 package cn.wenxun.admin.core.service;
 
-import cn.wenxun.admin.model.MeiliSearchInfo;
+import cn.iocoder.yudao.module.wenxun.model.MeiliSearchInfo;
 import com.meilisearch.sdk.SearchRequest;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
 import com.meilisearch.sdk.model.*;
@@ -40,7 +40,7 @@ public  interface MeiliSearchOperations<T> {
 
     Task getTask(int taskUid);
 
-    Searchable search(String title);
+    Results<MultiSearchResult> search(MeiliSearchInfo meiliSearchInfo);
 
     SearchResultPaginated searchPage(MeiliSearchInfo size);
 

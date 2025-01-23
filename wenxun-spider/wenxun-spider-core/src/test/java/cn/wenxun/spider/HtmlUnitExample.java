@@ -2,7 +2,7 @@ package cn.wenxun.spider;
 
 
 import cn.wenxun.admin.job.utils.PageExtracUtils;
-import cn.wenxun.admin.model.NewsInfo;
+import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.htmlunit.StringWebResponse;

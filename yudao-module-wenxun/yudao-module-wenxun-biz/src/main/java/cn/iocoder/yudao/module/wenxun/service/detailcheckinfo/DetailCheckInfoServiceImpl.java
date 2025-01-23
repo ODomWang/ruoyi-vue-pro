@@ -9,10 +9,13 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.Detail
 import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.DetailCheckInfoWithDictDataRespVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
 import cn.iocoder.yudao.module.wenxun.dal.mysql.detailcheckinfo.DetailCheckInfoMapper;
+import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
+import cn.iocoder.yudao.module.wenxun.service.WenXunSpiderConfigService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +36,9 @@ public class DetailCheckInfoServiceImpl implements DetailCheckInfoService {
     private DetailCheckInfoMapper detailCheckInfoMapper;
     @Resource
     private WenXunDictDataMapper wenXunDictdataMapper;
+    @Resource
+    private WenXunSpiderConfigService wenXunSpiderConfigService;
+
 
     @Override
     public Long createDetailCheckInfo(DetailCheckInfoSaveReqVO createReqVO) {
@@ -40,6 +46,8 @@ public class DetailCheckInfoServiceImpl implements DetailCheckInfoService {
             // 插入
             DetailCheckInfoDO detailCheckInfo = BeanUtils.toBean(createReqVO, DetailCheckInfoDO.class);
             DetailCheckInfoDO detailCheckInfo2 = detailCheckInfoMapper.selectOne(DetailCheckInfoDO::getSourceUrl, detailCheckInfo.getSourceUrl());
+            detailCheckInfo.setUpdateTime(LocalDateTime.now());
+            detailCheckInfo.setCreateTime(LocalDateTime.now());
             if (detailCheckInfo2 != null) {
                 detailCheckInfo.setId(detailCheckInfo2.getId());
                 detailCheckInfo.setCreateTime(detailCheckInfo2.getCreateTime());
@@ -81,13 +89,9 @@ public class DetailCheckInfoServiceImpl implements DetailCheckInfoService {
     public DetailCheckInfoWithDictDataRespVO getDetailCheckInfo(Long id) {
         DetailCheckInfoDO result = detailCheckInfoMapper.selectById(id);
         if (result != null) {
-            String[] ids = result.getTargetDetail().split(",");
-            List<WenXunDictDataDO> checkInfoDOS = wenXunDictdataMapper.selectBatchIds(Arrays.asList(ids));
-            PageResult<WenXunDictDataDO> pageResult1 = new PageResult<>();
-            pageResult1.setList(checkInfoDOS);
-            pageResult1.setTotal((long) checkInfoDOS.size());
+            WenxunSpiderSourceConfigDO wenxunSpiderSourceConfigDO = wenXunSpiderConfigService.getDataSourceConfig(Long.valueOf(result.getSpiderConfigId()));
             DetailCheckInfoWithDictDataRespVO vo = BeanUtils.toBean(result, DetailCheckInfoWithDictDataRespVO.class);
-            vo.setDictDataDOS(pageResult1);
+            vo.setSpiderName(wenxunSpiderSourceConfigDO.getSpiderName());
             return vo;
         }
         return null;

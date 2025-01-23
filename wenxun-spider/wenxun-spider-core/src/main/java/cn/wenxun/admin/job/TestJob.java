@@ -2,24 +2,15 @@ package cn.wenxun.admin.job;
 
 import cn.iocoder.yudao.framework.quartz.core.handler.JobHandler;
 import cn.iocoder.yudao.framework.tenant.core.aop.TenantIgnore;
-import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
 import cn.iocoder.yudao.module.system.dal.mysql.wenxunDict.WenXunDictDataMapper;
-import cn.wenxun.admin.core.service.MeiliSearchDictService;
 import cn.wenxun.admin.core.service.MeiliSearchService;
-import cn.wenxun.admin.mapper.WenXunSpiderCrawlMapper;
-import cn.wenxun.admin.model.MeiliSearchInfo;
-import cn.wenxun.admin.model.spider.WenxunSpiderCrawlDetail;
+import cn.iocoder.yudao.module.wenxun.mapper.WenXunSpiderCrawlMapper;
+import cn.iocoder.yudao.module.wenxun.model.MeiliSearchInfo;
 import com.alibaba.fastjson.JSON;
-import com.meilisearch.sdk.SearchRequest;
-import com.meilisearch.sdk.model.SearchResult;
-import com.meilisearch.sdk.model.SearchResultPaginated;
-import com.meilisearch.sdk.model.Searchable;
-import com.meilisearch.sdk.model.TaskInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * 连通性检查
@@ -57,7 +48,7 @@ public class TestJob implements JobHandler {
 //        List<WenxunSpiderCrawlDetail> details = wenXunSpiderCrawlMapper.selectList();
 //        TaskInfo  r= meiliSearchService.add(details);
 //        System.out.println("插入数据结果: " +JSON.toJSONString(r));
-         System.out.println("插入数据结果: " +JSON.toJSONString( meiliSearchService.getTask(9)));
+//        System.out.println("插入数据结果: " + JSON.toJSONString(meiliSearchService.getTask(9)));
 //        // 查询数据
 //        SearchResult selectResultList = meiliSearchService.search("我校");
 //        System.out.println("查询数据结果: " + JSON.toJSONString(selectResultList));
@@ -66,7 +57,7 @@ public class TestJob implements JobHandler {
         searchInfo.setPageNo(1);
         searchInfo.setSpiderId("1");
         searchInfo.setKeyWord("我校");
-
+        meiliSearchService.search(searchInfo);
 //        Searchable searchResult = meiliSearchDictService.search("我今天想啊试试敏感词的匹配比如年记使命");
 //        SearchRequest searchRequest1 = SearchRequest.builder().q("我想测测年纪念能不能匹配").showRankingScore(true).rankingScoreThreshold(1.0).build();
 //
