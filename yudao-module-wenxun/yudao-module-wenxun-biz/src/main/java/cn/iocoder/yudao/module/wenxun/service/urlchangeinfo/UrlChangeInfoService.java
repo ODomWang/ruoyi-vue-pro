@@ -4,7 +4,7 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.urlchangeinfo.vo.*;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlchangeinfo.UrlChangeInfoDO;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 网站更新检查 Service 接口

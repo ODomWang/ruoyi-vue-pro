@@ -29,4 +29,8 @@ public class AiChatRoleSaveMyReqVO {
     @NotEmpty(message = "角色设定不能为空")
     private String systemMessage;
 
+    @Schema(description = "角色设定", requiredMode = Schema.RequiredMode.REQUIRED, example = "现在开始你扮演一位程序员，你是一名优秀的程序员，具有很强的逻辑思维能力，总能高效的解决问题")
+    @NotEmpty(message = "角色设定不能为空")
+    private String sort;
+
 }

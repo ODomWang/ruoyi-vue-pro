@@ -3,9 +3,9 @@ package cn.iocoder.yudao.framework.pay.core.client;
 import cn.iocoder.yudao.framework.common.util.validation.ValidationUtils;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import java.util.Set;
 
 /**

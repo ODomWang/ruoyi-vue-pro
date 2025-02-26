@@ -7,7 +7,7 @@ import cn.iocoder.yudao.module.system.enums.social.SocialTypeEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.xingyuv.jushauth.config.AuthConfig;
+import cn.iocoder.yudao.jushauth.config.AuthConfig;
 import lombok.*;
 
 /**

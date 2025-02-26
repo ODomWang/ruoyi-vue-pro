@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.draftdata.vo.DraftDataPag
 import cn.iocoder.yudao.module.wenxun.controller.admin.draftdata.vo.DraftDataSaveReqVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.draftdata.DraftDataDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 文巡-在线检测草稿 Service 接口

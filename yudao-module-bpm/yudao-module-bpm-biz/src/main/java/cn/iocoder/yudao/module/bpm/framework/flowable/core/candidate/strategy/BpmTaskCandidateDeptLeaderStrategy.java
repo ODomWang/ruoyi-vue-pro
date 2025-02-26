@@ -8,7 +8,7 @@ import cn.iocoder.yudao.module.system.api.dept.dto.DeptRespDTO;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Set;
 

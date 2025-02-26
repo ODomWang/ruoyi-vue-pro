@@ -1,9 +1,9 @@
 package cn.iocoder.yudao.module.wenxun.controller.admin.urlchangeinfo;
 
 import org.springframework.web.bind.annotation.*;
- import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+ import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.security.access.prepost.PreAuthorize;

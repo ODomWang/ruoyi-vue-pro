@@ -35,8 +35,9 @@ public class AiUtils {
             case XING_HUO:
                 return XingHuoChatOptions.builder().model(model).temperature(temperatureF).maxTokens(maxTokens).build();
             case OPENAI:
-                return OpenAiChatOptions.builder().withModel(model).withTemperature(temperatureF).withMaxTokens(maxTokens).build();
-            case AZURE_OPENAI:
+               return OpenAiChatOptions.builder().withModel(model).withTemperature(temperatureF).withMaxTokens(maxTokens).build();
+
+             case AZURE_OPENAI:
                 // TODO 芋艿：貌似没 model 字段？？？！
                 return AzureOpenAiChatOptions.builder().withDeploymentName(model).withTemperature(temperatureF).withMaxTokens(maxTokens).build();
             case OLLAMA:

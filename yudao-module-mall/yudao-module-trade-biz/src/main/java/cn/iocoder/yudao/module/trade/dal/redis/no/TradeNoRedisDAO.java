@@ -6,7 +6,7 @@ import cn.iocoder.yudao.module.trade.dal.redis.RedisKeyConstants;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -23,6 +23,7 @@ public class TradeNoRedisDAO {
     public static final String AFTER_SALE_NO_PREFIX = "r";
 
     @Resource
+    @Qualifier("stringRedisTemplate")
     private StringRedisTemplate stringRedisTemplate;
 
     /**

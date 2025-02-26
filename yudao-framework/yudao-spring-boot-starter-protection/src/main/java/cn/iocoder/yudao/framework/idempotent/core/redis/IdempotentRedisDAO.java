@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.framework.idempotent.core.redis;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.concurrent.TimeUnit;
@@ -22,6 +23,7 @@ public class IdempotentRedisDAO {
      */
     private static final String IDEMPOTENT = "idempotent:%s";
 
+    @Qualifier("stringRedisTemplate")
     private final StringRedisTemplate redisTemplate;
 
     public Boolean setIfAbsent(String key, long timeout, TimeUnit timeUnit) {

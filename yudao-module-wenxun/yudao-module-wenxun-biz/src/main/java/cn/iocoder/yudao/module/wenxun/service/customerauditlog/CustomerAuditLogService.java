@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.customerauditlog.vo.Custo
 import cn.iocoder.yudao.module.wenxun.controller.admin.customerauditlog.vo.CustomerAuditLogSaveReqVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.customerauditlog.CustomerAuditLogDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 客户审核 Service 接口

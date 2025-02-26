@@ -7,7 +7,7 @@ import cn.iocoder.yudao.module.promotion.controller.app.kefu.vo.message.AppKeFuM
 import cn.iocoder.yudao.module.promotion.controller.app.kefu.vo.message.AppKeFuMessageSendReqVO;
 import cn.iocoder.yudao.module.promotion.dal.dataobject.kefu.KeFuMessageDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 客服消息 Service 接口

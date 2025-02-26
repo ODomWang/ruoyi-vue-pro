@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.system.api.logger.dto.OperateLogCreateReqDTO;
 import cn.iocoder.yudao.module.system.api.logger.dto.OperateLogPageReqDTO;
 import cn.iocoder.yudao.module.system.api.logger.dto.OperateLogRespDTO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 操作日志 API 接口

@@ -1,19 +1,19 @@
 package cn.wenxun.admin.controller.admin.message;
 
+import cm.iocoder.captcha.util.Base64Utils;
 import cn.hutool.core.util.XmlUtil;
-import io.swagger.v3.oas.annotations.tags.Tag;
+ import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.PermitAll;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -181,7 +181,7 @@ public class WeComCallbackController {
      */
     public static String decryptMessage(String encryptedMsg) throws Exception {
         // AES 密钥解码
-        byte[] aesKey = Base64Utils.decodeFromString(ENCODING_AES_KEY + "=");
+        byte[] aesKey =  Base64Utils.decodeFromString(ENCODING_AES_KEY + "=");
         // 解码 Base64 的密文
         byte[] ciphertext = Base64Utils.decodeFromString(encryptedMsg);
 

@@ -172,10 +172,10 @@ public class MidjourneyApi {
     /**
      * Submit 统一返回
      *
-     * @param code 状态码: 1(提交成功), 21(已存在), 22(排队中), other(错误)
+     * @param code        状态码: 1(提交成功), 21(已存在), 22(排队中), other(错误)
      * @param description 描述
-     * @param properties 扩展字段
-     * @param result 任务ID
+     * @param properties  扩展字段
+     * @param result      任务ID
      */
     public record SubmitResponse(String code,
                                  String description,
@@ -186,20 +186,20 @@ public class MidjourneyApi {
     /**
      * 通知 request
      *
-     * @param id job id
-     * @param action 任务类型 {@link TaskActionEnum}
-     * @param status 任务状态 {@link TaskStatusEnum}
-     * @param prompt 提示词
-     * @param promptEn 提示词-英文
+     * @param id          job id
+     * @param action      任务类型 {@link TaskActionEnum}
+     * @param status      任务状态 {@link TaskStatusEnum}
+     * @param prompt      提示词
+     * @param promptEn    提示词-英文
      * @param description 任务描述
-     * @param state 自定义参数
-     * @param submitTime 提交时间
-     * @param startTime 开始执行时间
-     * @param finishTime 结束时间
-     * @param imageUrl 图片url
-     * @param progress 任务进度
-     * @param failReason 失败原因
-     * @param buttons 任务完成后的可执行按钮
+     * @param state       自定义参数
+     * @param submitTime  提交时间
+     * @param startTime   开始执行时间
+     * @param finishTime  结束时间
+     * @param imageUrl    图片url
+     * @param progress    任务进度
+     * @param failReason  失败原因
+     * @param buttons     任务完成后的可执行按钮
      */
     public record Notify(String id,
                          String action,
@@ -226,10 +226,10 @@ public class MidjourneyApi {
      * button
      *
      * @param customId MJ::JOB::upsample::1::85a4b4c1-8835-46c5-a15c-aea34fad1862 动作标识
-     * @param emoji 图标 emoji
-     * @param label Make Variations 文本
-     * @param type 类型，系统内部使用
-     * @param style 样式: 2（Primary）、3（Green）
+     * @param emoji    图标 emoji
+     * @param label    Make Variations 文本
+     * @param type     类型，系统内部使用
+     * @param style    样式: 2（Primary）、3（Green）
      */
     public record Button(String customId,
                          String emoji,

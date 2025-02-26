@@ -20,9 +20,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
-import javax.annotation.security.PermitAll;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -23,7 +23,7 @@ import org.springframework.ai.chat.metadata.RateLimit;
 import org.springframework.ai.model.ResponseMetadata;
 import org.springframework.util.Assert;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.HashMap;
 
 

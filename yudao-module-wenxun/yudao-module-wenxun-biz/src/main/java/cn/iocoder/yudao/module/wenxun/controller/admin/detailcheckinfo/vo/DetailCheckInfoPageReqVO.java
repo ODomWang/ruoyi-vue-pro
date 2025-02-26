@@ -32,7 +32,10 @@ public class DetailCheckInfoPageReqVO extends PageParam {
 
 
     @Schema(description = "创建时间")
+     private String createTime;
+
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
-    private LocalDateTime[] createTime;
+    @Schema(description = "创建时间")
+    private LocalDateTime[] timeRange;
 
 }

@@ -9,7 +9,7 @@ import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 
 import cn.iocoder.yudao.module.wenxun.dal.mysql.urlchangeinfo.UrlChangeInfoMapper;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.wenxun.enums.GlobalErrorCodeConstants.URL_CHANGE_INFO_NOT_EXISTS;

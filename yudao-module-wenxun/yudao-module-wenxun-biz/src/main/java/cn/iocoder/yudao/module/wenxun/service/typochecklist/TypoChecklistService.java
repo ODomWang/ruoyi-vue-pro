@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.typochecklist.vo.TypoChec
 import cn.iocoder.yudao.module.wenxun.controller.admin.typochecklist.vo.TypoChecklistSaveReqVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.typochecklist.TypoChecklistDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 错词检查 Service 接口

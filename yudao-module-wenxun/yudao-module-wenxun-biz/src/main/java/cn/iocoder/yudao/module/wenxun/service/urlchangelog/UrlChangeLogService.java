@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.urlchangelog.vo.UrlChange
 import cn.iocoder.yudao.module.wenxun.controller.admin.urlchangelog.vo.UrlChangeLogSaveReqVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlchangelog.UrlChangeLogDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 网站更新检查-日志 Service 接口

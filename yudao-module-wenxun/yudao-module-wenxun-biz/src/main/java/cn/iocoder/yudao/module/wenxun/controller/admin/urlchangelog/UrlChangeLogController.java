@@ -1,17 +1,17 @@
 package cn.iocoder.yudao.module.wenxun.controller.admin.urlchangelog;
 
 import org.springframework.web.bind.annotation.*;
- import javax.annotation.Resource;
+ import jakarta.annotation.Resource;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.security.access.prepost.PreAuthorize;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Operation;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.validation.Valid;
-import javax.annotation.Resource;
+import jakarta.validation.Valid;
+import jakarta.annotation.Resource;
 
 import java.util.*;
 import java.io.IOException;

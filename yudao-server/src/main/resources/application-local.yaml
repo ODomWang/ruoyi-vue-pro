@@ -3,10 +3,11 @@ server:
 
 --- #################### 数据库相关配置 ####################
 spring:
+
   # 数据源配置项
   autoconfigure:
     exclude:
-      - com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure # 排除 Druid 的自动配置，使用 dynamic-datasource-spring-boot-starter 配置多数据源
+      - com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceAutoConfigure # 排除 Druid 的自动配置，使用 dynamic-datasource-spring-boot-starter 配置多数据源
 #      - org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration # 默认 local 环境，不开启 Quartz 的自动配置
       - de.codecentric.boot.admin.server.config.AdminServerAutoConfiguration # 禁用 Spring Boot Admin 的 Server 的自动配置
       - de.codecentric.boot.admin.server.ui.config.AdminServerUiAutoConfiguration # 禁用 Spring Boot Admin 的 Server UI 的自动配置
@@ -30,6 +31,7 @@ spring:
         wall:
           config:
             multi-statement-allow: true
+      enable: false
     dynamic: # 多数据源配置
       druid: # Druid 【连接池】相关的全局配置
         initial-size: 1 # 初始连接数
@@ -69,11 +71,12 @@ spring:
           password: wenxun123
 
   # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
-  redis:
-    host: 123.56.27.46 # 地址
-    port: 6379 # 端口
-    database: 0 # 数据库索引
-    password: wangjingpeng2659 # 密码，建议生产环境开启
+  data:
+    redis:
+      host: 123.56.27.46
+      port: 6379
+      database: 0
+      password: wangjingpeng2659
 
 --- #################### 定时任务相关配置 ####################
 

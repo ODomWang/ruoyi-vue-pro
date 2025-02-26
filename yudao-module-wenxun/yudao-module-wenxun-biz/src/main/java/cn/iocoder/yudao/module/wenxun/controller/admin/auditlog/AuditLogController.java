@@ -25,9 +25,9 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.auditlog.vo.*;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.auditlog.AuditLogDO;
 import cn.iocoder.yudao.module.wenxun.service.auditlog.AuditLogService;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @Tag(name = "管理后台 - 人工研判审核")
 @RestController

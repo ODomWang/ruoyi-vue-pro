@@ -3,7 +3,7 @@ package cn.iocoder.yudao.framework.test.core.ut;
 import cn.iocoder.yudao.framework.datasource.config.YudaoDataSourceAutoConfiguration;
 import cn.iocoder.yudao.framework.mybatis.config.YudaoMybatisAutoConfiguration;
 import cn.iocoder.yudao.framework.test.config.SqlInitializationTestConfiguration;
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
+import com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceAutoConfigure;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.github.yulichang.autoconfigure.MybatisPlusJoinAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -15,7 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 /**
  * 依赖内存 DB 的单元测试
- *
+ * <p>
  * 注意，Service 层同样适用。对于 Service 层的单元测试，我们针对自己模块的 Mapper 走的是 H2 内存数据库，针对别的模块的 Service 走的是 Mock 方法
  *
  * @author 芋道源码

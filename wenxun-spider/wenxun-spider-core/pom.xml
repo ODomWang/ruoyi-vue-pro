@@ -7,28 +7,7 @@
         <groupId>cn.iocoder.boot</groupId>
         <version>${revision}</version>
     </parent>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>15</source>
-                    <target>15</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version>
-                <configuration>
-                    <includeSystemScope>true</includeSystemScope>
-                </configuration>
 
-            </plugin>
-
-        </plugins>
-    </build>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>wenxun-spider-core</artifactId>
     <packaging>jar</packaging>
@@ -101,25 +80,14 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-annotation</artifactId>
-            <version>3.5.7</version>
+            <version>3.5.10.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-spring-boot-starter-mybatis</artifactId>
         </dependency>
-        <dependency>
-            <groupId>cn.iocoder.boot</groupId>
-            <artifactId>yudao-module-system-biz</artifactId>
-            <version>2.2.0-jdk8-snapshot</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- Selenium Java -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.seleniumhq.selenium</groupId>-->
-        <!--            <artifactId>selenium-java</artifactId>-->
-        <!--            <version>4.25.0</version> &lt;!&ndash; 使用最新稳定版本 &ndash;&gt;-->
-        <!--        </dependency>-->
+
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-http-jdk-client</artifactId>
@@ -187,7 +155,7 @@
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-module-wenxun-biz</artifactId>
-            <version>2.2.0-jdk8-snapshot</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -198,7 +166,7 @@
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-spring-boot-starter-excel</artifactId>
-            <version>2.2.0-jdk8-snapshot</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.juniversalchardet</groupId>
@@ -229,6 +197,34 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/aspose-pdf-22.4.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>cn.iocoder.boot</groupId>
+            <artifactId>captcha-plus</artifactId>
+            <version>2.4.0-jdk8-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.iocoder.boot</groupId>
+            <artifactId>yudao-module-wenxun-biz</artifactId>
+            <version>2.4.0-jdk8-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.iocoder.boot</groupId>
+            <artifactId>yudao-module-wenxun-biz</artifactId>
+            <version>2.4.0-jdk8-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.iocoder.boot</groupId>
+            <artifactId>yudao-module-wenxun-biz</artifactId>
+            <version>2.4.0-jdk8-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+
+
     </dependencies>
 
 

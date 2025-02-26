@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 
 @AutoConfiguration(after = YudaoWebAutoConfiguration.class)
 public class YudaoApiLogAutoConfiguration implements WebMvcConfigurer {

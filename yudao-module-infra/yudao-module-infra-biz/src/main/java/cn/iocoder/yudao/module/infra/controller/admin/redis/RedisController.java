@@ -5,6 +5,7 @@ import cn.iocoder.yudao.module.infra.controller.admin.redis.vo.RedisMonitorRespV
 import cn.iocoder.yudao.module.infra.convert.redis.RedisConvert;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Properties;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
@@ -24,6 +25,8 @@ import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 public class RedisController {
 
     @Resource
+    @Qualifier("stringRedisTemplate")
+
     private StringRedisTemplate stringRedisTemplate;
 
     @GetMapping("/get-monitor-info")

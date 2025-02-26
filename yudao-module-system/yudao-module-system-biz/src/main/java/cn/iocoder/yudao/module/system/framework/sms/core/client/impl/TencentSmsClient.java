@@ -15,9 +15,11 @@ import cn.iocoder.yudao.module.system.framework.sms.core.enums.SmsTemplateAuditS
 import cn.iocoder.yudao.module.system.framework.sms.core.property.SmsChannelProperties;
 import com.google.common.annotations.VisibleForTesting;
 
+
+import jakarta.xml.bind.DatatypeConverter;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;

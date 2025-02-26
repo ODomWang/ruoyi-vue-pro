@@ -3,7 +3,7 @@ package cn.iocoder.yudao.module.wenxun.controller.admin.urlchangeinfo.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 
 @Schema(description = "管理后台 - 网站更新检查新增/修改 Request VO")

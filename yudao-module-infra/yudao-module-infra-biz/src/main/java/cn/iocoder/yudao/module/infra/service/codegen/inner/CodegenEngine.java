@@ -39,8 +39,8 @@ import com.google.common.collect.Table;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import java.util.*;
 
 import static cn.hutool.core.map.MapUtil.getStr;
@@ -162,7 +162,7 @@ public class CodegenEngine {
      * 是否使用 jakarta 包，用于解决 Spring Boot 2.X 和 3.X 的兼容性问题
      *
      * true  - 使用 jakarta.validation.constraints.*
-     * false - 使用 javax.validation.constraints.*
+     * false - 使用 jakarta.validation.constraints.*
      */
     @Setter // 允许设置的原因，是因为单测需要手动改变
     private Boolean jakartaEnable;
@@ -181,7 +181,7 @@ public class CodegenEngine {
         TemplateConfig config = new TemplateConfig();
         config.setResourceMode(TemplateConfig.ResourceMode.CLASSPATH);
         this.templateEngine = new VelocityEngine(config);
-        // 设置 javaxEnable，按照是否使用 JDK17 来判断
+        // 设置 jakartaEnable，按照是否使用 JDK17 来判断
         this.jakartaEnable = false;
                 //SystemUtil.getJavaInfo().isJavaVersionAtLeast(1700); // 17.00 * 100
     }
@@ -193,7 +193,7 @@ public class CodegenEngine {
         globalBindingMap.put("basePackage", codegenProperties.getBasePackage());
         globalBindingMap.put("baseFrameworkPackage", codegenProperties.getBasePackage()
                 + '.' + "framework"); // 用于后续获取测试类的 package 地址
-        globalBindingMap.put("jakartaPackage", jakartaEnable ? "jakarta" : "javax");
+        globalBindingMap.put("jakartaPackage", jakartaEnable ? "jakarta" : "jakarta");
         // 全局 Java Bean
         globalBindingMap.put("CommonResultClassName", CommonResult.class.getName());
         globalBindingMap.put("PageResultClassName", PageResult.class.getName());

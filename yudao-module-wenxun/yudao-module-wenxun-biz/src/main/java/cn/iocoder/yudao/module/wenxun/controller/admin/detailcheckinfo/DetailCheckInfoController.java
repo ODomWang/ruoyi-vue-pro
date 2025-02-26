@@ -26,9 +26,9 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.*;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
 import cn.iocoder.yudao.module.wenxun.service.detailcheckinfo.DetailCheckInfoService;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @Tag(name = "管理后台 - 详情检测信息")
 @RestController

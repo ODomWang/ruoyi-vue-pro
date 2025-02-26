@@ -25,9 +25,9 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.urlpinginfo.vo.*;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlpinginfo.UrlPingInfoDO;
 import cn.iocoder.yudao.module.wenxun.service.urlpinginfo.UrlPingInfoService;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @Tag(name = "管理后台 - 网页连通记录")
 @RestController

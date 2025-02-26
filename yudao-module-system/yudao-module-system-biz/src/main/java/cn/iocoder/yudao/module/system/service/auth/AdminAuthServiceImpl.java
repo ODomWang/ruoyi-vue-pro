@@ -24,15 +24,15 @@ import cn.iocoder.yudao.module.system.service.oauth2.OAuth2TokenService;
 import cn.iocoder.yudao.module.system.service.social.SocialUserService;
 import cn.iocoder.yudao.module.system.service.user.AdminUserService;
 import com.google.common.annotations.VisibleForTesting;
-import com.xingyuv.captcha.model.common.ResponseModel;
-import com.xingyuv.captcha.model.vo.CaptchaVO;
-import com.xingyuv.captcha.service.CaptchaService;
+import cm.iocoder.captcha.model.common.ResponseModel;
+import cm.iocoder.captcha.model.vo.CaptchaVO;
+import cm.iocoder.captcha.service.CaptchaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.validation.Validator;
+import jakarta.annotation.Resource;
+import jakarta.validation.Validator;
 import java.util.Objects;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;

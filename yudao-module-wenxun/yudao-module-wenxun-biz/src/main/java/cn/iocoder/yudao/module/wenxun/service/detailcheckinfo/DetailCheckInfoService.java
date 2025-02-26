@@ -6,7 +6,7 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.Detail
 import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.DetailCheckInfoWithDictDataRespVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**

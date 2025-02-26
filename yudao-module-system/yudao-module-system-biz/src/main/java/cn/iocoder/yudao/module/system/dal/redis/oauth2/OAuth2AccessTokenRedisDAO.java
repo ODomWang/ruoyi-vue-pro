@@ -4,10 +4,11 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
 import cn.iocoder.yudao.framework.common.util.json.JsonUtils;
 import cn.iocoder.yudao.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -25,6 +26,8 @@ import static cn.iocoder.yudao.module.system.dal.redis.RedisKeyConstants.OAUTH2_
 public class OAuth2AccessTokenRedisDAO {
 
     @Resource
+    @Qualifier("stringRedisTemplate")
+
     private StringRedisTemplate stringRedisTemplate;
 
     public OAuth2AccessTokenDO get(String accessToken) {

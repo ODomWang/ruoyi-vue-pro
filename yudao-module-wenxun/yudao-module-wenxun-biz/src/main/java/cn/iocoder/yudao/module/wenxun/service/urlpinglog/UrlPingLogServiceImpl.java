@@ -9,7 +9,7 @@ import cn.iocoder.yudao.module.wenxun.dal.mysql.urlpinglog.UrlPingLogMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;

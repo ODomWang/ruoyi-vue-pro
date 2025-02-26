@@ -2,6 +2,12 @@ spring:
   application:
     name: yudao-server
 
+  # 禁用 Spring Cloud Function，避免项目启动时，出现错误
+  # https://github.com/spring-cloud/spring-cloud-function/issues/1087
+  cloud:
+    function:
+      definition: none
+
   profiles:
     active: local
 
@@ -35,20 +41,19 @@ server:
       enabled: true
       charset: UTF-8 # 必须设置 UTF-8，避免 WebFlux 流式返回（AI 场景）会乱码问题
       force: true
-
 --- #################### 接口文档配置 ####################
 
 springdoc:
   api-docs:
-    enabled: true
+    enabled: false
     path: /v3/api-docs
   swagger-ui:
-    enabled: true
+    enabled: false
     path: /swagger-ui
   default-flat-param-object: true # 参见 https://doc.xiaominfo.com/docs/faq/v4/knife4j-parameterobject-flat-param 文档
 
 knife4j:
-  enable: true
+  enable: false
   setting:
     language: zh_cn
 
@@ -155,9 +160,9 @@ spring:
     embedding:
       transformer:
         onnx:
-          model-uri: http://test.yudao.iocoder.cn/model.onnx
+          model-uri: http://110.40.228.6:2659/down/NqZjkyH7GHMg.onnx
         tokenizer:
-          uri: http://test.yudao.iocoder.cn/tokenizer.json
+          uri: http://110.40.228.6:2659/down/dgj2w7CNFPET.json
     qianfan: # 文心一言
       api-key: x0cuLZ7XsaTCU08vuJWO87Lg
       secret-key: R9mYF9dl9KASgi5RUq0FQt3wRisSnOcK

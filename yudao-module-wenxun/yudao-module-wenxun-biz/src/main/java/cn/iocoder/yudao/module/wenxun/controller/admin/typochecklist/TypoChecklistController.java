@@ -25,9 +25,9 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.typochecklist.vo.*;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.typochecklist.TypoChecklistDO;
 import cn.iocoder.yudao.module.wenxun.service.typochecklist.TypoChecklistService;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @Tag(name = "管理后台 - 错词检查")
 @RestController

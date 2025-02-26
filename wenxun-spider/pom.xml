@@ -15,8 +15,6 @@
     </modules>
 
     <name>${project.artifactId}</name>
-    <description>
 
-    </description>
 
 </project>

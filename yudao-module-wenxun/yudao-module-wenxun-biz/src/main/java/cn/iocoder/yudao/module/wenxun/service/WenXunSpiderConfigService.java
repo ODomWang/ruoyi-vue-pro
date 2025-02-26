@@ -5,7 +5,7 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.wenxun.model.spider.SpiderXpathConfigDO;
 import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 public interface WenXunSpiderConfigService {

@@ -1,6 +1,7 @@
 package cn.iocoder.yudao.framework.signature.core.redis;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.concurrent.TimeUnit;
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  */
 @AllArgsConstructor
 public class ApiSignatureRedisDAO {
-
+    @Qualifier("stringRedisTemplate")
     private final StringRedisTemplate stringRedisTemplate;
 
     /**

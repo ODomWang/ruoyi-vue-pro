@@ -83,7 +83,7 @@ public class AiWriteServiceImpl implements AiWriteService {
         // 2. 插入写作信息
         AiWriteDO writeDO = BeanUtils.toBean(generateReqVO, AiWriteDO.class,
                 write -> write.setUserId(userId).setPlatform(platform.getPlatform()).setModel(model.getModel()));
-        writeMapper.insert(writeDO);
+            writeMapper.insert(writeDO);
 
         // 3.1 构建 Prompt，并进行调用
         Prompt prompt = buildPrompt(generateReqVO, model, systemMessage);

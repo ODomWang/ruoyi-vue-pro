@@ -31,13 +31,14 @@ import com.binarywang.spring.starter.wxjava.mp.properties.WxMpProperties;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.xingyuv.jushauth.config.AuthConfig;
-import com.xingyuv.jushauth.model.AuthCallback;
-import com.xingyuv.jushauth.model.AuthResponse;
-import com.xingyuv.jushauth.model.AuthUser;
-import com.xingyuv.jushauth.request.AuthRequest;
-import com.xingyuv.jushauth.utils.AuthStateUtils;
-import com.xingyuv.justauth.AuthRequestFactory;
+import cn.iocoder.yudao.jushauth.config.AuthConfig;
+import cn.iocoder.yudao.jushauth.model.AuthCallback;
+import cn.iocoder.yudao.jushauth.model.AuthResponse;
+import cn.iocoder.yudao.jushauth.model.AuthUser;
+import cn.iocoder.yudao.jushauth.request.AuthRequest;
+import cn.iocoder.yudao.jushauth.utils.AuthStateUtils;
+import cn.iocoder.yudao.justauth.AuthRequestFactory;
+import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
@@ -47,12 +48,12 @@ import me.chanjar.weixin.common.redis.RedisTemplateWxRedisOps;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpRedisConfigImpl;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,7 @@ public class SocialClientServiceImpl implements SocialClientService {
     @Resource
     private WxMpProperties wxMpProperties;
     @Resource
+    @Qualifier("stringRedisTemplate")
     private StringRedisTemplate stringRedisTemplate; // WxMpService 需要使用到，所以在 Service 注入了它
     /**
      * 缓存 WxMpService 对象

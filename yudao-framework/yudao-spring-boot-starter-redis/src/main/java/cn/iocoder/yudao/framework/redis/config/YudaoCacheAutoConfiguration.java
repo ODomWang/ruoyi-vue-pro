@@ -1,8 +1,9 @@
 package cn.iocoder.yudao.framework.redis.config;
 
-import cn.hutool.core.util.StrUtil;
-import cn.iocoder.yudao.framework.redis.core.TimeoutRedisCacheManager;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
+ import cn.hutool.core.util.StrUtil;
+ import cn.iocoder.yudao.framework.redis.core.TimeoutRedisCacheManager;
+ import org.springframework.beans.factory.annotation.Qualifier;
+ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
@@ -68,7 +69,8 @@ public class YudaoCacheAutoConfiguration {
     }
 
     @Bean
-    public RedisCacheManager redisCacheManager(RedisTemplate<String, Object> redisTemplate,
+    @Primary
+    public RedisCacheManager redisCacheManager(@Qualifier("redisTemplate")RedisTemplate<String, Object> redisTemplate,
                                                RedisCacheConfiguration redisCacheConfiguration,
                                                YudaoCacheProperties yudaoCacheProperties) {
         // 创建 RedisCacheWriter 对象

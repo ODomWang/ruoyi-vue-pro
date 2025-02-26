@@ -14,6 +14,7 @@ import cn.iocoder.yudao.module.mp.service.handler.user.SubscribeHandler;
 import cn.iocoder.yudao.module.mp.service.handler.user.UnsubscribeHandler;
 import com.binarywang.spring.starter.wxjava.mp.properties.WxMpProperties;
 import me.chanjar.weixin.common.redis.RedisTemplateWxRedisOps;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,7 +29,7 @@ public class MpConfiguration {
 
     @Bean
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RedisTemplateWxRedisOps redisTemplateWxRedisOps(StringRedisTemplate stringRedisTemplate) {
+    public RedisTemplateWxRedisOps redisTemplateWxRedisOps(@Qualifier("stringRedisTemplate")StringRedisTemplate stringRedisTemplate) {
         return new RedisTemplateWxRedisOps(stringRedisTemplate);
     }
 

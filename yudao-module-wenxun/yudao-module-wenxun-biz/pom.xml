@@ -90,12 +90,6 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-        <!-- 三方云服务相关 -->
-        <dependency>
-            <groupId>com.xingyuv</groupId>
-            <artifactId>spring-boot-starter-justauth</artifactId> <!-- 社交登陆（例如说，个人微信、企业微信等等） -->
-        </dependency>
-
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>wx-java-mp-spring-boot-starter</artifactId> <!-- 微信登录（公众号） -->
@@ -105,22 +99,17 @@
             <artifactId>wx-java-miniapp-spring-boot-starter</artifactId>  <!-- 微信登录（小程序） -->
         </dependency>
 
-        <dependency>
-            <groupId>com.xingyuv</groupId>
-            <artifactId>spring-boot-starter-captcha-plus</artifactId> <!-- 验证码，一般用于登录使用 -->
-        </dependency>
+
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-module-system-biz</artifactId>
-            <version>2.2.0-jdk8-snapshot</version>
-            <scope>compile</scope>
-        </dependency>
+            <version>${revision}</version>
+         </dependency>
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-module-wenxun-api</artifactId>
-            <version>2.2.0-jdk8-snapshot</version>
-            <scope>compile</scope>
-        </dependency>
+            <version>${revision}</version>
+         </dependency>
     </dependencies>
 
 </project>

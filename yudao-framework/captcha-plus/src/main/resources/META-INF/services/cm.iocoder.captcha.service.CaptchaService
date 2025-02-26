@@ -1,0 +1,4 @@
+cm.iocoder.captcha.service.impl.BlockPuzzleCaptchaServiceImpl
+cm.iocoder.captcha.service.impl.ClickWordCaptchaServiceImpl
+cm.iocoder.captcha.service.impl.DefaultCaptchaServiceImpl
+#cn.iocoder.yudao.captcha.service.impl.RotatePuzzleCaptchaServiceImpl

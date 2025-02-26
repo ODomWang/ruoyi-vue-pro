@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckauditinfo.vo.D
 import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckauditinfo.vo.DetailCheckAuditInfoSaveReqVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckauditinfo.DetailCheckAuditInfoDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 详情检测信息表-用户审核 Service 接口

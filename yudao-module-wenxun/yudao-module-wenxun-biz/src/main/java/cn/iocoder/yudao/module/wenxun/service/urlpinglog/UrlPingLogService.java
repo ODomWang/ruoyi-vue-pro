@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.wenxun.controller.admin.urlpinglog.vo.UrlPingLogP
 import cn.iocoder.yudao.module.wenxun.controller.admin.urlpinglog.vo.UrlPingLogSaveReqVO;
 import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlpinglog.UrlPingLogDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 网页连通记录-日志 Service 接口

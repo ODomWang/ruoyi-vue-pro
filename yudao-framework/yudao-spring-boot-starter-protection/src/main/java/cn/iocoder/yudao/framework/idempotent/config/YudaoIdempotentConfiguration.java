@@ -6,6 +6,7 @@ import cn.iocoder.yudao.framework.idempotent.core.keyresolver.impl.ExpressionIde
 import cn.iocoder.yudao.framework.idempotent.core.keyresolver.IdempotentKeyResolver;
 import cn.iocoder.yudao.framework.idempotent.core.keyresolver.impl.UserIdempotentKeyResolver;
 import cn.iocoder.yudao.framework.idempotent.core.redis.IdempotentRedisDAO;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import cn.iocoder.yudao.framework.redis.config.YudaoRedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ public class YudaoIdempotentConfiguration {
     }
 
     @Bean
-    public IdempotentRedisDAO idempotentRedisDAO(StringRedisTemplate stringRedisTemplate) {
+    public IdempotentRedisDAO idempotentRedisDAO(@Qualifier("stringRedisTemplate")StringRedisTemplate stringRedisTemplate) {
         return new IdempotentRedisDAO(stringRedisTemplate);
     }
 

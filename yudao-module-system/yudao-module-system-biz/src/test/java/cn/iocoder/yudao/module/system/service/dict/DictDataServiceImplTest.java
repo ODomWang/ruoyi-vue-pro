@@ -9,7 +9,7 @@ import cn.iocoder.yudao.module.system.service.wenxunDict.WenXunDictDataServiceIm
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertPojoEquals;
