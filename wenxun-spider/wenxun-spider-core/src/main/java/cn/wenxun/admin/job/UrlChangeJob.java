@@ -2,20 +2,21 @@ package cn.wenxun.admin.job;
 
 import cn.iocoder.yudao.framework.quartz.core.handler.JobHandler;
 import cn.iocoder.yudao.framework.tenant.core.aop.TenantIgnore;
-import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlchangeinfo.UrlChangeInfoDO;
-import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlchangelog.UrlChangeLogDO;
-import cn.iocoder.yudao.module.wenxun.dal.mysql.urlchangeinfo.UrlChangeInfoMapper;
-import cn.iocoder.yudao.module.wenxun.dal.mysql.urlchangelog.UrlChangeLogMapper;
-import cn.iocoder.yudao.module.wenxun.mapper.WenXunSpiderCrawlMapper;
-import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderCrawlDetail;
-import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
-import cn.iocoder.yudao.module.wenxun.service.WenXunSpiderConfigService;
+import cn.iocoder.yudao.module.system.dal.dataobject.urlchangeinfo.UrlChangeInfoDO;
+import cn.iocoder.yudao.module.system.dal.dataobject.urlchangelog.UrlChangeLogDO;
+import cn.iocoder.yudao.module.system.dal.mysql.urlchangeinfo.UrlChangeInfoMapper;
+import cn.iocoder.yudao.module.system.dal.mysql.urlchangelog.UrlChangeLogMapper;
+import cn.iocoder.yudao.module.system.mapper.WenXunSpiderCrawlMapper;
+import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderCrawlDetail;
+import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
+import cn.iocoder.yudao.module.system.service.WenXunSpiderConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.Resource;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -84,6 +85,7 @@ public class UrlChangeJob implements JobHandler {
                             urlChangeInfoDO.setCreateTime(LocalDateTime.now());
                             urlChangeInfoDO.setUpdateTime(LocalDateTime.now());
                         }
+                        urlChangeInfoDO.setDeptId(url.getDeptId());
                         urlChangeInfoDO.setAllCount(urlChangeInfoDO.getAllCount() + 1);
                         urlChangeInfoDO.setLastTitle(data.getTitle());
                         urlChangeInfoDO.setUpdateTime(LocalDateTime.now());

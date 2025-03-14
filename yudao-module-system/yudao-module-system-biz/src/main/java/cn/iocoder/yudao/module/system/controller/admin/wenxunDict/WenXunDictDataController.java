@@ -41,7 +41,6 @@ public class WenXunDictDataController {
 
     @PostMapping("/create")
     @Operation(summary = "新增字典数据")
-    @PreAuthorize("@ss.hasPermission('wenxun:dict:create')")
     public CommonResult<Long> createDictData(@Valid @RequestBody WenXunDictDataSaveReqVO createReqVO) {
         Long dictDataId = wenXunDictDataService.createDictData(createReqVO);
         return success(dictDataId);
@@ -49,7 +48,6 @@ public class WenXunDictDataController {
 
     @PutMapping("/update")
     @Operation(summary = "修改字典数据")
-    @PreAuthorize("@ss.hasPermission('wenxun:dict:update')")
     public CommonResult<Boolean> updateDictData(@Valid @RequestBody WenXunDictDataSaveReqVO updateReqVO) {
         wenXunDictDataService.updateDictData(updateReqVO);
         return success(true);
@@ -58,7 +56,6 @@ public class WenXunDictDataController {
     @DeleteMapping("/delete")
     @Operation(summary = "删除字典数据")
     @Parameter(name = "id", description = "编号", required = true, example = "1024")
-    @PreAuthorize("@ss.hasPermission('wenxun:dict:delete')")
     public CommonResult<Boolean> deleteDictData(Long id) {
         wenXunDictDataService.deleteDictData(id);
         return success(true);
@@ -76,7 +73,6 @@ public class WenXunDictDataController {
 
     @GetMapping("/page")
     @Operation(summary = "/获得字典类型的分页列表")
-    @PreAuthorize("@ss.hasPermission('wenxun:dict:query')")
     public CommonResult<PageResult<WenXunDictDataRespVO>> getDictTypePage(@Valid WenXunDictDataPageReqVO pageReqVO) {
         PageResult<WenXunDictDataDO> pageResult = wenXunDictDataService.getDictDataPage(pageReqVO);
         return success(BeanUtils.toBean(pageResult, WenXunDictDataRespVO.class));
@@ -85,7 +81,6 @@ public class WenXunDictDataController {
     @GetMapping(value = "/get")
     @Operation(summary = "/查询字典数据详细")
     @Parameter(name = "id", description = "编号", required = true, example = "1024")
-    @PreAuthorize("@ss.hasPermission('wenxun:dict:query')")
     public CommonResult<WenXunDictDataRespVO> getDictData(@RequestParam("id") Long id) {
         WenXunDictDataDO dictData = wenXunDictDataService.getDictData(id);
         return success(BeanUtils.toBean(dictData, WenXunDictDataRespVO.class));
@@ -93,7 +88,6 @@ public class WenXunDictDataController {
 
     @GetMapping("/export")
     @Operation(summary = "导出字典数据")
-    @PreAuthorize("@ss.hasPermission('wenxun:dict:export')")
     @ApiAccessLog(operateType = EXPORT)
     public void export(HttpServletResponse response, @Valid WenXunDictDataPageReqVO exportReqVO) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);

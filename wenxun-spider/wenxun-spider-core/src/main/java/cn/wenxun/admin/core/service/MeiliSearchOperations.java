@@ -1,6 +1,6 @@
 package cn.wenxun.admin.core.service;
 
-import cn.iocoder.yudao.module.wenxun.model.MeiliSearchInfo;
+import cn.iocoder.yudao.module.system.model.MeiliSearchInfo;
 import com.meilisearch.sdk.SearchRequest;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
 import com.meilisearch.sdk.model.*;

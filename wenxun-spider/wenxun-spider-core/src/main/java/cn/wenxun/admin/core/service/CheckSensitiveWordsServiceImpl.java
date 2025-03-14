@@ -3,11 +3,11 @@ package cn.wenxun.admin.core.service;
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
 import cn.iocoder.yudao.module.system.service.wenxunDict.WenXunDictDataService;
-import cn.iocoder.yudao.module.wenxun.controller.admin.urlpinglog.vo.UrlPingLogSaveReqVO;
-import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlpinginfo.UrlPingInfoDO;
-import cn.iocoder.yudao.module.wenxun.dal.mysql.urlpinginfo.UrlPingInfoMapper;
+import cn.iocoder.yudao.module.system.controller.admin.urlpinglog.vo.UrlPingLogSaveReqVO;
+import cn.iocoder.yudao.module.system.dal.dataobject.urlpinginfo.UrlPingInfoDO;
+import cn.iocoder.yudao.module.system.dal.mysql.urlpinginfo.UrlPingInfoMapper;
 import cn.iocoder.yudao.module.wenxun.enums.commondao.WrongWordInfo;
-import cn.iocoder.yudao.module.wenxun.service.urlpinglog.UrlPingLogService;
+import cn.iocoder.yudao.module.system.service.urlpinglog.UrlPingLogService;
 import cn.wenxun.admin.job.utils.SensitiveFilter;
 import cn.wenxun.admin.utils.ExcelToHtmlUtil;
 import cn.wenxun.admin.utils.PdfToHtmlUtil;
@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.wenxun.enums.GlobalErrorCodeConstants.TYPO_CHECKLIST_NOT_EXISTS;
 import static cn.wenxun.admin.constants.GlobalErrorCodeConstants.FILE_ERROR;
 
 @Service

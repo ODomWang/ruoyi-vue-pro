@@ -2,12 +2,12 @@ package cn.wenxun.admin.job;
 
 import cn.iocoder.yudao.framework.quartz.core.handler.JobHandler;
 import cn.iocoder.yudao.framework.tenant.core.aop.TenantIgnore;
-import cn.iocoder.yudao.module.wenxun.controller.admin.urlpinglog.vo.UrlPingLogSaveReqVO;
-import cn.iocoder.yudao.module.wenxun.dal.dataobject.urlpinginfo.UrlPingInfoDO;
-import cn.iocoder.yudao.module.wenxun.dal.mysql.urlpinginfo.UrlPingInfoMapper;
-import cn.iocoder.yudao.module.wenxun.service.urlpinglog.UrlPingLogService;
-import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
-import cn.iocoder.yudao.module.wenxun.service.WenXunSpiderConfigService;
+import cn.iocoder.yudao.module.system.controller.admin.urlpinglog.vo.UrlPingLogSaveReqVO;
+import cn.iocoder.yudao.module.system.dal.dataobject.urlpinginfo.UrlPingInfoDO;
+import cn.iocoder.yudao.module.system.dal.mysql.urlpinginfo.UrlPingInfoMapper;
+import cn.iocoder.yudao.module.system.service.urlpinglog.UrlPingLogService;
+import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
+import cn.iocoder.yudao.module.system.service.WenXunSpiderConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.htmlunit.WebClient;
 import org.htmlunit.WebResponse;
@@ -76,6 +76,7 @@ public class UrlPingJob implements JobHandler {
                                 urlPingInfoDO.setAllCount(1);
                                 urlPingInfoDO.setCreateTime(LocalDateTime.now());
                                 urlPingInfoDO.setUrlName(data.getUrlName());
+                                urlPingInfoDO.setDeptId(url.getDeptId());
 
                                 if (data.getStatus() == 1) {
                                     urlPingInfoDO.setSuccessCount(1);
@@ -85,6 +86,7 @@ public class UrlPingJob implements JobHandler {
                                     urlPingInfoDO.setFailCount(1);
                                 }
                             } else {
+                                urlPingInfoDO.setDeptId(url.getDeptId());
                                 urlPingInfoDO.setUrlName(data.getUrlName());
                                 urlPingInfoDO.setAllCount(urlPingInfoDO.getAllCount() + 1);
                                 if (data.getStatus() == 1) {

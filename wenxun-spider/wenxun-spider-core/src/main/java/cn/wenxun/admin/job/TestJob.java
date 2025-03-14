@@ -4,9 +4,8 @@ import cn.iocoder.yudao.framework.quartz.core.handler.JobHandler;
 import cn.iocoder.yudao.framework.tenant.core.aop.TenantIgnore;
 import cn.iocoder.yudao.module.system.dal.mysql.wenxunDict.WenXunDictDataMapper;
 import cn.wenxun.admin.core.service.MeiliSearchService;
-import cn.iocoder.yudao.module.wenxun.mapper.WenXunSpiderCrawlMapper;
-import cn.iocoder.yudao.module.wenxun.model.MeiliSearchInfo;
-import com.alibaba.fastjson.JSON;
+import cn.iocoder.yudao.module.system.mapper.WenXunSpiderCrawlMapper;
+import cn.iocoder.yudao.module.system.model.MeiliSearchInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

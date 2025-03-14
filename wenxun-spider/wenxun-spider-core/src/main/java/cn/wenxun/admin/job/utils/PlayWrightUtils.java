@@ -1,7 +1,7 @@
 package cn.wenxun.admin.job.utils;
 
-import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
-import cn.iocoder.yudao.module.wenxun.model.spider.SpiderXpathConfigDO;
+import cn.iocoder.yudao.module.system.model.NewsInfo;
+import cn.iocoder.yudao.module.system.model.spider.SpiderXpathConfigDO;
 import cn.wenxun.admin.core.service.WenXunSpiderCrawlService;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.LoadState;
@@ -81,7 +81,7 @@ public class PlayWrightUtils {
     }
 
 
-    public static List<NewsInfo> crawlUrl(SpiderXpathConfigDO xpathConfigDO, WenXunSpiderCrawlService wenXunSpiderCrawlService) {
+    public static List<NewsInfo> crawlUrl(SpiderXpathConfigDO xpathConfigDO, WenXunSpiderCrawlService wenXunSpiderCrawlService, boolean isTest) {
 
 
         try (Playwright playwright = Playwright.create()) {
@@ -129,7 +129,7 @@ public class PlayWrightUtils {
                             // 提取标题
                             ElementHandle tileelement = elementHandle.querySelector("xpath=" + xpathConfigDO.getTitleXpath());
                             if (tileelement != null) {
-                                String tile = tileelement.innerText();
+                                String tile = tileelement.textContent();
                                 newsInfo.setTitle(tile);
                             }
                         }
@@ -137,19 +137,22 @@ public class PlayWrightUtils {
                             // 提取描述
                             ElementHandle tiledesc = elementHandle.querySelector("xpath=" + xpathConfigDO.getDescXpath());
                             if (tiledesc != null) {
-                                String tile = tiledesc.innerText();
+                                String tile = tiledesc.textContent();
                                 newsInfo.setDesc(tile);
                             }
                         }
                         newsInfo.setUrl(PlayWrightUtils.getPageUrl(elementHandle, page));
-
+                        newsInfo.setWebIcon(iconUrl);
                         String content = extractContentFromPage(newsInfo.getUrl(), page.context(), xpathConfigDO.getBodyXpath());
                         newsInfo.setNextPageUrl(nextPageUrl);
                         newsInfo.setContent(content);
                         newsInfo.setSpiderName(xpathConfigDO.getSpiderName());
                         newsInfo.setConfigId(xpathConfigDO.getId());
+                        newsInfo.setDeptId(xpathConfigDO.getDeptId());
                         newsList.add(newsInfo);
-                        wenXunSpiderCrawlService.insertDoBySpider(List.of(newsInfo));
+                        if (!isTest) {
+                            wenXunSpiderCrawlService.insertDoBySpider(List.of(newsInfo));
+                        }
                     }
                 }
                 Url = nextPageUrl;
@@ -184,7 +187,6 @@ public class PlayWrightUtils {
         tempPage.close();
         return content;
     }
-
 
 
     public static String convert(String content) {

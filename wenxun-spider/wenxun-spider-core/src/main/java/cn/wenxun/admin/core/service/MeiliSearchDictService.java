@@ -1,7 +1,7 @@
 package cn.wenxun.admin.core.service;
 
 import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
-import cn.iocoder.yudao.module.wenxun.model.MeiliSearchInfo;
+import cn.iocoder.yudao.module.system.model.MeiliSearchInfo;
 import com.alibaba.fastjson.JSON;
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Index;

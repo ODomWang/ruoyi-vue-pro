@@ -1,8 +1,8 @@
 package cn.wenxun.spider;
 
 import cn.wenxun.admin.job.utils.PlayWrightUtils;
-import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
-import cn.iocoder.yudao.module.wenxun.model.spider.SpiderXpathConfigDO;
+import cn.iocoder.yudao.module.system.model.NewsInfo;
+import cn.iocoder.yudao.module.system.model.spider.SpiderXpathConfigDO;
 import com.alibaba.fastjson.JSON;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.LoadState;
@@ -49,7 +49,7 @@ public class PlaywrightExample {
             // 提取下一页链接
             // 提取下一页链接
 
-            Locator nextPageLocator = page.locator("xpath="+xpathConfigDO.getNextPageXpath());
+            Locator nextPageLocator = page.locator("xpath=" + xpathConfigDO.getNextPageXpath());
             String nextPageUrl = "";
             if (nextPageLocator.count() > 0) {
                 nextPageUrl = PlayWrightUtils.getPageUrl(nextPageLocator.first().elementHandle(), page);
@@ -57,49 +57,48 @@ public class PlaywrightExample {
             // 提取列表页面内容
 
 
-            Locator listsLocator = page.locator("xpath="+xpathConfigDO.getListXpath());
+            Locator listsLocator = page.locator("xpath=" + xpathConfigDO.getListXpath());
             List<ElementHandle> lists = listsLocator.elementHandles();
 
             List<NewsInfo> newsList = new ArrayList<>();
             for (ElementHandle list : lists) {
-                List<ElementHandle> lists1_1 = list.querySelectorAll("xpath="+xpathConfigDO.getItemXpath());
+                List<ElementHandle> lists1_1 = list.querySelectorAll("xpath=" + xpathConfigDO.getItemXpath());
 
                 for (ElementHandle elementHandle : lists1_1) {
                     NewsInfo newsInfo = new NewsInfo();
 
                     // 提取文章块
                     // 提取标题
-                    ElementHandle tileelement = elementHandle.querySelector("xpath="+xpathConfigDO.getTitleXpath());
+                    ElementHandle tileelement = elementHandle.querySelector("xpath=" + xpathConfigDO.getTitleXpath());
                     if (tileelement != null) {
                         String tile = tileelement.innerText();
                         newsInfo.setTitle(tile);
                     }
 
                     // 提取描述
-                    ElementHandle tiledesc = elementHandle.querySelector("xpath="+xpathConfigDO.getDescXpath());
+                    ElementHandle tiledesc = elementHandle.querySelector("xpath=" + xpathConfigDO.getDescXpath());
                     if (tiledesc != null) {
                         String tile = tiledesc.innerText();
                         newsInfo.setDesc(tile);
                     }
                     newsInfo.setUrl(PlayWrightUtils.getPageUrl(elementHandle, page));
 
-                    String content = extractContentFromPage(newsInfo.getUrl(), page.context(),xpathConfigDO.getBodyXpath());
+                    String content = extractContentFromPage(newsInfo.getUrl(), page.context(), xpathConfigDO.getBodyXpath());
                     newsInfo.setNextPageUrl(nextPageUrl);
                     newsInfo.setContent(content);
                     newsList.add(newsInfo);
                 }
             }
-            System.out.println(JSON.toJSONString(newsList));
-            return(newsList);
+             return (newsList);
         }
     }
 
-    private static String extractContentFromPage(String url, BrowserContext context,String bodyXpath) {
+    private static String extractContentFromPage(String url, BrowserContext context, String bodyXpath) {
         Page tempPage = context.newPage();
         tempPage.navigate(url);
         tempPage.waitForLoadState(LoadState.NETWORKIDLE);
 
-        ElementHandle bodyElement = tempPage.querySelector("xpath="+bodyXpath);
+        ElementHandle bodyElement = tempPage.querySelector("xpath=" + bodyXpath);
         String content = bodyElement != null ? bodyElement.innerText() : "";
         tempPage.close();
         return content;

@@ -5,16 +5,16 @@ import cn.iocoder.yudao.framework.quartz.core.handler.JobHandler;
 import cn.iocoder.yudao.framework.tenant.core.aop.TenantIgnore;
 import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
 import cn.iocoder.yudao.module.system.service.wenxunDict.WenXunDictDataService;
-import cn.iocoder.yudao.module.wenxun.controller.admin.auditlog.vo.AuditLogSaveReqVO;
-import cn.iocoder.yudao.module.wenxun.controller.admin.detailcheckinfo.vo.DetailCheckInfoSaveReqVO;
-import cn.iocoder.yudao.module.wenxun.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
+import cn.iocoder.yudao.module.system.controller.admin.auditlog.vo.AuditLogSaveReqVO;
+import cn.iocoder.yudao.module.system.controller.admin.detailcheckinfo.vo.DetailCheckInfoSaveReqVO;
+import cn.iocoder.yudao.module.system.dal.dataobject.detailcheckinfo.DetailCheckInfoDO;
 import cn.iocoder.yudao.module.wenxun.enums.commondao.WrongWordInfo;
-import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
-import cn.iocoder.yudao.module.wenxun.model.spider.SpiderXpathConfigDO;
-import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
-import cn.iocoder.yudao.module.wenxun.service.WenXunSpiderConfigService;
-import cn.iocoder.yudao.module.wenxun.service.auditlog.AuditLogService;
-import cn.iocoder.yudao.module.wenxun.service.detailcheckinfo.DetailCheckInfoService;
+import cn.iocoder.yudao.module.system.model.NewsInfo;
+import cn.iocoder.yudao.module.system.model.spider.SpiderXpathConfigDO;
+import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
+import cn.iocoder.yudao.module.system.service.WenXunSpiderConfigService;
+import cn.iocoder.yudao.module.system.service.auditlog.AuditLogService;
+import cn.iocoder.yudao.module.system.service.detailcheckinfo.DetailCheckInfoService;
 import cn.wenxun.admin.core.service.WenXunSpiderCrawlService;
 import cn.wenxun.admin.job.utils.PlayWrightUtils;
 import cn.wenxun.admin.job.utils.SensitiveFilter;
@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import jakarta.annotation.Resource;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -80,7 +81,7 @@ public class SpiderCrawlJob implements JobHandler {
             log.info("----开始进行：【" + createReqVO.getSpiderName() + "】 采集任务----");
 
             /* 数据采集        List<NewsInfo> newsInfos = PlayWrightUtils.crawlUrl(createReqVO); */
-            CompletableFuture.supplyAsync(() -> PlayWrightUtils.crawlUrl(createReqVO, wenXunSpiderCrawlService), threadPoolTaskExecutor)
+            CompletableFuture.supplyAsync(() -> PlayWrightUtils.crawlUrl(createReqVO, wenXunSpiderCrawlService,false), threadPoolTaskExecutor)
                     .thenAccept(data -> {
                         log.info("采集任务执行完毕，数据开始入库...");
                         // 结果保存
@@ -171,6 +172,7 @@ public class SpiderCrawlJob implements JobHandler {
                     reqVO.setSpiderConfigId(info.getConfigId());
                     reqVO.setWebIcon(info.getWebIcon());
                     reqVO.setTitleDesc(info.getDesc());
+                    reqVO.setDeptId(info.getDeptId());
                     detailCheckInfoService.createDetailCheckInfo(reqVO);
                 }
 
@@ -275,6 +277,7 @@ public class SpiderCrawlJob implements JobHandler {
             newAuditLog.setRejectedRecord(null); // 占位，必要时填充
             newAuditLog.setStatus(0); // 默认状态
             newAuditLog.setUpdater("system"); // 默认操作员
+            newAuditLog.setDeptId(checkInfo.getDeptId());
             auditLogService.createAuditLog(newAuditLog);
         }
     }

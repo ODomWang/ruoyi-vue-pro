@@ -1,7 +1,7 @@
 package cn.wenxun.admin.core.service;
 
-import cn.iocoder.yudao.module.wenxun.model.MeiliSearchInfo;
-import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderCrawlDetail;
+import cn.iocoder.yudao.module.system.model.MeiliSearchInfo;
+import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderCrawlDetail;
 import com.alibaba.fastjson.JSON;
 import com.meilisearch.sdk.*;
 import com.meilisearch.sdk.exceptions.MeilisearchException;

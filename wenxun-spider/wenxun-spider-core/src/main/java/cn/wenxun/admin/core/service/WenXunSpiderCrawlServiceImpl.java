@@ -2,18 +2,20 @@ package cn.wenxun.admin.core.service;
 
 import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.module.wenxun.mapper.WenXunSpiderCrawlMapper;
-import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
-import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderCrawlDetail;
-import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
+import cn.iocoder.yudao.module.system.mapper.WenXunSpiderCrawlMapper;
+import cn.iocoder.yudao.module.system.model.NewsInfo;
+import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderCrawlDetail;
+import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
 import cn.wenxun.admin.job.utils.PlayWrightUtils;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.annotation.Resource;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,6 +101,9 @@ public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
             crawlDetail.setDate(newsInfo.getDate());
             crawlDetail.setAuthor(newsInfo.getAuthor());
             crawlDetail.setContent(newsInfo.getContent());
+            if (StringUtils.isEmpty(newsInfo.getUrl())) {
+                continue;
+            }
             crawlDetail.setSpiderUrl(newsInfo.getUrl());
             crawlDetail.setTitle(newsInfo.getTitle());
             crawlDetail.setTitleDesc(newsInfo.getDesc());
@@ -106,6 +111,7 @@ public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
             crawlDetail.setDate("1");
             crawlDetail.setIcon(newsInfo.getWebIcon());
             crawlDetail.setSpiderName(newsInfo.getSpiderName());
+            crawlDetail.setDeptId(newsInfo.getDeptId());
             wenxunSpiderCrawlDetailList.add(crawlDetail);
         }
         wenXunSpiderCrawlMapper.insertOrUpdateBatch(wenxunSpiderCrawlDetailList);
@@ -118,7 +124,5 @@ public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
             x.setSpiderUrl(JSON.toJSONString(map));
         });
         meiliSearchService.add(wenxunSpiderCrawlDetailList);
-
-
     }
 }

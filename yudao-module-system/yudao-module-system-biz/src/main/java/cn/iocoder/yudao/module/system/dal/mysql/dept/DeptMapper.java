@@ -13,9 +13,10 @@ import java.util.List;
 public interface DeptMapper extends BaseMapperX<DeptDO> {
 
     default List<DeptDO> selectList(DeptListReqVO reqVO) {
-        return selectList(new LambdaQueryWrapperX<DeptDO>()
+        LambdaQueryWrapperX wrapper =   new LambdaQueryWrapperX<DeptDO>()
                 .likeIfPresent(DeptDO::getName, reqVO.getName())
-                .eqIfPresent(DeptDO::getStatus, reqVO.getStatus()));
+                .eqIfPresent(DeptDO::getStatus, reqVO.getStatus());
+        return selectList(wrapper);
     }
 
     default DeptDO selectByParentIdAndName(Long parentId, String name) {

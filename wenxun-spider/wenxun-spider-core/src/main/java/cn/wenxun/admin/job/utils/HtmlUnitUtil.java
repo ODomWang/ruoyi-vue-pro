@@ -1,8 +1,8 @@
 package cn.wenxun.admin.job.utils;
 
 
-import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
-import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
+import cn.iocoder.yudao.module.system.model.NewsInfo;
+import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
 import org.apache.commons.lang3.StringUtils;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlElement;

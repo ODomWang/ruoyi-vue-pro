@@ -6,10 +6,10 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
 import cn.wenxun.admin.job.utils.HtmlUnitUtil;
 import cn.wenxun.admin.job.utils.PlayWrightUtils;
-import cn.iocoder.yudao.module.wenxun.model.NewsInfo;
-import cn.iocoder.yudao.module.wenxun.model.spider.SpiderXpathConfigDO;
-import cn.iocoder.yudao.module.wenxun.model.spider.WenxunSpiderSourceConfigDO;
-import cn.iocoder.yudao.module.wenxun.service.WenXunSpiderConfigService;
+import cn.iocoder.yudao.module.system.model.NewsInfo;
+import cn.iocoder.yudao.module.system.model.spider.SpiderXpathConfigDO;
+import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
+import cn.iocoder.yudao.module.system.service.WenXunSpiderConfigService;
 import cn.wenxun.admin.core.service.WenXunSpiderCrawlService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import jakarta.annotation.Resource;
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
+
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,6 +40,7 @@ public class SpiderController {
     private WenXunSpiderConfigService wenXunSpiderConfigService;
     @Resource
     private WenXunSpiderCrawlService wenXunSpiderCrawlService;
+
     @PostMapping("/spidertest")
     @Operation(summary = "爬虫测试接口")
     public CommonResult<List<NewsInfo>> getOrder(@Valid @RequestBody WenxunSpiderSourceConfigDO createReqVO) {
@@ -52,7 +54,8 @@ public class SpiderController {
     @Operation(summary = "爬虫测试接口")
     public CommonResult<List<NewsInfo>> getWebInfoByXpath(@Valid @RequestBody SpiderXpathConfigDO createReqVO) {
         createReqVO.setSpiderPageNum(2L);
-        List<NewsInfo> newsInfos = PlayWrightUtils.crawlUrl(createReqVO,wenXunSpiderCrawlService);
+        createReqVO.setId(999999999L);
+        List<NewsInfo> newsInfos = PlayWrightUtils.crawlUrl(createReqVO, wenXunSpiderCrawlService, true);
         return success(newsInfos);
 
     }

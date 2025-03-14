@@ -221,8 +221,11 @@
             <version>2.4.0-jdk8-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-
-
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <scope>test</scope>
+        </dependency>
 
 
     </dependencies>
