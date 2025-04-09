@@ -8,11 +8,11 @@ import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.SearchRequest;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
 import com.meilisearch.sdk.model.*;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 @Service
@@ -117,8 +117,6 @@ public class MeiliSearchDictService implements InitializingBean, MeiliSearchOper
 
     /**
      * 仅在标题下查询
-     *
-
      */
     @Override
     public Results<MultiSearchResult> search(MeiliSearchInfo meiliSearchInfo) {
@@ -213,7 +211,7 @@ public class MeiliSearchDictService implements InitializingBean, MeiliSearchOper
 
         settings.setFilterableAttributes(new String[]{"label", "value", "remark"});
         settings.setSearchableAttributes(new String[]{"label", "value", "remark"});
-         index.updateSettings(settings);
+        index.updateSettings(settings);
 
         System.out.println("初始化完成MeiliSearch的索引信息:wenxun_dict_data");
     }

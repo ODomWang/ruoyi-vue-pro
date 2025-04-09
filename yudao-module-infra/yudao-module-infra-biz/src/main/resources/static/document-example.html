@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档协作示例</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+        .log p {
+            margin: 5px 0;
+            font-size: 12px;
+        }
+        .log .received {
+            color: #2196F3;
+        }
+        .log .sent {
+            color: #FF5722;
+        }
+        .log .error {
+            color: #F44336;
+        }
+        .log .connected {
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>文档协作示例</h1>
+        
+        <div class="form-group">
+            <label for="token">用户令牌:</label>
+            <input type="text" id="token" placeholder="输入登录后的 token">
+            <button id="getTokenBtn" style="margin-top: 5px;">获取测试Token</button>
+        </div>
+        
+        <div class="form-group">
+            <label for="documentId">文档ID:</label>
+            <input type="text" id="documentId" placeholder="创建新文档无需填写">
+        </div>
+        
+        <div class="form-group">
+            <label for="title">标题:</label>
+            <input type="text" id="title" placeholder="文档标题">
+        </div>
+        
+        <div class="form-group">
+            <label for="content">内容:</label>
+            <textarea id="content" placeholder="文档内容"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="version">版本号:</label>
+            <input type="text" id="version" placeholder="更新文档时需要填写当前版本号">
+        </div>
+        
+        <div>
+            <button id="connectBtn">连接 WebSocket</button>
+            <button id="createBtn" disabled>创建文档</button>
+            <button id="updateBtn" disabled>更新文档</button>
+            <button id="deleteBtn" disabled>删除文档</button>
+            <button id="disconnectBtn" disabled>断开连接</button>
+        </div>
+        
+        <div class="status" id="status">状态: 未连接</div>
+        
+        <div class="log" id="log">
+            <p>--- 日志 ---</p>
+        </div>
+    </div>
+
+    <script>
+        let socket = null;
+        let autoSaveTimer = null;
+        const AUTO_SAVE_INTERVAL = 3000; // 自动保存间隔，3秒
+        const token = document.getElementById('token');
+        const documentId = document.getElementById('documentId');
+        const title = document.getElementById('title');
+        const content = document.getElementById('content');
+        const version = document.getElementById('version');
+        const connectBtn = document.getElementById('connectBtn');
+        const createBtn = document.getElementById('createBtn');
+        const updateBtn = document.getElementById('updateBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const getTokenBtn = document.getElementById('getTokenBtn');
+        const status = document.getElementById('status');
+        const log = document.getElementById('log');
+        
+        // 获取测试Token
+        getTokenBtn.addEventListener('click', async function() {
+            try {
+                addLog('正在获取测试Token...', 'info');
+                const response = await fetch('/infra/websocket-test/get-token');
+                if (!response.ok) {
+                    throw new Error(`获取Token失败: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                if (data.code !== 0) {
+                    throw new Error(`获取Token失败: ${data.msg}`);
+                }
+                token.value = data.data.token;
+                addLog(`成功获取测试Token: ${data.data.token}`, 'connected');
+            } catch (error) {
+                addLog(`获取Token失败: ${error.message}`, 'error');
+            }
+        });
+        
+        // 添加新按钮：检查WebSocket配置
+        const checkConfigBtn = document.createElement('button');
+        checkConfigBtn.textContent = '检查WebSocket配置';
+        checkConfigBtn.style.marginTop = '5px';
+        checkConfigBtn.style.backgroundColor = '#2196F3';
+        // 使用ID选择器来获取父元素
+        const tokenGroup = document.getElementById('token').parentElement;
+        tokenGroup.appendChild(checkConfigBtn);
+
+        // 检查WebSocket配置
+        checkConfigBtn.addEventListener('click', async function() {
+            try {
+                addLog('正在检查WebSocket配置...', 'info');
+                const response = await fetch('/infra/websocket-diagnostic/check');
+                if (!response.ok) {
+                    throw new Error(`检查配置失败: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                if (data.code !== 0) {
+                    throw new Error(`检查配置失败: ${data.msg}`);
+                }
+                addLog(`WebSocket配置信息:`, 'info');
+                addLog(`- 路径: ${data.data.websocketPath}`, 'info');
+                addLog(`- 是否启用: ${data.data.websocketEnable}`, 'info');
+                addLog(`- 发送器类型: ${data.data.websocketSenderType}`, 'info');
+                addLog(`- 服务器信息: ${data.data.serverInfo}`, 'info');
+                addLog(`- Java版本: ${data.data.javaVersion}`, 'info');
+                addLog(`- 操作系统: ${data.data.osName}`, 'info');
+                
+                // 更新连接URL
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const port = 8080;
+                const wsUrl = `${protocol}//${window.location.hostname}:${port}${data.data.websocketPath}?token=${token.value}`;
+                addLog(`正确的WebSocket连接URL应为: ${wsUrl}`, 'connected');
+            } catch (error) {
+                addLog(`检查配置失败: ${error.message}`, 'error');
+            }
+        });
+        
+        // 添加备用连接按钮
+        const fallbackConnectBtn = document.createElement('button');
+        fallbackConnectBtn.textContent = '使用自定义路径连接';
+        fallbackConnectBtn.style.marginTop = '5px';
+        fallbackConnectBtn.style.backgroundColor = '#FFA500';
+        tokenGroup.appendChild(document.createElement('br'));
+        tokenGroup.appendChild(fallbackConnectBtn);
+        
+        // 添加自定义路径输入框
+        const customPathInput = document.createElement('input');
+        customPathInput.type = 'text';
+        customPathInput.id = 'customPath';
+        customPathInput.placeholder = '输入自定义WebSocket路径 例如：/websocket';
+        customPathInput.value = 'infra/ws';
+        customPathInput.style.marginTop = '5px';
+        customPathInput.style.width = '100%';
+        tokenGroup.appendChild(customPathInput);
+
+        // 使用自定义路径连接WebSocket
+        fallbackConnectBtn.addEventListener('click', function() {
+            if (!token.value) {
+                addLog('请输入有效的令牌', 'error');
+                return;
+            }
+            
+            try {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const port = 8080;
+                const customPath = document.getElementById('customPath').value || 'infra/ws';
+                // 使用自定义路径
+                const wsUrl = `${protocol}//${window.location.hostname}:${port}${customPath}?token=${token.value}`;
+                connectWebSocket(wsUrl);
+                addLog(`使用自定义路径连接: ${customPath}`, 'info');
+            } catch (e) {
+                addLog(`连接错误: ${e.message}`, 'error');
+                addLog(`错误堆栈: ${e.stack}`, 'error');
+            }
+        });
+        
+        // 连接 WebSocket
+        connectBtn.addEventListener('click', function() {
+            if (!token.value) {
+                addLog('请输入有效的令牌', 'error');
+                return;
+            }
+            
+            try {
+                // 构建 WebSocket URL，添加 token 参数
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const port = 8080;
+                // 先尝试检查配置获取路径
+                fetch('/infra/websocket-diagnostic/check')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.code === 0) {
+                            const wsPath = data.data.websocketPath;
+                            const wsUrl = `${protocol}//${window.location.hostname}:${port}${wsPath}?token=${token.value}`;
+                            connectWebSocket(wsUrl);
+                            addLog(`使用配置中的路径连接: ${wsPath}`, 'info');
+                        } else {
+                            // 如果获取配置失败，使用默认路径
+                            const wsUrl = `${protocol}//${window.location.hostname}:${port}/infra/ws?token=${token.value}`;
+                            connectWebSocket(wsUrl);
+                            addLog(`使用默认路径连接: /infra/ws`, 'info');
+                        }
+                    })
+                    .catch(error => {
+                        // 如果获取配置失败，使用默认路径
+                        const wsUrl = `${protocol}//${window.location.hostname}:${port}/infra/ws?token=${token.value}`;
+                        connectWebSocket(wsUrl);
+                        addLog(`配置获取失败，使用默认路径: /ws`, 'info');
+                    });
+            } catch (e) {
+                addLog(`连接错误: ${e.message}`, 'error');
+                addLog(`错误堆栈: ${e.stack}`, 'error');
+            }
+        });
+        
+        // WebSocket连接函数
+        function connectWebSocket(wsUrl) {
+            addLog(`尝试连接到 ${wsUrl}`, 'info');
+            addLog(`当前页面URL: ${window.location.href}`, 'info');
+            addLog(`协议: ${window.location.protocol}, 主机: ${window.location.hostname}`, 'info');
+            
+            // 关闭之前的连接
+            if (socket) {
+                socket.close();
+            }
+            
+            socket = new WebSocket(wsUrl);
+            
+            socket.onopen = function() {
+                status.textContent = '状态: 已连接';
+                addLog('WebSocket连接已建立', 'connected');
+                // 启动自动保存
+                startAutoSave();
+            };
+            
+            socket.onclose = function() {
+                status.textContent = '状态: 已断开连接';
+                addLog('WebSocket连接已关闭', 'error');
+                // 停止自动保存
+                stopAutoSave();
+            };
+            
+            socket.onerror = function(error) {
+                status.textContent = '状态: 连接错误';
+                addLog(`WebSocket错误: ${error}`, 'error');
+                // 停止自动保存
+                stopAutoSave();
+            };
+            
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                addLog(`收到消息: ${event.data}`, 'received');
+                
+                // 处理服务器响应
+                if (data.type === 'document-notify') {
+                    const message = JSON.parse(data.content);
+                    
+                    // 根据操作类型处理
+                    switch (message.operateType) {
+                        case 1: // 创建
+                            addLog(`文档已创建: ID=${message.documentId}，标题=${message.title}`, 'received');
+                            documentId.value = message.documentId;
+                            version.value = message.version;
+                            break;
+                        case 2: // 更新
+                            addLog(`文档已更新: ID=${message.documentId}，新版本=${message.version}`, 'received');
+                            version.value = message.version;
+                            break;
+                        case 3: // 删除
+                            addLog(`文档已删除: ID=${message.documentId}`, 'received');
+                            documentId.value = '';
+                            title.value = '';
+                            content.value = '';
+                            version.value = '';
+                            break;
+                        case 4: // 自动保存
+                            if (message.userId !== userId) { // 如果不是当前用户的保存
+                                addLog(`文档已自动保存: ID=${message.documentId}`, 'received');
+                                content.value = message.content;
+                            }
+                            break;
+                    }
+                }
+            };
+        }
+        
+        // 启动自动保存
+        function startAutoSave() {
+            stopAutoSave(); // 先停止现有的定时器
+            
+            autoSaveTimer = setInterval(() => {
+                if (documentId.value && content.value) {
+                    const message = {
+                        type: 'document-update',
+                        content: JSON.stringify({
+                            documentId: parseInt(documentId.value),
+                            parentId: parseInt(parentId.value || '0'),
+                            content: content.value,
+                            operateType: 4 // 自动保存操作
+                        })
+                    };
+                    
+                    socket.send(JSON.stringify(message));
+                    addLog('自动保存中...', 'sent');
+                }
+            }, AUTO_SAVE_INTERVAL);
+        }
+
+        // 停止自动保存
+        function stopAutoSave() {
+            if (autoSaveTimer) {
+                clearInterval(autoSaveTimer);
+                autoSaveTimer = null;
+            }
+        }
+        
+        // 创建文档
+        createBtn.addEventListener('click', function() {
+            if (!title.value) {
+                addLog('请输入文档标题', 'error');
+                return;
+            }
+            
+            const message = {
+                type: 'document-update',
+                content: JSON.stringify({
+                    title: title.value,
+                    content: content.value || '',
+                    status: 0, // 草稿状态
+                    operateType: 1 // 创建操作
+                })
+            };
+            
+            socket.send(JSON.stringify(message));
+            addLog(`发送消息: ${JSON.stringify(message)}`, 'sent');
+        });
+        
+        // 更新文档
+        updateBtn.addEventListener('click', function() {
+            if (!documentId.value || !title.value || !version.value) {
+                addLog('请输入文档ID、标题和版本号', 'error');
+                return;
+            }
+            
+            const message = {
+                type: 'document-update',
+                content: JSON.stringify({
+                    documentId: parseInt(documentId.value),
+                    title: title.value,
+                    content: content.value || '',
+                    status: 0, // 草稿状态
+                    version: parseInt(version.value),
+                    operateType: 2 // 更新操作
+                })
+            };
+            
+            socket.send(JSON.stringify(message));
+            addLog(`发送消息: ${JSON.stringify(message)}`, 'sent');
+        });
+        
+        // 删除文档
+        deleteBtn.addEventListener('click', function() {
+            if (!documentId.value) {
+                addLog('请输入要删除的文档ID', 'error');
+                return;
+            }
+            
+            const message = {
+                type: 'document-update',
+                content: JSON.stringify({
+                    documentId: parseInt(documentId.value),
+                    operateType: 3 // 删除操作
+                })
+            };
+            
+            socket.send(JSON.stringify(message));
+            addLog(`发送消息: ${JSON.stringify(message)}`, 'sent');
+        });
+        
+        // 断开连接
+        disconnectBtn.addEventListener('click', function() {
+            if (socket) {
+                socket.close();
+                status.textContent = '状态: 已手动断开连接';
+                
+                // 禁用按钮
+                connectBtn.disabled = false;
+                createBtn.disabled = true;
+                updateBtn.disabled = true;
+                deleteBtn.disabled = true;
+                disconnectBtn.disabled = true;
+            }
+        });
+        
+        // 添加日志
+        function addLog(message, type) {
+            const entry = document.createElement('p');
+            entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            entry.className = type;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+    </script>
+</body>
+</html> 

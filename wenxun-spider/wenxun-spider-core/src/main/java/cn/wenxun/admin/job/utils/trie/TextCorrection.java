@@ -109,7 +109,7 @@ public class TextCorrection {
         try {
             String text = "你好世界，这里有错词的错误的人生的不是错误";
             Set<String> wrongWords = new HashSet<>(Arrays.asList("错误1", "错误的人生", "好世界"));
-            Set<String> correctWords = new HashSet<>(Arrays.asList("世界",  "不是错词"));
+            Set<String> correctWords = new HashSet<>(Arrays.asList("世界", "不是错词"));
 
             Set<String> resultWrongWords = filterWrongWords(text, wrongWords, correctWords);
             System.out.println("剩余的错词集合: " + resultWrongWords);

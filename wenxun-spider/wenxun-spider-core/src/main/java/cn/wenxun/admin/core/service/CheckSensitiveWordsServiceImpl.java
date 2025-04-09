@@ -1,17 +1,18 @@
 package cn.wenxun.admin.core.service;
 
 import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
-import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
-import cn.iocoder.yudao.module.system.service.wenxunDict.WenXunDictDataService;
 import cn.iocoder.yudao.module.system.controller.admin.urlpinglog.vo.UrlPingLogSaveReqVO;
 import cn.iocoder.yudao.module.system.dal.dataobject.urlpinginfo.UrlPingInfoDO;
+import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
 import cn.iocoder.yudao.module.system.dal.mysql.urlpinginfo.UrlPingInfoMapper;
-import cn.iocoder.yudao.module.wenxun.enums.commondao.WrongWordInfo;
 import cn.iocoder.yudao.module.system.service.urlpinglog.UrlPingLogService;
+import cn.iocoder.yudao.module.system.service.wenxunDict.WenXunDictDataService;
+import cn.iocoder.yudao.module.wenxun.enums.commondao.WrongWordInfo;
 import cn.wenxun.admin.job.utils.SensitiveFilter;
 import cn.wenxun.admin.utils.ExcelToHtmlUtil;
 import cn.wenxun.admin.utils.PdfToHtmlUtil;
 import cn.wenxun.admin.utils.WordToHtmlUtil;
+import jakarta.annotation.Resource;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.htmlunit.WebClient;
@@ -22,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,6 +42,49 @@ public class CheckSensitiveWordsServiceImpl implements CheckSensitiveWordsServic
     private UrlPingInfoMapper urlPingInfoMapper;
     @Resource
     private UrlPingLogService urlPingLogService;
+
+    public static List<WrongWordInfo> filterSensitiveWords(String text, List<WrongWordInfo> wrongWordInfos) {
+        // 存储敏感词及其位置
+        List<SensitiveWord> wordPositions = new ArrayList<>();
+
+        // 查找所有敏感词的位置
+        for (WrongWordInfo info : wrongWordInfos) {
+            String word = info.getWrongWord();
+            int index = text.indexOf(word);
+            while (index != -1) {
+                wordPositions.add(new SensitiveWord(word, index, index + word.length(), info));
+                index = text.indexOf(word, index + 1);
+            }
+        }
+
+        // 根据长度从大到小排序，长度相同时按起始位置排序
+        wordPositions.sort((a, b) -> {
+            if (b.length() != a.length()) {
+                return b.length() - a.length();
+            }
+            return a.start - b.start;
+        });
+
+        // 去重逻辑
+        List<SensitiveWord> filteredWords = new ArrayList<>();
+        for (SensitiveWord word : wordPositions) {
+            boolean isSubsumed = false;
+            for (SensitiveWord existing : filteredWords) {
+                if (word.start >= existing.start && word.end <= existing.end) {
+                    isSubsumed = true;
+                    break;
+                }
+            }
+            if (!isSubsumed) {
+                filteredWords.add(word);
+            }
+        }
+
+        // 提取结果，返回 WrongWordInfo 列表
+        return filteredWords.stream()
+                .map(SensitiveWord::getInfo)
+                .collect(Collectors.toList());
+    }
 
     /**
      * @param content 文本内容
@@ -199,49 +242,6 @@ public class CheckSensitiveWordsServiceImpl implements CheckSensitiveWordsServic
             throw exception(FILE_ERROR);
         }
 
-    }
-
-    public static List<WrongWordInfo> filterSensitiveWords(String text, List<WrongWordInfo> wrongWordInfos) {
-        // 存储敏感词及其位置
-        List<SensitiveWord> wordPositions = new ArrayList<>();
-
-        // 查找所有敏感词的位置
-        for (WrongWordInfo info : wrongWordInfos) {
-            String word = info.getWrongWord();
-            int index = text.indexOf(word);
-            while (index != -1) {
-                wordPositions.add(new SensitiveWord(word, index, index + word.length(), info));
-                index = text.indexOf(word, index + 1);
-            }
-        }
-
-        // 根据长度从大到小排序，长度相同时按起始位置排序
-        wordPositions.sort((a, b) -> {
-            if (b.length() != a.length()) {
-                return b.length() - a.length();
-            }
-            return a.start - b.start;
-        });
-
-        // 去重逻辑
-        List<SensitiveWord> filteredWords = new ArrayList<>();
-        for (SensitiveWord word : wordPositions) {
-            boolean isSubsumed = false;
-            for (SensitiveWord existing : filteredWords) {
-                if (word.start >= existing.start && word.end <= existing.end) {
-                    isSubsumed = true;
-                    break;
-                }
-            }
-            if (!isSubsumed) {
-                filteredWords.add(word);
-            }
-        }
-
-        // 提取结果，返回 WrongWordInfo 列表
-        return filteredWords.stream()
-                .map(SensitiveWord::getInfo)
-                .collect(Collectors.toList());
     }
 
     // 敏感词位置类

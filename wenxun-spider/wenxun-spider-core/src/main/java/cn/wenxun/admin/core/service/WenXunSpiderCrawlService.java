@@ -5,8 +5,8 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.system.model.NewsInfo;
 import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderCrawlDetail;
 import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
-
 import jakarta.validation.Valid;
+
 import java.util.List;
 
 public interface WenXunSpiderCrawlService {

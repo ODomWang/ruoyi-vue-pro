@@ -187,6 +187,7 @@ public class PageExtracUtils {
             }
         }
     }
+
     //提取网页图标
     public static String getPageIcon(HtmlPage htmlElement) {
         String iconUrl = null;

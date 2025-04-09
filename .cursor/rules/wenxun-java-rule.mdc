@@ -1,0 +1,58 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## Cursor Rule 文档 - Java 开发规范
+
+### 一、项目结构规范
+
+项目结构参考[yudao-cloud](https://github.com/YunaiV/yudao-cloud)，具体分层结构如下：
+
+project-root ├── yudao-module-xxx │ ├── api（对外暴露接口） │ ├── biz（业务服务实现） │ ├── controller（控制层） │ ├── convert（数据转换层） │ ├── dal（数据访问层） │ │ ├── dataobject │ │ └── mapper │ ├── enums（枚举定义） │ ├── service（服务接口定义） │ └── vo（视图对象） └── yudao-framework（框架公共组件）
+
+### 二、包层级说明
+
+- **api 包**：存放模块之间的对外调用接口定义，包含 DTO。
+- **controller 包**：RESTful 接口，负责接收请求并调用 service 层处理业务逻辑。
+- **service 包**：业务逻辑接口定义。
+- **biz 包**：具体业务逻辑的实现类。
+- **dal 包**：数据库访问层，包括 MyBatis-Plus mapper 和 dataobject（DO）。
+- **convert 包**：用于对象之间的转换，统一采用 MapStruct。
+- **vo 包**：用于向客户端提供数据的视图对象。
+- **enums 包**：定义业务相关的枚举类。
+
+### 三、公共继承或实现规范
+
+- **Controller 层**统一继承框架提供的 BaseController。
+- **Service 层**统一实现接口定义与实现类分离原则：接口以 `XxxService` 命名，实现类以 `XxxServiceImpl` 命名。
+- **DataObject 层**统一继承 BaseDO，实现统一的 id、createTime、updateTime 等字段。
+
+### 四、数据库处理规范
+
+- 表命名统一使用小写加下划线方式，如：`user_info`。
+- 字段统一使用小写加下划线，如：`user_name`。
+- 数据库表字段必须包含以下公共字段：
+  - `id`：主键，自增。
+  - `create_time`：记录创建时间。
+  - `update_time`：记录更新时间。
+  - `deleted`：逻辑删除标记（0正常，1删除）。
+- 禁止直接在业务代码中书写 SQL，统一使用 MyBatis-Plus 进行数据操作。
+
+### 五、MyBatis-Plus 使用规范
+
+- **实体映射规范**：实体对象（DO）必须添加 `@TableName("xxx")` 注解。
+- **主键规范**：实体主键字段必须使用 `@TableId(type = IdType.AUTO)` 注解。
+- **逻辑删除**：DO 中字段使用 `@TableLogic` 注解进行逻辑删除标记。
+- **分页规范**：分页查询统一使用框架提供的 `PageQuery` 对象，并返回 `PageResult` 对象。
+- 禁止使用 MyBatis-Plus 提供的通用方法直接暴露到 Controller 层，必须通过 Service 层包装。
+- Mapper 接口统一继承 `BaseMapper<T>`。
+
+### 六、其他规范
+
+- **异常处理规范**：业务异常统一继承 `ServiceException`。
+- **日志规范**：统一使用 `@Slf4j` 注解引入日志框架。
+- **数据校验规范**：Controller 层使用统一的数据校验注解，如 `@Valid`。
+- **事务处理规范**：在 Service 层使用 `@Transactional` 管理事务。
+
+本 Cursor Rule 规范文档用于保障开发一致性，提升团队协作效率。

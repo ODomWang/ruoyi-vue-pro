@@ -6,13 +6,13 @@ import com.alibaba.fastjson.JSON;
 import com.meilisearch.sdk.*;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
 import com.meilisearch.sdk.model.*;
+import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;

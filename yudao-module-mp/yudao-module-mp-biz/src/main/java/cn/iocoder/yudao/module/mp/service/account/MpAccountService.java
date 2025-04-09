@@ -20,7 +20,7 @@ import static cn.iocoder.yudao.module.mp.enums.ErrorCodeConstants.ACCOUNT_NOT_EX
 public interface MpAccountService {
 
     /**
-     * 初始化缓存
+     * 初始化缓 存
      */
     void initLocalCache();
 

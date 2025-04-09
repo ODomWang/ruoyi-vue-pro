@@ -1,107 +1,152 @@
 package cn.wenxun.spider;
 
-import cn.wenxun.admin.job.utils.PlayWrightUtils;
-import cn.iocoder.yudao.module.system.model.NewsInfo;
-import cn.iocoder.yudao.module.system.model.spider.SpiderXpathConfigDO;
-import com.alibaba.fastjson.JSON;
 import com.microsoft.playwright.*;
-import com.microsoft.playwright.options.LoadState;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.regex.*;
 
 public class PlaywrightExample {
     public static void main(String[] args) {
-        SpiderXpathConfigDO xpathConfigDO = SpiderXpathConfigDO.builder()
-                .spiderUrl("http://dangjian.people.com.cn/index1.html")
-                .spiderName("人民网")
-                .spiderModel("人民网")
-                .remark("人民网")
-                .spiderPageNum(1L)
-                .bodyXpath("/html[1]/body[1]/div[6]/div[1]")
-                .nextPageXpath("/html[1]/body[1]/div[4]/div[1]/div[2]/div[9]/a[5]")
-                .listXpath("/html[1]/body[1]/div[4]/div[1]/div[1]")
-                .itemXpath("/html[1]/body[1]/div[4]/div[1]/div[1]/div[1]/p[1]")
-                .titleXpath("/html[1]/body[1]/div[4]/div[1]/div[2]/div[7]/p[1]/strong[1]")
-                .descXpath("/html[1]/body[1]/div[4]/div[1]/div[1]/div[1]/p[1]/a[1]/em[1]").build();
-        System.out.println(crawlUrl(xpathConfigDO));
+        List<String> urls = Arrays.asList(
+                "https://www.nbpt.edu.cn/nzyw/list.htm",
+                "https://www.wxstc.cn/zxxw/kyyw.htm",
+                "https://www.jssc.edu.cn/98/list.htm",
+                "https://www.hzvtc.edu.cn/xxyw.htm",
+                "https://www.htc.edu.cn/xwgg/xxxw.htm",
+                "https://news.wtc.edu.cn/335/list.htm",
+                "https://www.scvtc.edu.cn/ggfw1/xyxw.htm",
+                "https://www.uta.edu.cn/_s3/1111/list.psp",
+                "https://xzyedu.com.cn/index/xzyw.htm",
+                "http://www.lctvu.sd.cn/xwzx/xyxw.htm",
+                "https://news.gzhu.edu.cn/ttgd.htm"
+               );
+        for (String url : urls) {
+            System.out.println("======================开始采集=====：" + url + "======================");
 
-    }
+            try (Playwright playwright = Playwright.create()) {
+                Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+                Page page = browser.newPage();
+                page.navigate(url);
+                page.waitForLoadState();
 
-    public static List<NewsInfo> crawlUrl(SpiderXpathConfigDO xpathConfigDO) {
+                // 通用日期正则
+                Pattern datePattern = Pattern.compile(".*(\\d{4}[-./年]\\d{1,2}[-./月]\\d{1,2}|\\d{1,2}[-./]\\d{1,2}|\\d+小时前|\\d+分钟前).*");
 
+                // 扫描全页面潜在的容器
+                List<ElementHandle> allElements = page.querySelectorAll("ul, ol, div, section");
 
-        try (Playwright playwright = Playwright.create()) {
-            BrowserType browserType = playwright.chromium();
-            Browser browser = browserType.launch(new BrowserType.LaunchOptions().setHeadless(true));
-            BrowserContext context = browser.newContext();
-            Page page = context.newPage();
+                List<ElementHandle> bestCandidates = new ArrayList<>();
+                int bestScore = 0;
 
-            // 加载网页
-            page.navigate(xpathConfigDO.getSpiderUrl());
-            page.waitForLoadState(LoadState.NETWORKIDLE);
+                for (ElementHandle container : allElements) {
+                    if(container.innerHTML().contains("我校获得")){
+                        System.out.println(1);
+                    }
+                    List<ElementHandle> children = container.querySelectorAll(":scope > *");
 
+                    if (children.size() < 3 || children.size() > 100) continue;
 
-            // 提取网页图标
-            ElementHandle iconElement = page.querySelector("link[rel='icon']");
-            String iconUrl = iconElement != null ? iconElement.getAttribute("href") : "";
+                    int valid = 0;
+                    int score = 0;
 
-            // 提取下一页链接
-            // 提取下一页链接
+                    for (ElementHandle element : children) {
+                        ElementHandle link = element;
+                        if (!"a".equalsIgnoreCase((String) element.evaluate("el => el.tagName.toLowerCase()"))) {
+                            link = element.querySelector("a");
+                        }
+                        if (link == null) continue;
 
-            Locator nextPageLocator = page.locator("xpath=" + xpathConfigDO.getNextPageXpath());
-            String nextPageUrl = "";
-            if (nextPageLocator.count() > 0) {
-                nextPageUrl = PlayWrightUtils.getPageUrl(nextPageLocator.first().elementHandle(), page);
-            }
-            // 提取列表页面内容
+                        String title = link.textContent().trim();
+                        if (title.length() < 6) continue;
 
+                        String href = link.getAttribute("href");
+                        if (href == null || href.contains("javascript")) continue;
 
-            Locator listsLocator = page.locator("xpath=" + xpathConfigDO.getListXpath());
-            List<ElementHandle> lists = listsLocator.elementHandles();
+                        String time = "";
+                        for (ElementHandle sub : element.querySelectorAll("*")) {
+                            String txt = sub.innerText().trim();
+                            if (datePattern.matcher(txt).matches()) {
+                                time = txt;
+                                break;
+                            }
+                        }
+                        if (!time.isEmpty()) score += 10;
 
-            List<NewsInfo> newsList = new ArrayList<>();
-            for (ElementHandle list : lists) {
-                List<ElementHandle> lists1_1 = list.querySelectorAll("xpath=" + xpathConfigDO.getItemXpath());
-
-                for (ElementHandle elementHandle : lists1_1) {
-                    NewsInfo newsInfo = new NewsInfo();
-
-                    // 提取文章块
-                    // 提取标题
-                    ElementHandle tileelement = elementHandle.querySelector("xpath=" + xpathConfigDO.getTitleXpath());
-                    if (tileelement != null) {
-                        String tile = tileelement.innerText();
-                        newsInfo.setTitle(tile);
+                        valid++;
                     }
 
-                    // 提取描述
-                    ElementHandle tiledesc = elementHandle.querySelector("xpath=" + xpathConfigDO.getDescXpath());
-                    if (tiledesc != null) {
-                        String tile = tiledesc.innerText();
-                        newsInfo.setDesc(tile);
+                    if (valid >= children.size() * 0.5 && score > bestScore) {
+                        bestCandidates = children;
+                        bestScore = score;
                     }
-                    newsInfo.setUrl(PlayWrightUtils.getPageUrl(elementHandle, page));
-
-                    String content = extractContentFromPage(newsInfo.getUrl(), page.context(), xpathConfigDO.getBodyXpath());
-                    newsInfo.setNextPageUrl(nextPageUrl);
-                    newsInfo.setContent(content);
-                    newsList.add(newsInfo);
                 }
+
+                // 若无法识别结构，则尝试扁平 <a> 提取（Plan B）
+                if (bestCandidates.isEmpty()) {
+                    bestCandidates = page.querySelectorAll("a");
+                }
+
+                List<Map<String, String>> articles = new ArrayList<>();
+
+                for (ElementHandle element : bestCandidates) {
+                    ElementHandle link = element;
+                    if (!"a".equalsIgnoreCase((String) element.evaluate("el => el.tagName.toLowerCase()"))) {
+                        link = element.querySelector("a");
+                    }
+                    if (link == null) continue;
+
+                    String title = link.textContent().trim();
+                    if (title.length() < 6) continue;
+
+                    String href = link.getAttribute("href");
+                    if (href == null || href.contains("javascript")) continue;
+                    if (!href.startsWith("http")) {
+                        href = absoluteUrl(page.url(), href);
+                    }
+
+                    String time = "";
+                    for (ElementHandle sub : element.querySelectorAll("*")) {
+                        String txt = sub.innerText().trim();
+                        if (datePattern.matcher(txt).matches()) {
+                            time = txt;
+                            break;
+                        }
+                    }
+
+                    if (time.isEmpty()) continue;
+
+                    Map<String, String> article = new HashMap<>();
+                    article.put("title", title);
+                    article.put("link", href);
+                    article.put("time", time);
+                    articles.add(article);
+                }
+
+                if (articles.isEmpty()) {
+                    System.out.println("❌ 无法提取文章项");
+                } else {
+                    System.out.println("✅ 提取到文章 " + articles.size() + " 条：");
+
+                    for (Map<String, String> article : articles) {
+                        System.out.println("----");
+                        System.out.println("标题：" + article.get("title"));
+                        System.out.println("链接：" + article.get("link"));
+//                        ArticleExtractor.ArticleData data = ArticleExtractor.extractArticle( article.get("link"));
+//                        System.out.println(data);
+                        System.out.println("时间：" + article.get("time"));
+                    }
+                }
+
+                browser.close();
             }
-             return (newsList);
         }
     }
 
-    private static String extractContentFromPage(String url, BrowserContext context, String bodyXpath) {
-        Page tempPage = context.newPage();
-        tempPage.navigate(url);
-        tempPage.waitForLoadState(LoadState.NETWORKIDLE);
-
-        ElementHandle bodyElement = tempPage.querySelector("xpath=" + bodyXpath);
-        String content = bodyElement != null ? bodyElement.innerText() : "";
-        tempPage.close();
-        return content;
+    private static String absoluteUrl(String base, String rel) {
+        if (rel == null) return "";
+        if (rel.startsWith("http")) return rel;
+        if (rel.startsWith("//")) return "https:" + rel;
+        if (rel.startsWith("/")) return base.replaceAll("(https?://[^/]+).*", "$1") + rel;
+        return base.substring(0, base.lastIndexOf("/") + 1) + rel;
     }
-
 }

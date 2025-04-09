@@ -65,7 +65,7 @@ public class WenXunSpiderConfigServiceImpl implements WenXunSpiderConfigService 
 
                         .status(1L)
                         .itemXpath(createReqVO.getItemXpath())
-                        .deptId(createReqVO.getDeptId())
+                        .deptId((long)createReqVO.getDeptId())
                         .creator(SecurityFrameworkUtils.getLoginUserNickname())
                         .updater(SecurityFrameworkUtils.getLoginUserNickname())
                         .build();

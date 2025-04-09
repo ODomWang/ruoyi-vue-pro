@@ -1,9 +1,6 @@
 package cn.iocoder.yudao.module.system.model.spider;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -27,8 +24,7 @@ public class SpiderXpathConfigDO {
     private String dateXpath;
     private String descXpath;
     private String itemXpath;
-    @Schema(description = "部门不能为空", requiredMode = Schema.RequiredMode.REQUIRED, example = "部门不能为空")
-    @NotEmpty(message = "部门名称不能为空")
+    @NotNull(message = "部门名称不能为空")
     private Long deptId;
 
 
@@ -38,26 +34,28 @@ public class SpiderXpathConfigDO {
 
     public String getTitleXpath() {
         if (listXpath != null) {
-            return titleXpath = titleXpath.replace(listXpath+getItemXpathV2(),"");
+            return titleXpath = titleXpath.replace(listXpath + getItemXpathV2(), "");
         }
         return titleXpath;
     }
 
     public String getDescXpath() {
         if (listXpath != null) {
-            return descXpath = descXpath.replace(listXpath+getItemXpathV2(),"");
+            return descXpath = descXpath.replace(listXpath + getItemXpathV2(), "");
         }
         return descXpath;
     }
+
     public String getItemXpathV2() {
         if (listXpath != null) {
-            return  itemXpath.replace(listXpath,"");
+            return itemXpath.replace(listXpath, "");
         }
         return "";
     }
+
     public String getItemXpath() {
         if (listXpath != null) {
-            return  itemXpath.replace(listXpath,"").replaceAll("\\[\\d+]$", "[*]");
+            return itemXpath.replace(listXpath, "").replaceAll("\\[\\d+]$", "[*]");
         }
         return itemXpath;
     }

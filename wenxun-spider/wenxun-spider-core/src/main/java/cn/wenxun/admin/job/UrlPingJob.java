@@ -5,9 +5,10 @@ import cn.iocoder.yudao.framework.tenant.core.aop.TenantIgnore;
 import cn.iocoder.yudao.module.system.controller.admin.urlpinglog.vo.UrlPingLogSaveReqVO;
 import cn.iocoder.yudao.module.system.dal.dataobject.urlpinginfo.UrlPingInfoDO;
 import cn.iocoder.yudao.module.system.dal.mysql.urlpinginfo.UrlPingInfoMapper;
-import cn.iocoder.yudao.module.system.service.urlpinglog.UrlPingLogService;
 import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
 import cn.iocoder.yudao.module.system.service.WenXunSpiderConfigService;
+import cn.iocoder.yudao.module.system.service.urlpinglog.UrlPingLogService;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.htmlunit.WebClient;
 import org.htmlunit.WebResponse;
@@ -16,7 +17,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -41,6 +41,36 @@ public class UrlPingJob implements JobHandler {
     @Resource
     private UrlPingLogService urlPingLogService;
 
+    public static UrlPingLogSaveReqVO isURLAccessible(WenxunSpiderSourceConfigDO configDO) {
+        UrlPingLogSaveReqVO urlPingLogSaveReqVO = new UrlPingLogSaveReqVO();
+        urlPingLogSaveReqVO.setPingId(Math.toIntExact(configDO.getId()));
+        urlPingLogSaveReqVO.setUrlName(configDO.getSpiderName());
+        urlPingLogSaveReqVO.setUrl(configDO.getSpiderUrl());
+        urlPingLogSaveReqVO.setUpdater("SYSTEM");
+        try (WebClient webClient = new WebClient()) {
+            // 禁用 CSS 和 JavaScript 支持以提高性能
+            webClient.getOptions().setCssEnabled(false);
+            webClient.getOptions().setJavaScriptEnabled(false);
+            // 加载 URL
+            HtmlPage page = webClient.getPage(configDO.getSpiderUrl());
+            WebResponse response = page.getWebResponse();
+
+            // 检查响应状态码
+            int statusCode = response.getStatusCode();
+            if (statusCode >= 200 && statusCode < 300) {
+                urlPingLogSaveReqVO.setStatus(1);
+            } else {
+                urlPingLogSaveReqVO.setStatus(0);
+            }
+            urlPingLogSaveReqVO.setPingCode(statusCode + "");
+        } catch (Exception e) {
+            // 捕获异常，表示 URL 不可用
+            urlPingLogSaveReqVO.setStatus(0);
+            urlPingLogSaveReqVO.setPingCode("-1");
+
+        }
+        return urlPingLogSaveReqVO;
+    }
 
     /**
      * 执行采集定时任务
@@ -59,6 +89,7 @@ public class UrlPingJob implements JobHandler {
         crawlUrlsAsync(list);
         return null;
     }
+
     @Transactional(rollbackFor = Exception.class)
     public void crawlUrlsAsync(List<WenxunSpiderSourceConfigDO> urls) {
         for (WenxunSpiderSourceConfigDO url : urls) {
@@ -104,39 +135,9 @@ public class UrlPingJob implements JobHandler {
                         ex.printStackTrace();
                         log.error("连接验证失败: {}", ex.getMessage(), ex);
                         return null;
-                    });;
+                    });
+            ;
         }
-    }
-
-    public static UrlPingLogSaveReqVO isURLAccessible(WenxunSpiderSourceConfigDO configDO) {
-        UrlPingLogSaveReqVO urlPingLogSaveReqVO = new UrlPingLogSaveReqVO();
-        urlPingLogSaveReqVO.setPingId(Math.toIntExact(configDO.getId()));
-        urlPingLogSaveReqVO.setUrlName(configDO.getSpiderName());
-        urlPingLogSaveReqVO.setUrl(configDO.getSpiderUrl());
-        urlPingLogSaveReqVO.setUpdater("SYSTEM");
-         try (WebClient webClient = new WebClient()) {
-            // 禁用 CSS 和 JavaScript 支持以提高性能
-            webClient.getOptions().setCssEnabled(false);
-            webClient.getOptions().setJavaScriptEnabled(false);
-            // 加载 URL
-            HtmlPage page = webClient.getPage(configDO.getSpiderUrl());
-            WebResponse response = page.getWebResponse();
-
-            // 检查响应状态码
-            int statusCode = response.getStatusCode();
-            if (statusCode >= 200 && statusCode < 300) {
-                urlPingLogSaveReqVO.setStatus(1);
-            } else {
-                urlPingLogSaveReqVO.setStatus(0);
-            }
-            urlPingLogSaveReqVO.setPingCode(statusCode + "");
-        } catch (Exception e) {
-            // 捕获异常，表示 URL 不可用
-            urlPingLogSaveReqVO.setStatus(0);
-            urlPingLogSaveReqVO.setPingCode("-1");
-
-        }
-        return urlPingLogSaveReqVO;
     }
 
 

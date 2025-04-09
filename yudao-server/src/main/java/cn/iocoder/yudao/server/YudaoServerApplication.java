@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * @author
  */
-@SuppressWarnings("SpringComponentScan") // 忽略 IDEA 无法识别 ${yudao.info.base-package}
+// 忽略 IDEA 无法识别 ${yudao.info.base-package}
 @SpringBootApplication(scanBasePackages = {
         "${yudao.info.base-package}.server",
         "${yudao.info.base-package}.module",

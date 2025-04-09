@@ -37,6 +37,13 @@ public class TrieNode {
     // 因为包含汉字, 所以不用数组, 之所以用 ConcurrentHashMap 的原因不是出于并发效率高的原因, 仅仅是因为 HashMap 无法解决扩容时读的问题
     volatile Map<Character, TrieNode> children = new ConcurrentHashMap<>();
 
+    public TrieNode(char data) {
+        this.data = data;
+    }
+
+    public TrieNode() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,13 +55,6 @@ public class TrieNode {
     @Override
     public int hashCode() {
         return Objects.hash(data);
-    }
-
-    public TrieNode(char data) {
-        this.data = data;
-    }
-
-    public TrieNode() {
     }
 
     public void setEndingChar(boolean endingChar) {

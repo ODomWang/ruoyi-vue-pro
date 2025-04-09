@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>cn.iocoder.boot</groupId>
@@ -38,23 +38,23 @@
         </dependency>
 
         <!-- 数据报表。默认注释，保证编译速度 -->
-<!--        <dependency>-->
-<!--            <groupId>cn.iocoder.boot</groupId>-->
-<!--            <artifactId>yudao-module-report-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.iocoder.boot</groupId>-->
+        <!--            <artifactId>yudao-module-report-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
         <!-- 工作流。默认注释，保证编译速度 -->
-<!--        <dependency>-->
-<!--            <groupId>cn.iocoder.boot</groupId>-->
-<!--            <artifactId>yudao-module-bpm-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.iocoder.boot</groupId>-->
+        <!--            <artifactId>yudao-module-bpm-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
         <!-- 支付服务。默认注释，保证编译速度 -->
-<!--        <dependency>-->
-<!--            <groupId>cn.iocoder.boot</groupId>-->
-<!--            <artifactId>yudao-module-pay-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.iocoder.boot</groupId>-->
+        <!--            <artifactId>yudao-module-pay-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
 
         <!-- 微信公众号模块。默认注释，保证编译速度 -->
         <dependency>
@@ -81,40 +81,40 @@
 
 
         <!-- 商城相关模块。默认注释，保证编译速度-->
-<!--        <dependency>-->
-<!--            <groupId>cn.iocoder.boot</groupId>-->
-<!--            <artifactId>yudao-module-promotion-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>cn.iocoder.boot</groupId>-->
-<!--            <artifactId>yudao-module-product-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>cn.iocoder.boot</groupId>-->
-<!--            <artifactId>yudao-module-trade-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>cn.iocoder.boot</groupId>-->
-<!--            <artifactId>yudao-module-statistics-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.iocoder.boot</groupId>-->
+        <!--            <artifactId>yudao-module-promotion-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.iocoder.boot</groupId>-->
+        <!--            <artifactId>yudao-module-product-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.iocoder.boot</groupId>-->
+        <!--            <artifactId>yudao-module-trade-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.iocoder.boot</groupId>-->
+        <!--            <artifactId>yudao-module-statistics-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
 
         <!-- CRM 相关模块。默认注释，保证编译速度 -->
-<!--        <dependency>-->
-<!--            <groupId>cn.iocoder.boot</groupId>-->
-<!--            <artifactId>yudao-module-crm-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.iocoder.boot</groupId>-->
+        <!--            <artifactId>yudao-module-crm-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
 
         <!-- ERP 相关模块。默认注释，保证编译速度 -->
-<!--        <dependency>-->
-<!--            <groupId>cn.iocoder.boot</groupId>-->
-<!--            <artifactId>yudao-module-erp-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.iocoder.boot</groupId>-->
+        <!--            <artifactId>yudao-module-erp-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
 
         <!-- AI 大模型相关模块。默认注释，保证编译速度 -->
         <dependency>
@@ -134,7 +134,7 @@
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-spring-boot-starter-protection</artifactId>
-         </dependency>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
@@ -153,7 +153,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
                 <configuration>
-                     <includeSystemScope>true</includeSystemScope>
+                    <includeSystemScope>true</includeSystemScope>
                 </configuration>
 
                 <executions>

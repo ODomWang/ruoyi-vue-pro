@@ -1,7 +1,6 @@
 package cn.wenxun.admin.job.utils;
 
 
-import cn.iocoder.yudao.module.system.service.wenxunDict.WenXunDictDataService;
 import cn.wenxun.admin.job.utils.trie.Trie;
 
 import java.util.HashSet;

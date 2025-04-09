@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iocoder.yudao.module.wenxun.dal.mysql.audit.WenxunCustomerAuditLogMapper">
+
+    <sql id="selectFields">
+        id, spider_id, approved_record, rejected_record, status, 
+        create_time, update_time, auditor, creator, updater, deleted, dept_id
+    </sql>
+
+    <!-- 统计客户审核日志总数 -->
+    <select id="countCustomerAuditLogs" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM wenxun_customer_audit_log
+        WHERE deleted = 0
+        <if test="deptId != null">
+            AND dept_id = #{deptId}
+        </if>
+        <if test="beginTime != null">
+            AND create_time >= #{beginTime}
+        </if>
+        <if test="endTime != null">
+            AND create_time &lt;= #{endTime}
+        </if>
+        <if test="auditor != null and auditor != ''">
+            AND auditor = #{auditor}
+        </if>
+    </select>
+
+    <!-- 按状态统计客户审核日志 -->
+    <select id="countCustomerAuditLogsByStatus" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM wenxun_customer_audit_log
+        WHERE deleted = 0
+        AND status = #{status}
+        <if test="deptId != null">
+            AND dept_id = #{deptId}
+        </if>
+        <if test="beginTime != null">
+            AND create_time >= #{beginTime}
+        </if>
+        <if test="endTime != null">
+            AND create_time &lt;= #{endTime}
+        </if>
+        <if test="auditor != null and auditor != ''">
+            AND auditor = #{auditor}
+        </if>
+    </select>
+
+    <!-- 获取客户审核部门分布数据 -->
+    <select id="getCustomerDeptDistribution" resultType="java.util.HashMap">
+        SELECT 
+            d.name AS deptName,
+            d.id AS deptId,
+            COUNT(a.id) AS totalCount,
+            SUM(CASE WHEN a.status = 1 THEN 1 ELSE 0 END) AS approvedCount,
+            SUM(CASE WHEN a.status = 2 THEN 1 ELSE 0 END) AS rejectedCount,
+            SUM(CASE WHEN a.status = 0 THEN 1 ELSE 0 END) AS pendingCount
+        FROM 
+            wenxun_customer_audit_log a
+        LEFT JOIN 
+            system_dept d ON a.dept_id = d.id
+        WHERE 
+            a.deleted = 0
+            <if test="beginTime != null">
+                AND a.create_time >= #{beginTime}
+            </if>
+            <if test="endTime != null">
+                AND a.create_time &lt;= #{endTime}
+            </if>
+        GROUP BY 
+            a.dept_id, d.name
+        ORDER BY 
+            totalCount DESC
+    </select>
+
+    <!-- 获取客户审核最近趋势数据 -->
+    <select id="getRecentCustomerAuditTrend" resultType="java.util.HashMap">
+        SELECT 
+            DATE_FORMAT(create_time, '%Y-%m-%d') AS date,
+            COUNT(id) AS totalCount,
+            SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS approvedCount,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS rejectedCount,
+            SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) AS pendingCount
+        FROM 
+            wenxun_customer_audit_log
+        WHERE 
+            deleted = 0
+            AND create_time BETWEEN #{beginTime} AND #{endTime}
+            <if test="deptId != null">
+                AND dept_id = #{deptId}
+            </if>
+            <if test="auditor != null and auditor != ''">
+                AND auditor = #{auditor}
+            </if>
+        GROUP BY 
+            DATE_FORMAT(create_time, '%Y-%m-%d')
+        ORDER BY 
+            date ASC
+    </select>
+
+</mapper> 

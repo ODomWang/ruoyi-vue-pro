@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author wangy
  */
-public  interface MeiliSearchOperations<T> {
+public interface MeiliSearchOperations<T> {
 
     Stats getStats() throws MeilisearchException;
 
@@ -28,7 +28,7 @@ public  interface MeiliSearchOperations<T> {
 
     long update(T document);
 
-    TaskInfo  add(List<T> documents) throws MeilisearchException;
+    TaskInfo add(List<T> documents) throws MeilisearchException;
 
     long update(List<T> documents);
 

@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class JobConfiguration {
 
 
-
     public static final String NOTIFY_THREAD_POOL_TASK_EXECUTOR = "NOTIFY_THREAD_POOL_TASK_EXECUTOR";
 
     @Bean(NOTIFY_THREAD_POOL_TASK_EXECUTOR)

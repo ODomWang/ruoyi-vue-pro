@@ -8,7 +8,7 @@ spring:
   autoconfigure:
     exclude:
       - com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceAutoConfigure # 排除 Druid 的自动配置，使用 dynamic-datasource-spring-boot-starter 配置多数据源
-#      - org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration # 默认 local 环境，不开启 Quartz 的自动配置
+      #      - org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration # 默认 local 环境，不开启 Quartz 的自动配置
       - de.codecentric.boot.admin.server.config.AdminServerAutoConfiguration # 禁用 Spring Boot Admin 的 Server 的自动配置
       - de.codecentric.boot.admin.server.ui.config.AdminServerUiAutoConfiguration # 禁用 Spring Boot Admin 的 Server UI 的自动配置
       - de.codecentric.boot.admin.client.config.SpringBootAdminClientAutoConfiguration # 禁用 Spring Boot Admin 的 Client 的自动配置
@@ -178,6 +178,9 @@ logging:
     cn.iocoder.yudao.module.crm.dal.mysql: debug
     cn.iocoder.yudao.module.erp.dal.mysql: debug
     cn.iocoder.yudao.module.ai.dal.mysql: debug
+    cn.iocoder.yudao.framework.websocket: debug # 增加WebSocket框架日志
+    cn.iocoder.yudao.module.infra.websocket: debug # 增加WebSocket模块日志
+    org.springframework.web.socket: debug # 增加Spring WebSocket日志
     org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR # TODO 芋艿：先禁用，Spring Boot 3.X 存在部分错误的 WARN 提示
 
 debug: false
@@ -185,12 +188,12 @@ debug: false
 --- #################### 微信公众号、小程序相关配置 ####################
 wx:
   mp: # 公众号配置（必填），参见 https://github.com/Wechat-Group/WxJava/blob/develop/spring-boot-starters/wx-java-mp-spring-boot-starter/README.md 文档
-#    app-id: wx041349c6f39b268b # 测试号（牛希尧提供的）
-#    secret: 5abee519483bc9f8cb37ce280e814bd0
+    #    app-id: wx041349c6f39b268b # 测试号（牛希尧提供的）
+    #    secret: 5abee519483bc9f8cb37ce280e814bd0
     app-id: wx5b23ba7a5589ecbb # 测试号（自己的）
     secret: 2a7b3b20c537e52e74afd395eb85f61f
-#    app-id: wxa69ab825b163be19 # 测试号（Kongdy 提供的）
-#    secret: bd4f9fab889591b62aeac0d7b8d8b4a0
+    #    app-id: wxa69ab825b163be19 # 测试号（Kongdy 提供的）
+    #    secret: bd4f9fab889591b62aeac0d7b8d8b4a0
     # 存储配置，解决 AccessToken 的跨节点的共享
     config-storage:
       type: RedisTemplate # 采用 RedisTemplate 操作 Redis，会自动从 Spring 中获取
@@ -199,10 +202,10 @@ wx:
   miniapp: # 小程序配置（必填），参见 https://github.com/Wechat-Group/WxJava/blob/develop/spring-boot-starters/wx-java-miniapp-spring-boot-starter/README.md 文档
     #    appid: wx62056c0d5e8db250 # 测试号（牛希尧提供的）
     #    secret: 333ae72f41552af1e998fe1f54e1584a
-#    appid: wx63c280fe3248a3e7 # wenhualian的接口测试号
-#    secret: 6f270509224a7ae1296bbf1c8cb97aed
-#    appid: wxc4598c446f8a9cb3 # 测试号（Kongdy 提供的）
-#    secret: 4a1a04e07f6a4a0751b39c3064a92c8b
+    #    appid: wx63c280fe3248a3e7 # wenhualian的接口测试号
+    #    secret: 6f270509224a7ae1296bbf1c8cb97aed
+    #    appid: wxc4598c446f8a9cb3 # 测试号（Kongdy 提供的）
+    #    secret: 4a1a04e07f6a4a0751b39c3064a92c8b
     appid: wx66186af0759f47c9 # 测试号（puhui 提供的）
     secret: 3218bcbd112cbc614c7264ceb20144ac
     config-storage:
@@ -227,8 +230,12 @@ yudao:
   wxa-code:
     env-version: develop # 小程序版本: 正式版为 "release"；体验版为 "trial"；开发版为 "develop"
   wxa-subscribe-message:
-    miniprogram-state: developer # 跳转小程序类型：开发版为 “developer”；体验版为 “trial”为；正式版为 “formal”
+    miniprogram-state: developer # 跳转小程序类型：开发版为 "developer"；体验版为 "trial"为；正式版为 "formal"
   tencent-lbs-key: TVDBZ-TDILD-4ON4B-PFDZA-RNLKH-VVF6E # QQ 地图的密钥 https://lbs.qq.com/service/staticV2/staticGuide/staticDoc
+  websocket:
+    enable: true # 启用WebSocket功能
+    path: infra/ws # 设置为/ws路径
+    sender-type: local # 使用本地消息发送器
 
 justauth:
   enabled: true

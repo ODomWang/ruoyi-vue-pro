@@ -6,6 +6,14 @@ public class Frame {
     TrieNode node;
     int j;
 
+    public Frame(TrieNode node, int j) {
+        this.node = node;
+        this.j = j;
+    }
+
+    public Frame() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -17,14 +25,6 @@ public class Frame {
     @Override
     public int hashCode() {
         return Objects.hash(node, j);
-    }
-
-    public Frame(TrieNode node, int j) {
-        this.node = node;
-        this.j = j;
-    }
-
-    public Frame() {
     }
 
     public TrieNode getNode() {

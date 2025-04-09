@@ -5,21 +5,27 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.system.controller.admin.wenxunDict.vo.data.WenXunDictDataPageReqVO;
 import cn.iocoder.yudao.module.system.dal.dataobject.wenxunDict.WenXunDictDataDO;
 import cn.iocoder.yudao.module.system.service.wenxunDict.WenXunDictDataService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class Trie implements ApplicationListener<ContextRefreshedEvent> {
 
+    public static final TrieNode root = new TrieNode(); // 存储无意义字符
+    private final transient ReentrantLock writeLock = new ReentrantLock();
     @Resource
     private WenXunDictDataService wenXunDictDataService;
 
+
+    public Trie() {
+
+    }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -68,14 +74,6 @@ public class Trie implements ApplicationListener<ContextRefreshedEvent> {
             e.printStackTrace();
         }
     }
-
-
-    public Trie() {
-
-    }
-
-    public static final TrieNode root = new TrieNode(); // 存储无意义字符
-    private final transient ReentrantLock writeLock = new ReentrantLock();
 
     // 往 Trie 树中插入一个字符串
     public void insert(String s) {

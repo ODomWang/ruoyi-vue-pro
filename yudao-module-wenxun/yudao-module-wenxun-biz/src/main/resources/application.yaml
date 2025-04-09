@@ -1,0 +1,16 @@
+wenxun:
+  api:
+    base-url: http://110.40.228.6:2531/v2/api
+    app-id: ${WENXUN_APP_ID:}  # 从环境变量获取，默认为空
+    token: ${WENXUN_TOKEN:}    # 从环境变量获取，默认为空
+
+# 权限配置
+security:
+  permission:
+    wenxun-stats:
+      spider:
+        query: 'wenxun:stats:spider:query'
+      typo:
+        query: 'wenxun:stats:typo:query'
+      monitor:
+        query: 'wenxun:stats:monitor:query' 

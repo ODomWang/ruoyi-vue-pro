@@ -8,13 +8,12 @@ import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderCrawlDetail;
 import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
 import cn.wenxun.admin.job.utils.PlayWrightUtils;
 import com.alibaba.fastjson.JSON;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-
-import jakarta.annotation.Resource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +24,8 @@ import java.util.Map;
 @Validated
 @Slf4j
 public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
+    @Resource
+    public MeiliSearchService meiliSearchService;
     @Resource
     private WenXunSpiderCrawlMapper wenXunSpiderCrawlMapper;
 
@@ -80,9 +81,6 @@ public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
         return null;
     }
 
-    @Resource
-    public MeiliSearchService meiliSearchService;
-
     /**
      *
      */
@@ -108,8 +106,7 @@ public class WenXunSpiderCrawlServiceImpl implements WenXunSpiderCrawlService {
             crawlDetail.setTitle(newsInfo.getTitle());
             crawlDetail.setTitleDesc(newsInfo.getDesc());
             crawlDetail.setSpiderConfigId(newsInfo.getConfigId());
-            crawlDetail.setDate("1");
-            crawlDetail.setIcon(newsInfo.getWebIcon());
+             crawlDetail.setIcon(newsInfo.getWebIcon());
             crawlDetail.setSpiderName(newsInfo.getSpiderName());
             crawlDetail.setDeptId(newsInfo.getDeptId());
             wenxunSpiderCrawlDetailList.add(crawlDetail);

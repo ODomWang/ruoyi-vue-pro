@@ -44,7 +44,7 @@ import static cn.iocoder.yudao.module.ai.enums.ErrorCodeConstants.KNOWLEDGE_DOCU
 public class AiKnowledgeDocumentServiceImpl implements AiKnowledgeDocumentService {
 
     @Resource
-    private AiKnowledgeDocumentMapper documentMapper;
+    private AiKnowledgeDocumentMapper aiKnowledgeDocumentMapper;
     @Resource
     private AiKnowledgeSegmentMapper segmentMapper;
 
@@ -76,7 +76,7 @@ public class AiKnowledgeDocumentServiceImpl implements AiKnowledgeDocumentServic
         AiKnowledgeDocumentDO documentDO = BeanUtils.toBean(createReqVO, AiKnowledgeDocumentDO.class)
                 .setTokens(tokenCountEstimator.estimate(content)).setWordCount(content.length())
                 .setStatus(CommonStatusEnum.ENABLE.getStatus()).setSliceStatus(AiKnowledgeDocumentStatusEnum.SUCCESS.getStatus());
-        documentMapper.insert(documentDO);
+        aiKnowledgeDocumentMapper.insert(documentDO);
         Long documentId = documentDO.getId();
         if (CollUtil.isEmpty(documents)) {
             return documentId;
@@ -102,7 +102,7 @@ public class AiKnowledgeDocumentServiceImpl implements AiKnowledgeDocumentServic
 
     @Override
     public PageResult<AiKnowledgeDocumentDO> getKnowledgeDocumentPage(AiKnowledgeDocumentPageReqVO pageReqVO) {
-        return documentMapper.selectPage(pageReqVO);
+        return aiKnowledgeDocumentMapper.selectPage(pageReqVO);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class AiKnowledgeDocumentServiceImpl implements AiKnowledgeDocumentServic
         validateKnowledgeDocumentExists(reqVO.getId());
         // 2. 更新文档
         AiKnowledgeDocumentDO document = BeanUtils.toBean(reqVO, AiKnowledgeDocumentDO.class);
-        documentMapper.updateById(document);
+        aiKnowledgeDocumentMapper.updateById(document);
     }
 
     /**
@@ -121,7 +121,7 @@ public class AiKnowledgeDocumentServiceImpl implements AiKnowledgeDocumentServic
      * @return 文档信息
      */
     private AiKnowledgeDocumentDO validateKnowledgeDocumentExists(Long id) {
-        AiKnowledgeDocumentDO knowledgeDocument = documentMapper.selectById(id);
+        AiKnowledgeDocumentDO knowledgeDocument = aiKnowledgeDocumentMapper.selectById(id);
         if (knowledgeDocument == null) {
             throw exception(KNOWLEDGE_DOCUMENT_NOT_EXISTS);
         }

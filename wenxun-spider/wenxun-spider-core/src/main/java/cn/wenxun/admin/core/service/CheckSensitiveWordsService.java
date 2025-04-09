@@ -34,5 +34,4 @@ public interface CheckSensitiveWordsService {
     String checkFile(MultipartFile file);
 
 
-
 }

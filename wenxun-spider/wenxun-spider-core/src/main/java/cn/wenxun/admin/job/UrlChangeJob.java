@@ -10,12 +10,11 @@ import cn.iocoder.yudao.module.system.mapper.WenXunSpiderCrawlMapper;
 import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderCrawlDetail;
 import cn.iocoder.yudao.module.system.model.spider.WenxunSpiderSourceConfigDO;
 import cn.iocoder.yudao.module.system.service.WenXunSpiderConfigService;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.annotation.Resource;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -48,6 +47,18 @@ public class UrlChangeJob implements JobHandler {
     @Resource
     private WenXunSpiderCrawlMapper wenXunSpiderCrawlMapper;
 
+    public static boolean isToday(Timestamp timestamp) {
+        // 获取当前日期
+        LocalDate today = LocalDate.now();
+
+        // 将 Timestamp 转换为 LocalDate
+        LocalDate timestampDate = timestamp.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        // 比较日期是否相等
+        return today.equals(timestampDate);
+    }
 
     /**
      * 执行采集定时任务
@@ -124,19 +135,6 @@ public class UrlChangeJob implements JobHandler {
         }
 
         return urlChangeLogDO;
-    }
-
-    public static boolean isToday(Timestamp timestamp) {
-        // 获取当前日期
-        LocalDate today = LocalDate.now();
-
-        // 将 Timestamp 转换为 LocalDate
-        LocalDate timestampDate = timestamp.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-
-        // 比较日期是否相等
-        return today.equals(timestampDate);
     }
 
 }
